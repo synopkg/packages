@@ -1,0 +1,20 @@
+Source: aiosmb
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 13), dh-python, python3-setuptools, python3-all
+Standards-Version: 4.6.2
+Homepage: https://github.com/skelsec/aiosmb
+Vcs-Browser: https://gitlab.com/kalilinux/packages/aiosmb
+Vcs-Git: https://gitlab.com/kalilinux/packages/aiosmb.git
+Testsuite: autopkgtest-pkg-python
+Rules-Requires-Root: no
+
+Package: python3-aiosmb
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Fully asynchronous SMB library (Python 3)
+ This package contains a fully asynchronous SMB library.
+ .
+ This package installs the library for Python 3.

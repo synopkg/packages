@@ -1,0 +1,11 @@
+aioconsole (0.3.1-0kali2) kali-dev; urgency=medium
+
+  * Disable a failing test
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 17 Nov 2020 09:29:55 +0100
+
+aioconsole (0.3.1-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 17 Nov 2020 08:33:50 +0100

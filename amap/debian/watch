@@ -1,0 +1,7 @@
+# This is available only as a file inside another repo:
+# https://github.com/hackerschoice/THC-Archive/tree/master/Tools
+# Because of this, and the fact there hasn't been an update and the sources
+# aren't available, we use the fake website workaround.
+version=4
+opts=dversionmangle=s/.*/0.No-Site/ \
+https://people.debian.org/~eriberto/ FakeWatchNoUpstreamSiteForThisPackage-(\d\S+)\.gz

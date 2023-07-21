@@ -1,0 +1,84 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Wed, 28 Dec 2022 17:37:54 +0100
+Subject: Do not use git
+
+---
+ capture/Makefile.in                           | 2 +-
+ cont3xt/vueapp/build/webpack.prod.conf.js     | 4 ++--
+ parliament/vueapp/build/webpack.prod.conf.js  | 4 ++--
+ viewer/vueapp/build/webpack.prod.conf.js      | 4 ++--
+ wiseService/vueapp/build/webpack.prod.conf.js | 4 ++--
+ 5 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/capture/Makefile.in b/capture/Makefile.in
+index 741e393..e567edf 100644
+--- a/capture/Makefile.in
++++ b/capture/Makefile.in
+@@ -1,6 +1,6 @@
+ INSTALL_DIR   = @INSTALL_DIR@
+ 
+-BUILD_VERSION := $(shell @GIT@ describe --tags)
++BUILD_VERSION := $(shell cd .. && dpkg-parsechangelog -SVersion | sed -e 's/-.*$///')
+ 
+ CC            = @CC@
+ 
+diff --git a/cont3xt/vueapp/build/webpack.prod.conf.js b/cont3xt/vueapp/build/webpack.prod.conf.js
+index 084478d..5ce3ff0 100644
+--- a/cont3xt/vueapp/build/webpack.prod.conf.js
++++ b/cont3xt/vueapp/build/webpack.prod.conf.js
+@@ -46,8 +46,8 @@ const webpackConfig = merge(baseWebpackConfig, {
+     // http://vuejs.github.io/vue-loader/en/workflow/production.html
+     new webpack.DefinePlugin({
+       'process.env': env,
+-      BUILD_VERSION: JSON.stringify(git('describe --tags')),
+-      BUILD_DATE: JSON.stringify(git('log -1 --format=%aI'))
++      BUILD_VERSION: JSON.stringify('4.0.3'),
++      BUILD_DATE: JSON.stringify('2022-12-28')
+     }),
+     // generate dist index.html with correct asset hash for caching.
+     // you can customize output by editing /index.html
+diff --git a/parliament/vueapp/build/webpack.prod.conf.js b/parliament/vueapp/build/webpack.prod.conf.js
+index d83eb2e..f775046 100644
+--- a/parliament/vueapp/build/webpack.prod.conf.js
++++ b/parliament/vueapp/build/webpack.prod.conf.js
+@@ -46,8 +46,8 @@ const webpackConfig = merge(baseWebpackConfig, {
+     // http://vuejs.github.io/vue-loader/en/workflow/production.html
+     new webpack.DefinePlugin({
+       'process.env': env,
+-      BUILD_VERSION: JSON.stringify(git('describe --tags')),
+-      BUILD_DATE: JSON.stringify(git('log -1 --format=%aI'))
++      BUILD_VERSION: JSON.stringify('4.0.3'),
++      BUILD_DATE: JSON.stringify('2022-12-28')
+     }),
+     new webpack.ProvidePlugin({
+       $: 'jquery',
+diff --git a/viewer/vueapp/build/webpack.prod.conf.js b/viewer/vueapp/build/webpack.prod.conf.js
+index 071973b..5b637f8 100644
+--- a/viewer/vueapp/build/webpack.prod.conf.js
++++ b/viewer/vueapp/build/webpack.prod.conf.js
+@@ -41,8 +41,8 @@ const webpackConfig = merge(baseWebpackConfig, {
+     // http://vuejs.github.io/vue-loader/en/workflow/production.html
+     new webpack.DefinePlugin({
+       'process.env': env,
+-      BUILD_VERSION: JSON.stringify(git('describe --tags')),
+-      BUILD_DATE: JSON.stringify(git('log -1 --format=%aI'))
++      BUILD_VERSION: JSON.stringify('4.0.3'),
++      BUILD_DATE: JSON.stringify('2022-12-28')
+     }),
+     new webpack.ProvidePlugin({
+       $: 'jquery',
+diff --git a/wiseService/vueapp/build/webpack.prod.conf.js b/wiseService/vueapp/build/webpack.prod.conf.js
+index d83eb2e..f775046 100644
+--- a/wiseService/vueapp/build/webpack.prod.conf.js
++++ b/wiseService/vueapp/build/webpack.prod.conf.js
+@@ -46,8 +46,8 @@ const webpackConfig = merge(baseWebpackConfig, {
+     // http://vuejs.github.io/vue-loader/en/workflow/production.html
+     new webpack.DefinePlugin({
+       'process.env': env,
+-      BUILD_VERSION: JSON.stringify(git('describe --tags')),
+-      BUILD_DATE: JSON.stringify(git('log -1 --format=%aI'))
++      BUILD_VERSION: JSON.stringify('4.0.3'),
++      BUILD_DATE: JSON.stringify('2022-12-28')
+     }),
+     new webpack.ProvidePlugin({
+       $: 'jquery',

@@ -1,0 +1,11 @@
+include:
+  - https://gitlab.com/kalilinux/tools/kali-ci-pipeline/raw/master/recipes/kali.yml
+
+#disable repro test: we download some components
+
+variables:
+  SALSA_CI_DISABLE_BUILD_PACKAGE_ARMEL: 1
+  SALSA_CI_DISABLE_BUILD_PACKAGE_ARMHF: 1
+  SALSA_CI_DISABLE_BUILD_PACKAGE_I386: 1
+  SALSA_CI_DISABLE_REPROTEST: 1
+

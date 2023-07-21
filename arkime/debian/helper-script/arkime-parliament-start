@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+
+if ! systemctl is-active --quiet arkimeparliament; then
+    systemctl enable arkimeparliament.service
+    systemctl start arkimeparliament.service
+fi
+
+echo "Config can be changed: /etc/arkime/parliament.env"
+echo "An example is /etc/arkime/parliament.env.example"
+echo "Then you will need to restart the service arkimeparliament."
+
+sleep 3s
+
+echo "Opening Web UI http://localhost:8008"
+xdg-open "http://localhost:8008" 2>/dev/null >/dev/null &
+

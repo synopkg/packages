@@ -1,0 +1,6 @@
+fix-launch-script.patch
+fix-meterpreter.patch
+Remove-mentions-of-old-metasploit-versions.patch
+Update-postgresql-version-to-support-scram-sha-256.patch
+Update-the-instructions-for-latest-release-in-Kali.patch
+Force-use-of-java-11.patch

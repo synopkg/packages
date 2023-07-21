@@ -1,0 +1,35 @@
+{
+  "name": "WISE",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arkime/arkime.git"
+  },
+  "scripts": {
+    "bundle": "cd ../ && npm run wise:bundle",
+    "bundle:min": "cd ../ && npm run wise:build",
+    "doc": "cd ../ && npm run wise:doc",
+    "dev": "cd ../ && npm run wise:dev",
+    "devdebug": "cd ../ && npm run wise:devdebug",
+    "lint": "cd ../ && npm run wise:lint"
+  },
+  "engines": {
+    "node": ">= 16.0.0 < 19",
+    "npm": ">= 3.0.0"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules",
+      "vueapp"
+    ],
+    "watch": [
+      ".",
+      "../common"
+    ]
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

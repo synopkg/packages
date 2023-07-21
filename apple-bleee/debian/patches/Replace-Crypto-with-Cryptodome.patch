@@ -1,0 +1,23 @@
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Thu, 11 Feb 2021 10:12:09 +0700
+Subject: Replace Crypto with Cryptodome
+
+Cryptodome is a drop-in replacement, with only a few differences, cf:
+https://pycryptodome.readthedocs.io/en/latest/src/vs_pycrypto.html
+---
+ opendrop2/util.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/opendrop2/util.py b/opendrop2/util.py
+index 87af69e..d7f0b04 100644
+--- a/opendrop2/util.py
++++ b/opendrop2/util.py
+@@ -27,7 +27,7 @@ import os
+ import platform
+ import plistlib
+ import socket
+-from Crypto.Hash import SHA, SHA256
++from Cryptodome.Hash import SHA, SHA256
+ from PIL import Image, ExifTags
+ from libarchive import ffi
+ from libarchive.entry import new_archive_entry, ArchiveEntry

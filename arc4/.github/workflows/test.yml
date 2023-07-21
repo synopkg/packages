@@ -1,0 +1,69 @@
+---
+name: Test
+on:
+- push
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+        - '2.7'
+        - '3.5'
+        - '3.6'
+        - '3.7'
+        - '3.8'
+        - '3.9'
+        - '3.10'
+        - 'pypy-2.7'
+        - 'pypy-3.7'
+        - 'pypy-3.8'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: "${{ matrix.python-version }}"
+    - name: Install cc-test-reporter
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+    - run: ./cc-test-reporter before-build
+    - run: python setup.py build_ext --inplace
+      env:
+        CFLAGS: --coverage
+    - run: python -m unittest discover --verbose
+    - name: Format coverage
+      run: |
+        gcov -o build/temp.* arc4.c
+        rm -f *.h.gcov
+        ./cc-test-reporter format-coverage --input-type gcov --output 'coverage.${{ matrix.python-version }}.xml' .
+    - uses: actions/upload-artifact@v2
+      with:
+        name: coverages
+        path: coverage.${{ matrix.python-version }}.xml
+  upload-coverage:
+    runs-on: ubuntu-20.04
+    needs: test
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: coverages
+    - name: Install cc-test-reporter
+      run: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+    - name: Upload coverage
+      run: ./cc-test-reporter sum-coverage --output - coverage.*.xml | ./cc-test-reporter upload-coverage --debug --input -
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: clang-format
+      run: clang-format --Werror --dry-run arc4.c
+    - run: pip install . flake8 mypy pygments restructuredtext_lint
+    - run: flake8
+    - run: stubtest arc4
+    - run: rst-lint README.rst

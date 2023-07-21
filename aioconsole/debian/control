@@ -1,0 +1,51 @@
+Source: aioconsole
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3-all,
+               python3-pytest,
+               python3-pytest-asyncio,
+               python3-setuptools,
+               python3-sphinx,
+               python3-sphinx-rtd-theme
+Standards-Version: 4.5.0
+Homepage: https://github.com/vxgmichel/aioconsole
+Vcs-Browser: https://gitlab.com/kalilinux/packages/aioconsole
+Vcs-Git: https://gitlab.com/kalilinux/packages/aioconsole.git
+Testsuite: autopkgtest-pkg-python
+Rules-Requires-Root: no
+
+Package: python3-aioconsole
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Suggests: python-aioconsole-doc
+Description: Asynchronous console and interfaces for asyncio (Python 3)
+ This package contains an aynchronous console and interfaces for asyncio. It
+ provides:
+  * asynchronous equivalents to input, print, exec and code.interact
+  * an interactive loop running the asynchronous Python console
+  * a way to customize and run command line interface using argparse
+  * stream support to serve interfaces instead of using standard streams
+  * the apython script to access asyncio code at runtime without modifying the
+    sources
+ .
+ This package installs the library for Python 3.
+
+Package: python-aioconsole-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Description: Asynchronous console and interfaces for asyncio (common documentation)
+ This package contains an aynchronous console and interfaces for asyncio. It
+ provides:
+  * asynchronous equivalents to input, print, exec and code.interact
+  * an interactive loop running the asynchronous Python console
+  * a way to customize and run command line interface using argparse
+  * stream support to serve interfaces instead of using standard streams
+  * the apython script to access asyncio code at runtime without modifying the
+    sources
+ .
+ This is the common documentation package.

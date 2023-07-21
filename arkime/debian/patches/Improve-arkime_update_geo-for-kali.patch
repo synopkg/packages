@@ -1,0 +1,51 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Wed, 28 Dec 2022 16:21:55 +0100
+Subject: Improve arkime_update_geo for kali
+
+Do not download data from wireshark. It's already in Debian.
+Add a check when geoipupdate is run: add information if it fails.
+---
+ release/arkime_update_geo.sh | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
+
+diff --git a/release/arkime_update_geo.sh b/release/arkime_update_geo.sh
+index 93349e6..7e080d8 100755
+--- a/release/arkime_update_geo.sh
++++ b/release/arkime_update_geo.sh
+@@ -18,23 +18,24 @@ if (( $? == 0 )) ; then
+   mv "$FILENAME" "${DEST_DIR}/ipv4-address-space.csv"
+ fi
+ 
++# KALI: we use the file provided by libwireshark-data
+ # Try and download manuf, only copy if it works
+-FILENAME=$(mktemp)
+-wget -nv --timeout=${TIMEOUT} -O "$FILENAME" https://raw.githubusercontent.com/wireshark/wireshark/master/manuf
+-if (( $? == 0 )) ; then
+-  chmod a+r "$FILENAME"
+-  mv "$FILENAME" "${DEST_DIR}/oui.txt"
+-fi
++#FILENAME=$(mktemp)
++#wget -nv --timeout=${TIMEOUT} -O "$FILENAME" https://raw.githubusercontent.com/wireshark/wireshark/master/manuf
++#if (( $? == 0 )) ; then
++#  chmod a+r "$FILENAME"
++#  mv "$FILENAME" "${DEST_DIR}/oui.txt"
++#fi
+ 
+ # Run the maxind geoipupdate program if available. See
+ # https://blog.maxmind.com/2019/12/18/significant-changes-to-accessing-and-using-geolite2-databases/
+ # https://dev.maxmind.com/geoip/geoipupdate/#For_Free_GeoLite2_Databases
+ if [ -x "/usr/bin/geoipupdate" ]; then
+-    /usr/bin/geoipupdate
+-    if [ -d /usr/share/GeoIP ]; then
+-      chmod a+r /usr/share/GeoIP/*.mmdb
+-    fi
+-    if [ -d /var/lib/GeoIP ]; then
+-      chmod a+r /var/lib/GeoIP/*.mmdb
++    if ! /usr/bin/geoipupdate; then
++	echo "Fails to download GEO files"
++	echo "You need to have a Maxmind account and to setup /etc/GeoIP.conf"
++	echo "https://arkime.com/faq#maxmind"
++    else
++        chmod a+r /usr/share/GeoIP/*.mmdb
+     fi
+ fi

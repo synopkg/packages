@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+export PYBUILD_NAME=apispec-webframeworks
+export PYBUILD_BEFORE_TEST=cp -r $(CURDIR)/src/apispec_webframeworks.egg-info $(CURDIR)/.pybuild/cpython3_3.11_apispec-webframeworks/build/
+export PYBUILD_AFTER_TEST=rm -rf $(CURDIR)/.pybuild/cpython3_3.8_apispec-webframeworks/build/apispec_webframeworks.egg-info
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild

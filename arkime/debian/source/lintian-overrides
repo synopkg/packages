@@ -1,0 +1,3 @@
+source-is-missing [viewer/public/*]
+source-is-missing [cont3xt/integration*]
+source-is-missing [viewer/molochparser.js]

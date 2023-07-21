@@ -1,0 +1,16 @@
+Metadata-Version: 1.1
+Name: aiocmd
+Version: 0.1.2
+Summary: Coroutine-based CLI generator using prompt_toolkit
+Home-page: http://github.com/KimiNewt/aiocmd
+Author: Dor Green
+Author-email: dorgreen1@gmail.com
+License: MIT
+Description: UNKNOWN
+Keywords: asyncio,cmd
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7

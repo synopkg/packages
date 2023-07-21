@@ -1,0 +1,67 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Thu, 29 Dec 2022 09:53:26 +0100
+Subject: Adapt Configure for kali
+
+---
+ release/Configure | 36 +++++++++++++++++-------------------
+ 1 file changed, 17 insertions(+), 19 deletions(-)
+
+diff --git a/release/Configure b/release/Configure
+index ac6cda5..9439c19 100755
+--- a/release/Configure
++++ b/release/Configure
+@@ -135,13 +135,13 @@ fi
+ 
+ ################################################################################
+ # re-create these directories after installation so they are not part of the package manifest
+-CREATEDIRS="logs raw"
+-for CREATEDIR in $CREATEDIRS; do
+-    if [ ! -e $ARKIME_INSTALL_DIR/$CREATEDIR ]; then
+-        mkdir -m 0700 -p $ARKIME_INSTALL_DIR/$CREATEDIR && \
+-        chown nobody $ARKIME_INSTALL_DIR/$CREATEDIR
+-    fi
+-done
++#CREATEDIRS="logs raw"
++#for CREATEDIR in $CREATEDIRS; do
++#    if [ ! -e $ARKIME_INSTALL_DIR/$CREATEDIR ]; then
++#        mkdir -m 0700 -p $ARKIME_INSTALL_DIR/$CREATEDIR && \
++#        chown nobody $ARKIME_INSTALL_DIR/$CREATEDIR
++#    fi
++#done
+ 
+ ################################################################################
+ ARCHRPM=$(uname -m)
+@@ -167,15 +167,15 @@ if [ "$ARKIME_LOCALELASTICSEARCH" == "yes" ]; then
+ fi
+ 
+ ################################################################################
+-if [ -d "/etc/security/limits.d" ] && [ ! -f "/etc/security/limits.d/99-arkime.conf" ]; then
+-    echo "Arkime - Installing /etc/security/limits.d/99-arkime.conf to make core and memlock unlimited"
+-    cat << EOF > /etc/security/limits.d/99-arkime.conf
+-nobody  -       core    unlimited
+-root    -       core    unlimited
+-nobody  -       memlock    unlimited
+-root    -       memlock    unlimited
+-EOF
+-fi
++#if [ -d "/etc/security/limits.d" ] && [ ! -f "/etc/security/limits.d/99-arkime.conf" ]; then
++#    echo "Arkime - Installing /etc/security/limits.d/99-arkime.conf to make core and memlock unlimited"
++#    cat << EOF > /etc/security/limits.d/99-arkime.conf
++#nobody  -       core    unlimited
++#root    -       core    unlimited
++#nobody  -       memlock    unlimited
++#root    -       memlock    unlimited
++#EOF
++#fi
+ 
+ ################################################################################
+ 
+@@ -195,7 +195,5 @@ fi
+ 
+ ################################################################################
+ echo ""
+-echo "Arkime - Configured - Now continue with step 4 in $ARKIME_INSTALL_DIR/README.txt"
++echo "Arkime - Configured"
+ echo ""
+-tail -n +9 $ARKIME_INSTALL_DIR/README.txt
+-

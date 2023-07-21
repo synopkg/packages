@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+
+if [ ! -e /etc/arkime/cont3xt.ini ]; then
+    cd /usr/lib/arkime
+    ./bin/Configure --cont3xt
+    echo "Please check and fill the config file /etc/arkime/cont3xt.ini"
+    exit 0
+fi
+
+if ! systemctl is-active --quiet arkimecont3xt; then
+    systemctl enable arkimecont3xt.service
+    systemctl start arkimecont3xt.service
+fi
+
+echo "Config can be changed: /etc/arkime/cont3xt.ini"
+echo "Then you will need to restart the service arkimecont3xt."
+
+sleep 3s
+
+echo "Opening Web UI http://localhost:3218"
+xdg-open "http://localhost:3218" 2>/dev/null >/dev/null &

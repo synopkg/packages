@@ -1,0 +1,39 @@
+apple-bleee (0.1.5-0kali5) kali-dev; urgency=medium
+
+  [ Ben Wilson ]
+  * New helper-script format
+  * Remove template comment and switch spaces to tabs
+
+  [ Sophie Brun ]
+  * Refresh patch
+  * Add a patch to fix issue ModuleNotFoundError: No module named 'utils.bluetooth_utils'
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 25 May 2022 09:39:24 +0200
+
+apple-bleee (0.1.5-0kali4) kali-dev; urgency=medium
+
+  * Add helper-script
+
+ -- Ben Wilson <g0tmi1k@kali.org>  Sun, 07 Nov 2021 10:36:26 +0000
+
+apple-bleee (0.1.5-0kali3) kali-dev; urgency=medium
+
+  * Add patch to replace crypto with cryptodome
+
+ -- Arnaud Rebillout <arnaudr@kali.org>  Thu, 11 Feb 2021 10:16:05 +0700
+
+apple-bleee (0.1.5-0kali2) kali-dev; urgency=medium
+
+  [ Ben Wilson ]
+  * Consistency with install file
+
+  [ Arnaud Rebillout ]
+  * Drop python3-crypto in favor of python3-pycryptodome
+
+ -- Arnaud Rebillout <arnaudr@kali.org>  Wed, 10 Feb 2021 23:51:25 +0700
+
+apple-bleee (0.1.5-0kali1) kali-dev; urgency=medium
+
+  * Initial release (see 6147)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 16 Oct 2020 14:08:15 +0200

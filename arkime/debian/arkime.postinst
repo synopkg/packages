@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+
+RESTRICTED_DIRS="/var/lib/arkime/raw /var/lib/arkime/logs"
+
+if [ "$1" = "configure" ]; then
+    for DIR in $RESTRICTED_DIRS; do
+	chmod 0700 $DIR
+	chown nobody $DIR
+    done
+fi
+
+#DEBHELPER#

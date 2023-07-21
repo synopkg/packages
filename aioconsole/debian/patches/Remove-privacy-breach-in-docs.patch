@@ -1,0 +1,39 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 17 Nov 2020 09:11:06 +0100
+Subject: Remove privacy-breach in docs
+
+---
+ docs/index.rst | 20 --------------------
+ 1 file changed, 20 deletions(-)
+
+diff --git a/docs/index.rst b/docs/index.rst
+index b3b0b33..f876cbf 100644
+--- a/docs/index.rst
++++ b/docs/index.rst
+@@ -1,26 +1,6 @@
+ aioconsole
+ ==========
+ 
+-.. image:: https://readthedocs.org/projects/aioconsole/badge/?version=latest
+-   :target: http://aioconsole.readthedocs.io/
+-   :alt:
+-
+-.. image:: https://travis-ci.org/vxgmichel/aioconsole.svg?branch=master
+-   :target: https://travis-ci.org/vxgmichel/aioconsole
+-   :alt:
+-
+-.. image:: https://coveralls.io/repos/github/vxgmichel/aioconsole/badge.svg?branch=master
+-   :target: https://coveralls.io/github/vxgmichel/aioconsole?branch=master
+-   :alt:
+-
+-.. image:: https://img.shields.io/pypi/v/aioconsole.svg
+-   :target: https://pypi.python.org/pypi/aioconsole
+-   :alt:
+-
+-.. image:: https://img.shields.io/pypi/pyversions/aioconsole.svg
+-   :target: https://pypi.python.org/pypi/aioconsole
+-   :alt:
+-
+ Asynchronous console and interfaces for asyncio
+ 
+ aioconsole_ provides:

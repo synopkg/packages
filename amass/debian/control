@@ -1,0 +1,53 @@
+Source: amass
+Section: net
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 12),
+ golang-go (>= 1.13~), git, ca-certificates, dh-golang
+Standards-Version: 4.6.2
+Homepage: https://github.com/OWASP/Amass
+Vcs-Browser: https://gitlab.com/kalilinux/packages/amass
+Vcs-Git: https://gitlab.com/kalilinux/packages/amass.git
+XS-Go-Import-Path: github.com/OWASP/Amass
+
+Package: amass
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, amass-common (= ${source:Version})
+Built-Using: ${misc:Built-Using}
+Description: In-depth DNS Enumeration and Network Mapping
+ This package contains a tool to help information security professionals
+ perform network mapping of attack surfaces and perform external asset
+ discovery using open source information gathering and active reconnaissance
+ techniques.
+ .
+ Information Gathering Techniques Used:
+    - DNS: Basic enumeration, Brute forcing (upon request), Reverse DNS
+      sweeping, Subdomain name alterations/permutations, Zone transfers (upon
+      request)
+    - Scraping: Ask, Baidu, Bing, DNSDumpster, DNSTable, Dogpile, Exalead,
+      Google, HackerOne, IPv4Info, Netcraft, PTRArchive, Riddler, SiteDossier,
+      ViewDNS, Yahoo
+    - Certificates: Active pulls (upon request), Censys, CertSpotter, Crtsh,
+      Entrust, GoogleCT
+    - APIs: AlienVault, BinaryEdge, BufferOver, CIRCL, CommonCrawl, DNSDB,
+      HackerTarget, Mnemonic, NetworksDB, PassiveTotal, RADb, Robtex,
+      SecurityTrails, ShadowServer, Shodan, Spyse (CertDB & FindSubdomains),
+      Sublist3rAPI, TeamCymru, ThreatCrowd, Twitter, Umbrella, URLScan,
+      VirusTotal
+    - Web Archives: ArchiveIt, ArchiveToday, Arquivo, LoCArchive,
+      OpenUKArchive, UKGovArchive, Wayback
+ .
+ This package contains the command amass.
+
+Package: amass-common
+Architecture: all
+Depends: ${misc:Depends}
+Description: In-depth DNS Enumeration and Network Mapping
+ This package contains a tool to help information security professionals
+ perform network mapping of attack surfaces and perform external asset
+ discovery using open source information gathering and active reconnaissance
+ techniques.
+ .
+ This package contains several wordlists for performing DNS name alterations
+ and brute forcing.

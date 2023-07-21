@@ -1,0 +1,37 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Wed, 15 Sep 2021 17:14:01 +0200
+Subject: Fix FLAGS
+
+---
+ Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index c765cce..c23549a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -7,9 +7,9 @@
+ # <dragorn> i think thats all anyone does
+ # <dragorn> make is a twisted beast
+ ##################################
+-CFLAGS		= -g3 -Og -std=gnu11 \
++CFLAGS		+= -g3 -Og -std=gnu11 \
+ 		  -Wall -Wextra -Wpedantic -Wstrict-prototypes
+-CPPFLAGS	= -D_FILE_OFFSET_BITS=64
++CPPFLAGS	+= -D_FILE_OFFSET_BITS=64
+ LDLIBS		= -lpcap
+ 
+ PROG		= asleap genkeys
+@@ -18,10 +18,10 @@ COMMON_OBJS	= common.o des.o des-tables.o md4.o sha1.o utils.o
+ all: $(PROG)
+ 
+ asleap: asleap.o $(COMMON_OBJS)
+-	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+ 
+ genkeys: genkeys.o $(COMMON_OBJS)
+-	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
++	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
+ 
+ asleap.o: asleap.c asleap.h utils.h common.h version.h sha1.h radiotap.h \
+  byteswap.h ieee80211.h ieee8021x.h ietfproto.h

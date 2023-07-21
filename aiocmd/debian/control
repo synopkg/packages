@@ -1,0 +1,20 @@
+Source: aiocmd
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 12), dh-python, python3-setuptools, python3-all
+Standards-Version: 4.6.1
+Homepage: https://github.com/KimiNewt/aiocmd
+Vcs-Browser: https://gitlab.com/kalilinux/packages/aiocmd
+Vcs-Git: https://gitlab.com/kalilinux/packages/aiocmd.git
+Testsuite: autopkgtest-pkg-python
+
+Package: python3-aiocmd
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Asyncio-based automatic CLI creation tool using prompt-toolkit
+ This package contains asyncio-based automatic CLI creation tool using
+ prompt-toolkit.
+ .
+ This package installs the library for Python 3.

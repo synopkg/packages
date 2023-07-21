@@ -1,0 +1,42 @@
+#!/bin/sh
+
+set -e
+
+if [ `id -u` -ne 0 ]; then
+  echo "Error: $0 must be run as root" 1>&2
+  exit 1
+fi
+
+cd /usr/lib/arkime
+
+if [ ! -e /etc/arkime/ipv4-address-space.csv ]; then
+    FILENAME=$(mktemp)
+    wget -nv --no-check-certificate -O "$FILENAME" https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.csv
+    if [ -e $FILENAME ]; then
+	chmod a+r "$FILENAME"
+	mv "$FILENAME" "/etc/arkime/ipv4-address-space.csv"
+    else
+	echo "Failed to download https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.csv"
+	exit 1
+    fi
+fi
+
+# Run only on first run
+if [ ! -e /etc/arkime/config.ini ]; then
+    ./bin/Configure
+    if ! systemctl is-active --quiet elasticsearch; then
+	echo "To initialize the DB, elasticsearch must be reachable."
+	echo "Trying to start elasticsearch"
+        systemctl start elasticsearch
+    fi
+    PORT=$(awk -F'=' '/^elasticsearch=/ {print $2}' /etc/arkime/config.ini)
+    # TODO replace address with config
+    ./db/db.pl $PORT init
+    PASSWORD="$(openssl rand -base64 12)"
+    ./bin/arkime_add_user.sh admin "Admin User" $PASSWORD --admin
+fi
+
+echo "Please note the password for the user admin: $PASSWORD"
+sleep 3s
+
+arkime-start

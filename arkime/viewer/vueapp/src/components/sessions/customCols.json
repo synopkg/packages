@@ -1,0 +1,125 @@
+{
+  "info": {
+    "width": 250,
+    "dbField": "info",
+    "exp": "info",
+    "group": "general",
+    "friendlyName": "Info",
+    "help": "Information column that can be configured to include many fields",
+    "unsortable": true,
+    "children": [
+      "http.uri",
+      "email.src",
+      "email.dst",
+      "email.subject",
+      "email.filename",
+      "dns.host",
+      "cert.alt",
+      "irc.channel"
+    ]
+  },
+  "src": {
+    "width": 140,
+    "dbField": "src",
+    "exp": "src",
+    "group": "general",
+    "friendlyName": "Src IP / Country",
+    "help": "Source IP & Source Country",
+    "sortBy": "source.ip",
+    "children": [
+      "source.ip",
+      "source.geo.country_iso_code"
+    ]
+  },
+  "dst": {
+    "width": 140,
+    "dbField": "dst",
+    "exp": "dst",
+    "group": "general",
+    "friendlyName": "Dst IP / Country",
+    "help": "Destination IP & Destination Country",
+    "sortBy": "destination.ip",
+    "children": [
+      "destination.ip",
+      "destination.geo.country_iso_code"
+    ]
+  },
+  "dbby": {
+    "width": 120,
+    "dbField": "dbby",
+    "exp": "dbby",
+    "group": "general",
+    "friendlyName": "Databytes / Bytes",
+    "help": "Data Bytes (total number of data bytes sent AND received in a session) & Bytes (total number of raw bytes sent AND received in a session)",
+    "sortBy": "network.bytes",
+    "children": [
+      "totDataBytes",
+      "network.bytes"
+    ]
+  },
+  "pa1pa2": {
+    "width": 120,
+    "dbField": "pa1pa2",
+    "exp": "pa1pa2",
+    "group": "general",
+    "friendlyName": "Src Packets / Dst Packets",
+    "help": "Source Packets (total number of packets sent by source in a session) & Destination Packets (total number of packets sent by destination in a session)",
+    "sortBy": "totPackets",
+    "children": [
+      "source.packets",
+      "destination.packets"
+    ]
+  },
+  "db1db2": {
+    "width": 140,
+    "dbField": "db1db2",
+    "exp": "db1db2",
+    "group": "general",
+    "friendlyName": "Src Databytes / Dst Databytes",
+    "help": "Source Data Bytes (total number of data bytes sent by source in a session) & Destination Data Bytes (total number of data bytes sent by destination in a session)",
+    "sortBy": "totDataBytes",
+    "children": [
+      "client.bytes",
+      "server.bytes"
+    ]
+  },
+  "by1by2": {
+    "width": 120,
+    "dbField": "by1by2",
+    "exp": "by1by2",
+    "group": "general",
+    "friendlyName": "Src Bytes / Dst Bytes",
+    "help": "Source Bytes (total number of raw bytes sent by source in a session) & Destination Bytes (total number of raw bytes sent by destination in a session)",
+    "sortBy": "network.bytes",
+    "children": [
+      "source.bytes",
+      "destination.bytes"
+    ]
+  },
+  "db1by1": {
+    "width": 140,
+    "dbField": "db1by1",
+    "exp": "db1by1",
+    "group": "general",
+    "friendlyName": "Src Databytes / Src Bytes",
+    "help": "Source Data Bytes (total number of data bytes sent by source in a session) & Source Bytes (total number of raw bytes sent by source in a session)",
+    "sortBy": "client.bytes",
+    "children": [
+      "client.bytes",
+      "source.bytes"
+    ]
+  },
+  "db2by2": {
+    "width": 140,
+    "dbField": "db2by2",
+    "exp": "db2by2",
+    "group": "general",
+    "friendlyName": "Dst Databytes / Dst Bytes",
+    "help": "Destination Data Bytes (total number of data bytes sent by destination in a session) & Destination Bytes (total number of raw bytes sent by destination in a session)",
+    "sortBy": "server.bytes",
+    "children": [
+      "server.bytes",
+      "destination.bytes"
+    ]
+  }
+}

@@ -1,0 +1,39 @@
+Source: apispec-webframeworks
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 12),
+               dh-python,
+               python3-all,
+               python3-apispec,
+               python3-bottle,
+               python3-flask,
+               python3-mock,
+               python3-pytest,
+               python3-setuptools,
+               python3-tornado,
+               python3-yaml
+Standards-Version: 4.5.0
+Homepage: https://github.com/marshmallow-code/apispec-webframeworks
+Vcs-Browser: https://gitlab.com/kalilinux/packages/apispec-webframeworks
+Vcs-Git: https://gitlab.com/kalilinux/packages/apispec-webframeworks.git
+Testsuite: autopkgtest-pkg-python
+
+Package: python3-apispec-webframeworks
+Architecture: all
+Depends: python3-pkg-resources,
+         python3-yaml,
+         ${misc:Depends},
+         ${python3:Depends}
+Recommends: python3-bottle, python3-flask, python3-tornado
+Description: Web framework plugins for apispec (Python 3)
+ This package contains apispec plugins for integrating with various web
+ frameworks.
+ .
+ The included plugins are:
+    - apispec_webframeworks.bottle
+    - apispec_webframeworks.flask
+    - apispec_webframeworks.tornado
+ .
+ This package installs the library for Python 3.

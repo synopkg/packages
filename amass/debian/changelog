@@ -1,0 +1,404 @@
+amass (4.0.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 4.0.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 20 Jul 2023 09:43:32 +0200
+
+amass (3.23.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.23.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 22 Jun 2023 15:24:17 +0200
+
+amass (3.23.2-0kali1) kali-dev; urgency=medium
+
+  [ Steev Klimaszewski ]
+  * Disable buildvcs to avoid VCS stamping.
+  * Fix path to tests script for autopkgtest.
+
+  [ Daniel Ruiz de Alegría ]
+  * New upstream version 3.23.2
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Fri, 12 May 2023 09:27:41 +0200
+
+amass (3.23.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.23.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 29 Mar 2023 17:45:16 +0200
+
+amass (3.22.1-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Update standards version to 4.6.2, no changes needed.
+
+  [ Sophie Brun ]
+  * New upstream version 3.22.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 20 Mar 2023 17:56:36 +0100
+
+amass (3.21.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.21.2
+  * Fix lintian-overrides
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Mon, 19 Dec 2022 09:18:25 +0100
+
+amass (3.21.1-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Update lintian override info to new format on line 2-10, 2.
+  * Update standards version to 4.6.1, no changes needed.
+  * Update lintian override info to new format on line 2-10.
+
+  [ Daniel Ruiz de Alegría ]
+  * New upstream version 3.21.1
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Fri, 09 Dec 2022 14:41:17 +0100
+
+amass (3.20.0-0kali1) kali-dev; urgency=medium
+
+  * Override dh_dwz
+  * New upstream version 3.20.0
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Wed, 28 Sep 2022 12:42:29 +0200
+
+amass (3.19.3-0kali1) kali-dev; urgency=medium
+
+  [ Joseph O'Gorman ]
+  * Add autopkgtest
+  * Tweak based off comments from Arnaud
+  * Tweak based off comments from Arnaud
+  * Update autopkgtest
+
+  [ Daniel Ruiz de Alegría ]
+  * New upstream version 3.19.3
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Fri, 24 Jun 2022 10:55:29 +0200
+
+amass (3.19.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.19.2
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Sun, 17 Apr 2022 09:08:20 +0200
+
+amass (3.19.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.19.1
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Tue, 05 Apr 2022 12:01:19 +0200
+
+amass (3.19.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.19.0
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Wed, 30 Mar 2022 09:53:11 +0200
+
+amass (3.18.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.18.3
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Fri, 25 Mar 2022 13:22:06 +0100
+
+amass (3.17.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.17.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 09 Mar 2022 11:24:43 +0100
+
+amass (3.17.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.17.0
+  * Update debian/copyright
+  * Bump Standards-Version to 4.6.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 03 Mar 2022 15:22:00 +0100
+
+amass (3.16.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.16.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 18 Jan 2022 14:39:22 +0100
+
+amass (3.15.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.15.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 02 Dec 2021 10:18:47 +0100
+
+amass (3.15.1-0kali1) kali-dev; urgency=medium
+
+  [ Ben Wilson ]
+  * Remove template comment and switch spaces to tabs
+
+  [ Sophie Brun ]
+  * New upstream version 3.15.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 29 Nov 2021 11:11:33 +0100
+
+amass (3.15.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.15.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 12 Nov 2021 10:58:11 +0100
+
+amass (3.14.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.14.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 05 Nov 2021 09:29:24 +0100
+
+amass (3.14.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.14.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 26 Oct 2021 15:13:06 +0200
+
+amass (3.14.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.14.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 07 Oct 2021 09:07:02 +0200
+
+amass (3.14.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.14.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 04 Oct 2021 13:22:27 +0200
+
+amass (3.13.4-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.13.4
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 06 Aug 2021 11:17:58 +0200
+
+amass (3.13.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.13.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 12 Jul 2021 12:05:21 +0200
+
+amass (3.13.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.13.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 14 Jun 2021 15:47:49 +0200
+
+amass (3.13.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.13.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 31 May 2021 11:54:13 +0200
+
+amass (3.12.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.12.2
+  * New upstream version 3.12.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 11 May 2021 14:46:44 +0200
+
+amass (3.12.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.12.1
+  * Update lintian-overrides
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 19 Apr 2021 12:08:31 +0200
+
+amass (3.11.13-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.13
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 31 Mar 2021 08:53:15 +0200
+
+amass (3.11.12-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.12
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 29 Mar 2021 10:39:34 +0200
+
+amass (3.11.11-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.11
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 23 Mar 2021 08:55:46 +0100
+
+amass (3.11.10-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.10
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 17 Mar 2021 08:14:56 +0100
+
+amass (3.11.9-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.9
+  * Update debian/copyright
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 16 Mar 2021 10:47:49 +0100
+
+amass (3.11.8-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.8
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 04 Mar 2021 09:33:38 +0100
+
+amass (3.11.7-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.7
+  * Add missing XS-Go-Import-Path
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 03 Mar 2021 09:16:48 +0100
+
+amass (3.11.5-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.5
+  * Bump Standards-Version to 4.5.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 15 Feb 2021 14:34:36 +0100
+
+amass (3.11.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 08 Feb 2021 11:44:24 +0100
+
+amass (3.11.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 28 Jan 2021 09:08:29 +0100
+
+amass (3.11.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.11.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 18 Jan 2021 13:42:27 +0100
+
+amass (3.10.5-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.10.5
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 05 Oct 2020 11:06:59 +0200
+
+amass (3.10.4-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.10.4
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 24 Sep 2020 09:46:13 +0200
+
+amass (3.10.3-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Wrap long lines in changelog entries: 3.9.1-0kali1.
+
+  [ Sophie Brun ]
+  * New upstream version 3.10.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 10 Sep 2020 12:02:06 +0200
+
+amass (3.10.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.10.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 02 Sep 2020 15:04:15 +0200
+
+amass (3.9.1-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+  * Add missing ${misc:Built-Using} to Built-Using on amass.
+
+  [ Sophie Brun ]
+  * New upstream version 3.9.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 27 Aug 2020 12:05:05 +0200
+
+amass (3.8.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.8.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 31 Jul 2020 12:11:52 +0200
+
+amass (3.8.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.8.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 24 Jul 2020 10:28:43 +0200
+
+amass (3.8.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.8.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 22 Jul 2020 09:48:38 +0200
+
+amass (3.7.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.7.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 29 Jun 2020 14:27:16 +0200
+
+amass (3.7.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.7.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 15 Jun 2020 09:41:30 +0200
+
+amass (3.6.3-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.6.3
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 26 May 2020 13:52:31 +0200
+
+amass (3.6.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.6.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 25 May 2020 10:00:10 +0200
+
+amass (3.6.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.6.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 19 May 2020 09:30:50 +0200
+
+amass (3.6.0-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.6.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 18 May 2020 11:53:08 +0200
+
+amass (3.5.4-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.5.4
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 06 Apr 2020 11:46:17 +0200
+
+amass (3.4.4-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.4.4
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 18 Feb 2020 09:15:26 +0100
+
+amass (3.3.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 3.3.1
+  * Remove patch (we now have golang 1.13 in Kali)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 19 Nov 2019 09:47:08 +0100
+
+amass (3.1.8-0kali1) kali-dev; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Configure git-buildpackage for Kali
+  * Add GitLab's CI configuration file
+
+  [ Sophie Brun ]
+  * New upstream version 3.1.8 (see 5699 and 5714)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 19 Sep 2019 11:19:52 +0200
+
+amass (3.0.27-0kali1) kali-dev; urgency=medium
+
+  * Initial release (Closes: 4704)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 15 Aug 2019 14:16:53 +0200

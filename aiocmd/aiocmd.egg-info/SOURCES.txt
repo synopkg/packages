@@ -1,0 +1,10 @@
+README.md
+setup.py
+aiocmd/__init__.py
+aiocmd/aiocmd.py
+aiocmd/nested_completer.py
+aiocmd.egg-info/PKG-INFO
+aiocmd.egg-info/SOURCES.txt
+aiocmd.egg-info/dependency_links.txt
+aiocmd.egg-info/requires.txt
+aiocmd.egg-info/top_level.txt

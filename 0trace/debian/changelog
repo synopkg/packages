@@ -1,0 +1,54 @@
+0trace (0.01-3kali3) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Trim trailing whitespace.
+  * Update standards version to 4.6.1, no changes needed.
+  * Update watch file format to version 4.
+  [ Ben Wilson ]
+  * Update email address
+  [ Steev Klimaszewski ]
+  * d/watch: Add fake tracking info since there is none.
+  * Prepare for Release
+
+ -- Steev Klimaszewski <steev@kali.org>  Thu, 05 Jan 2023 12:15:32 -0600
+
+0trace (0.01-3kali2) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Bump debhelper from old 11 to 12.
+  * Set debhelper-compat version in Build-Depends.
+
+  [ Sophie Brun ]
+  * Update packaging
+  * Upload to update VCS fields
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 25 Sep 2020 18:25:37 +0200
+
+0trace (0.01-3kali1) kali-dev; urgency=medium
+
+  * Team upload.
+  * Add the kali marker in the version string as this is a Kali specific
+    package.
+  * Packaging cleanup.
+  * Clean up copyright file
+  * Pass build flags to gcc.
+
+ -- Raphaël Hertzog <hertzog@debian.org>  Mon, 27 Aug 2018 16:26:02 +0200
+
+0trace (0.01-3) kali; urgency=low
+
+  * Added usleep
+
+ -- Mati Aharoni <muts@kali.org>  Fri, 09 Aug 2013 19:42:43 -0400
+
+0trace (0.01-2) kali; urgency=low
+
+  * Remove desktop file
+
+ -- Mati Aharoni <muts@kali.org>  Fri, 14 Dec 2012 18:54:21 -0500
+
+0trace (0.01-1) kali; urgency=low
+
+  * Initial release
+
+ -- Devon Kearns <dookie@kali.org>  Tue, 21 Aug 2012 11:19:00 -0600

@@ -1,0 +1,11 @@
+altdns (1.0.2-0kali1) kali-dev; urgency=low
+
+  * New upstream release.
+
+ -- Kali Janitor <janitor@kali.org>  Fri, 18 Nov 2022 17:11:02 -0000
+
+altdns (1.0.0+git20200123-0kali1) kali-dev; urgency=medium
+
+  * Initial release (see 6500)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 06 Jan 2021 15:33:28 +0100

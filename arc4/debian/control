@@ -1,0 +1,32 @@
+Source: arc4
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-python3,
+ python3-setuptools,
+ python3-all-dev,
+Testsuite: autopkgtest-pkg-python
+Standards-Version: 4.6.2
+Homepage: https://github.com/manicmaniac/arc4
+Vcs-Browser: https://gitlab.com/kalilinux/packages/arc4
+Vcs-Git: https://gitlab.com/kalilinux/packages/arc4.git
+
+Package: python3-arc4
+Architecture: any
+Depends:
+ ${python3:Depends},
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: small and insanely fast ARCFOUR (RC4) cipher implementation (Python 3)
+ This package contains a small and insanely fast ARCFOUR (RC4) cipher
+ implementation of Python:
+     - Strongly focused on performance; entire source code is written in C.
+     - Thread-safety; you can improve further performance with multi-threading.
+     - Easily installable; single file with no dependency, pre-built wheels
+       provided.
+ .
+ This package installs the library for Python 3.

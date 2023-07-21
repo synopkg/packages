@@ -1,0 +1,184 @@
+airgeddon (11.20+ds-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 11.20+ds
+  * Refresh patches
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 13 Jun 2023 14:06:31 +0200
+
+airgeddon (11.11+ds-0kali2) kali-dev; urgency=medium
+
+  * Fix redirecting to /dev/null instead of deleting it.
+
+ -- Steev Klimaszewski <steev@kali.org>  Fri, 07 Apr 2023 11:08:07 -0500
+
+airgeddon (11.11+ds-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Update standards version to 4.6.2, no changes needed.
+
+  [ Sophie Brun ]
+  * New upstream version 11.11+ds
+  * Refresh patches
+  * Move to Recommends the dependencies for plugins (were in Suggests)
+  * Remove Disable-plugin-missing-dependencies.patch
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 07 Mar 2023 15:30:30 +0100
+
+airgeddon (11.10+ds-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 11.10+ds
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 23 Nov 2022 14:42:49 +0100
+
+airgeddon (11.02+ds-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 11.02+ds
+  * Bump Standards-Version to 4.6.1 (no change)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 03 Aug 2022 15:10:04 +0200
+
+airgeddon (11.01+ds-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 11.01+ds
+  * Refresh patches
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 25 Apr 2022 11:42:00 +0200
+
+airgeddon (11.0+ds-0kali1) kali-dev; urgency=medium
+
+  [ Ben Wilson ]
+  * Add executable to helper-script
+  * New helper-script format
+
+  [ Sophie Brun ]
+  * New upstream version 11.0+ds
+  * Bump Standards-Version to 4.6.0
+  * Add missing upstream metadata
+  * Fix small issues in French version
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 01 Feb 2022 09:26:33 +0100
+
+airgeddon (10.42+ds-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 10.42+ds
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 09 Aug 2021 16:17:49 +0200
+
+airgeddon (10.41+ds-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit.
+
+  [ Sophie Brun ]
+  * Fix debian/watch
+  * New upstream version 10.41+ds
+  * Replace dependency dsniff by dnsmasq
+  * Refresh patches
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 29 Mar 2021 12:00:27 +0200
+
+airgeddon (10.40+ds-0kali2) kali-dev; urgency=medium
+
+  * Disable the plugin missing depends with the parameter plugin_enabled
+    instead of removing code
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 20 Jan 2021 17:43:23 +0100
+
+airgeddon (10.40+ds-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 10.40+ds
+  * Remove obsolete ssltrip from Suggests
+  * Refresh patches
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 20 Jan 2021 15:24:30 +0100
+
+airgeddon (10.31+ds-0kali2) kali-dev; urgency=medium
+
+  * Add a patch to not propose the installation of missing tools
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 23 Dec 2020 14:04:58 +0100
+
+airgeddon (10.31+ds-0kali1) kali-dev; urgency=medium
+
+  * Update debian/* for Kali
+  * Refresh patch
+  * wrap-and-sort
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 16 Dec 2020 15:39:34 +0100
+
+airgeddon (10.31-kali1) kali-dev; urgency=medium
+
+  * Fixed error of no returning to DoS menu after fail on handshake capture for Evil Twin Captive portal attack
+  * Fixed error of no returning to Evil Twin main menu for some special situations on BeEF attack
+  * Removed deprecated hcxpcaptool, replaced by hcxpcapngtool
+  * Replaced old PMKID hash format to be used in hashcat, from 16800 to 22000
+  * Improved responsive behaviour of Evil Twin Captive Portal web page
+  * Compatibility extended to Bettercap 2.x (>=2.28) for sslstrip2/BeEF Evil Twin attack
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Mon, 14 Dec 2020 18:42:31 +0100
+
+airgeddon (10.30-kali1) kali-dev; urgency=medium
+
+  * Fixed error on internet interface selection menu when no number provided
+  * Fixed BeEF error due forced config file changes for some versions
+  * Fixed weird error for endless loop while capturing handshake on some devices
+  * Fixed terminal freeze problem when Ctrl+C pressed on path prompt
+  * Fixed Network Manager problem on fake AP used for Evil Twin attacks
+  * Arabic language translation added (Thank you to "darthvader-htb")
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Sat, 17 Oct 2020 22:40:42 +0300
+
+airgeddon (10.21-kali1) kali-dev; urgency=medium
+
+  * Improved hostapd-wpe config for some conflicting Linux
+  * Dockerfile migrated to Arch (ArchStrike image as base) to avoid Debian based missing packages problem
+  * After PMKID capturing, now additionally can transform captured file into .cap aircrack-ng file format
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Mon, 15 Jun 2020 23:59:51 +0900
+
+airgeddon (10.20-kali1) kali-dev; urgency=medium
+
+  * Big language strings array now loaded only once and printing system changed. Speed highly improved
+  * Fixed problem for handshake detection on captured files containing only handshake (without pmkid)
+  * Missing dependencies plugin adapted to install some special (missing on repos due retirement) packages
+  * Dockerfile adapted to work flawlessly with the deprecated retired packages
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Wed, 06 May 2020 20:58:14 +0200
+
+airgeddon (10.11-kali1) kali-dev; urgency=medium
+
+  * Fixed error on PMKID capturing due hcxdumptool different params for different versions
+  * Added feature to detect captured PMKID while capturing Handshake
+  * Integration of PMKID on Evil Twin Captive Portal
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Fri, 27 Mar 2020 15:13:38 +0900
+
+airgeddon (10.10-kali1) kali-dev; urgency=medium
+
+  * PMKID capture feature
+  * PMKID offline decryption feature
+  * Tested compatibility with Manjaro Linux
+  * Fixed error on auto_update plugin on some Linux distros
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Tue, 24 Mar 2020 10:36:12 +0800
+
+airgeddon (10.01-kali1) kali-dev; urgency=medium
+
+  * Removed deprecated ifconfig and iwconfig commands and dependencies
+  * Fixed error on enterprise certificates validation
+  * Added autoselection for secondary interface if only one existing
+  * Airmon compatibility check system refactored
+  * Fixed error in default paths trophy files for ettercap/bettercap
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Wed, 29 Jan 2020 11:58:23 +0300
+
+airgeddon (10.0-kali1) kali-dev; urgency=medium
+
+  * Added plugins system
+  * Added example plugin: Missing dependencies auto-installation for some distros (Kali, Parrot, BlackArch)
+  * Improvements for Evil Twin on captive portal detection for newer devices
+  * Missing 5GHz channels added
+  * Github pull request template added and issue templates updated
+  * Fixed error on hex2ascii conversion for some WEP passwords
+
+ -- v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>  Sat, 21 Dec 2019 13:03:47 +0100

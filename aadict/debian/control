@@ -1,0 +1,24 @@
+Source: aadict
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 13), dh-python, python3-setuptools, python3-all, python3-six, python3-coverage, python3-nose
+Standards-Version: 4.6.2
+Homepage: https://github.com/metagriffin/aadict
+Vcs-Browser: https://gitlab.com/kalilinux/packages/aadict
+Vcs-Git: https://gitlab.com/kalilinux/packages/aadict.git
+Testsuite: autopkgtest-pkg-python
+Rules-Requires-Root: no
+
+Package: python3-aadict
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Auto-Attribute Dict (Python 3)
+ This package contains a Python dict sub-class that allows attribute-style
+ access to dict items, e.g. d.foo is equivalent to d['foo']. aadict also
+ provides a few other helpful methods, such as pick and omit methods. Also, an
+ aadict is more call chaining friendly (e.g. methods such as update return
+ self) and is pickle'able.
+ .
+ This package installs the library for Python 3.

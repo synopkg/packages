@@ -1,0 +1,11 @@
+aesedb (0.1.3+git20230221.9b7c468-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 0.1.3+git20230221.9b7c468
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 22 Mar 2023 15:34:04 +0100
+
+aesedb (0.1.3-0kali1) kali-dev; urgency=medium
+
+  * Initial release.
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 20 Feb 2023 14:48:22 +0100

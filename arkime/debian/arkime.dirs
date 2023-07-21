@@ -1,0 +1,5 @@
+lib/systemd/system
+etc/arkime
+usr/lib/arkime
+var/lib/arkime/logs
+var/lib/arkime/raw

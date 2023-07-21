@@ -1,0 +1,24 @@
+apispec-webframeworks (0.5.2-0kali2) kali-dev; urgency=medium
+
+  [ Sophie Brun ]
+  * Configure git-buildpackage for Kali
+  * Add GitLab's CI configuration file
+
+  [ Kali Janitor ]
+  * Trim trailing whitespace.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository, Repository-Browse.
+
+  [ Ben Wilson ]
+  * Remove template comment and switch spaces to tabs
+
+  [ Steev Klimaszewski ]
+  * d/rules: Update copy rule to python 3.11
+  * Prepare for Release
+
+ -- Steev Klimaszewski <steev@kali.org>  Sun, 09 Jul 2023 02:55:30 -0500
+
+apispec-webframeworks (0.5.2-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 09 Jun 2020 10:00:30 +0200

@@ -1,0 +1,33 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Thu, 22 Dec 2022 12:02:43 +0100
+Subject: Remove requirements of elasticsearch and opensearch in *.service
+
+---
+ release/arkimecapture.systemd.service | 2 +-
+ release/arkimeviewer.systemd.service  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/release/arkimecapture.systemd.service b/release/arkimecapture.systemd.service
+index 51a2076..8b73a39 100644
+--- a/release/arkimecapture.systemd.service
++++ b/release/arkimecapture.systemd.service
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=Arkime Capture
+-After=network.target opensearch elasticsearch
++After=network.target
+ 
+ [Service]
+ Type=simple
+diff --git a/release/arkimeviewer.systemd.service b/release/arkimeviewer.systemd.service
+index 2f9cddf..203de29 100644
+--- a/release/arkimeviewer.systemd.service
++++ b/release/arkimeviewer.systemd.service
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=Arkime Viewer
+-After=network.target opensearch elasticsearch
++After=network.target
+ 
+ [Service]
+ Type=simple

@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE = 1
+
+include /usr/share/dpkg/architecture.mk
+include /usr/share/dpkg/buildflags.mk
+include /usr/share/rustc/architecture.mk
+
+export PYBUILD_NAME=aardwolf
+export CARGO_HOME=$(CURDIR)/debian/cargo_home
+export CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
+export DEB_HOST_RUST_TYPE DEB_HOST_GNU_TYPE
+export DEB_CARGO_CRATE=rlers_0.0.1
+
+CARGO=/usr/share/cargo/bin/cargo
+
+%:
+	dh $@ --buildsystem=pybuild
+
+execute_after_dh_auto_configure:
+	mkdir $(CURDIR)/debian/vendor
+	# link-from-system must be the 3rd arg (see
+	# /usr/share/cargo/bin/cargo)
+	$(CARGO) prepare-debian $(CURDIR)/debian/vendor --link-from-system --manifest-path aardwolf/utils/rlers/Cargo.toml
+
+execute_after_dh_clean:
+	rm -rf $(CURDIR)/debian/vendor

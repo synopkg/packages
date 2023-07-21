@@ -1,0 +1,27 @@
+aiomultiprocess (0.9.0-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * New upstream release.
+
+  [ Sophie Brun ]
+  * Add missing build-dep
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 09 Dec 2022 14:23:27 +0100
+
+aiomultiprocess (0.8.0-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Trim trailing whitespace.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+  [ Sophie Brun ]
+  * New upstream version 0.8.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 11 Sep 2020 08:18:03 +0200
+
+aiomultiprocess (0.7.0-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 07 Jul 2020 14:21:37 +0200

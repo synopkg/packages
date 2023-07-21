@@ -1,0 +1,10 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+	
+override_dh_auto_build:
+	gcc -o usleep $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) debian/usleep.c
+	gcc -o sendprobe $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) sendprobe.c

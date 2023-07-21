@@ -1,0 +1,205 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Fri, 16 Oct 2020 16:49:19 +0200
+Subject: Change shebang to use python3
+
+---
+ npyscreen/__init__.py              | 2 +-
+ npyscreen/fmActionForm.py          | 2 +-
+ npyscreen/fmForm.py                | 2 +-
+ npyscreen/fmPopup.py               | 2 +-
+ npyscreen/muMenu.py                | 2 +-
+ npyscreen/npyspmfuncs.py           | 2 +-
+ npyscreen/wgFormControlCheckbox.py | 2 +-
+ npyscreen/wgbutton.py              | 2 +-
+ npyscreen/wgcheckbox.py            | 2 +-
+ npyscreen/wgeditmultiline.py       | 2 +-
+ npyscreen/wgmultiline.py           | 2 +-
+ npyscreen/wgmultilinetree.py       | 2 +-
+ npyscreen/wgmultiselect.py         | 2 +-
+ npyscreen/wgpassword.py            | 2 +-
+ npyscreen/wgslider.py              | 2 +-
+ npyscreen/wgtextbox.py             | 2 +-
+ npyscreen/wgtitlefield.py          | 2 +-
+ npyscreen/wgwidget.py              | 2 +-
+ 18 files changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/npyscreen/__init__.py b/npyscreen/__init__.py
+index 91ecdb4..6b3b736 100755
+--- a/npyscreen/__init__.py
++++ b/npyscreen/__init__.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ 
+ from .globals                    import DEBUG, DISABLE_RESIZE_SYSTEM
+ 
+diff --git a/npyscreen/fmActionForm.py b/npyscreen/fmActionForm.py
+index 2c78c82..224e1b4 100755
+--- a/npyscreen/fmActionForm.py
++++ b/npyscreen/fmActionForm.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import weakref
+ from . import fmForm
+ from . import wgwidget as widget
+diff --git a/npyscreen/fmForm.py b/npyscreen/fmForm.py
+index 5279298..8b9198a 100755
+--- a/npyscreen/fmForm.py
++++ b/npyscreen/fmForm.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ from . import proto_fm_screen_area
+ from . import wgwidget  as widget
+ from . import wgbutton  as button
+diff --git a/npyscreen/fmPopup.py b/npyscreen/fmPopup.py
+index e2bbb08..40a6309 100755
+--- a/npyscreen/fmPopup.py
++++ b/npyscreen/fmPopup.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ # encoding: utf-8
+ 
+ from . import fmForm
+diff --git a/npyscreen/muMenu.py b/npyscreen/muMenu.py
+index b765b27..cb6b148 100755
+--- a/npyscreen/muMenu.py
++++ b/npyscreen/muMenu.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ # encoding: utf-8
+ 
+ import sys
+diff --git a/npyscreen/npyspmfuncs.py b/npyscreen/npyspmfuncs.py
+index 08cd947..13c0094 100755
+--- a/npyscreen/npyspmfuncs.py
++++ b/npyscreen/npyspmfuncs.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ 
+ import curses
+ import os
+diff --git a/npyscreen/wgFormControlCheckbox.py b/npyscreen/wgFormControlCheckbox.py
+index 7575cdc..74823c4 100755
+--- a/npyscreen/wgFormControlCheckbox.py
++++ b/npyscreen/wgFormControlCheckbox.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env pyton
++#!/usr/bin/env python3
+ 
+ from . import wgcheckbox
+ import weakref
+diff --git a/npyscreen/wgbutton.py b/npyscreen/wgbutton.py
+index 95a067e..7375e61 100755
+--- a/npyscreen/wgbutton.py
++++ b/npyscreen/wgbutton.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import curses
+ import locale
+ import weakref
+diff --git a/npyscreen/wgcheckbox.py b/npyscreen/wgcheckbox.py
+index 1c9b0bc..a3a838d 100755
+--- a/npyscreen/wgcheckbox.py
++++ b/npyscreen/wgcheckbox.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ 
+ from .wgtextbox   import Textfield
+ from .wgwidget    import Widget
+diff --git a/npyscreen/wgeditmultiline.py b/npyscreen/wgeditmultiline.py
+index 2b835f5..c577282 100755
+--- a/npyscreen/wgeditmultiline.py
++++ b/npyscreen/wgeditmultiline.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ from . import wgwidget    as widget
+ from . import npysGlobalOptions as GlobalOptions
+ import locale
+diff --git a/npyscreen/wgmultiline.py b/npyscreen/wgmultiline.py
+index 4f3e4d7..a1a5694 100755
+--- a/npyscreen/wgmultiline.py
++++ b/npyscreen/wgmultiline.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import copy
+ from . import wgwidget       as widget
+ from . import wgtextbox      as textbox
+diff --git a/npyscreen/wgmultilinetree.py b/npyscreen/wgmultilinetree.py
+index 3894b61..250f2c5 100755
+--- a/npyscreen/wgmultilinetree.py
++++ b/npyscreen/wgmultilinetree.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import curses
+ import weakref
+ 
+diff --git a/npyscreen/wgmultiselect.py b/npyscreen/wgmultiselect.py
+index 5bd7bf9..81600a8 100755
+--- a/npyscreen/wgmultiselect.py
++++ b/npyscreen/wgmultiselect.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ from . import wgmultiline    as multiline
+ from . import wgselectone    as selectone
+ from . import wgcheckbox     as checkbox
+diff --git a/npyscreen/wgpassword.py b/npyscreen/wgpassword.py
+index 6ca77a7..5f668e9 100755
+--- a/npyscreen/wgpassword.py
++++ b/npyscreen/wgpassword.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import curses
+ from .wgtextbox import Textfield
+ from . import wgtitlefield as titlefield
+diff --git a/npyscreen/wgslider.py b/npyscreen/wgslider.py
+index 4c49015..c2a8865 100755
+--- a/npyscreen/wgslider.py
++++ b/npyscreen/wgslider.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import curses
+ from . import wgwidget     as widget
+ from . import wgtitlefield as titlefield
+diff --git a/npyscreen/wgtextbox.py b/npyscreen/wgtextbox.py
+index bd3493f..17c8574 100755
+--- a/npyscreen/wgtextbox.py
++++ b/npyscreen/wgtextbox.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import curses
+ import curses.ascii
+ import sys
+diff --git a/npyscreen/wgtitlefield.py b/npyscreen/wgtitlefield.py
+index f29c3d0..03ebbf5 100755
+--- a/npyscreen/wgtitlefield.py
++++ b/npyscreen/wgtitlefield.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import curses
+ import weakref
+ from . import wgtextbox  as textbox
+diff --git a/npyscreen/wgwidget.py b/npyscreen/wgwidget.py
+index b215989..5e386ba 100755
+--- a/npyscreen/wgwidget.py
++++ b/npyscreen/wgwidget.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ import codecs
+ import copy
+ import sys

@@ -1,0 +1,3 @@
+Tests: runtest.sh
+Depends: @, python3-psycopg2
+Restrictions: superficial, allow-stderr

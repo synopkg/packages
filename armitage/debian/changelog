@@ -1,0 +1,189 @@
+armitage (20220123-0kali4) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Update lintian override info to new format on line 1, 2.
+  * Set upstream metadata fields: Repository-Browse.
+  * Update standards version to 4.6.1, no changes needed.
+  * Set upstream metadata fields: Repository.
+  * Fix java version for package building
+
+  [ Daniel Ruiz de Alegría ]
+  * Fix java dependency
+
+ -- Daniel Ruiz de Alegría <daniruiz@kali.org>  Thu, 08 Dec 2022 19:55:34 +0100
+
+armitage (20220123-0kali3) kali-dev; urgency=medium
+
+  * Force use of java 11
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 21 Jun 2022 14:54:25 +0200
+
+armitage (20220123-0kali2) kali-experimental; urgency=medium
+
+  * Add a patch to use recent version of Java postgresql: we need a version
+    supporting scram-sha-256 (used by default in Debian since postgresql 14)
+  * Update instructions in readme.txt for the latest release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 29 Mar 2022 11:24:29 +0200
+
+armitage (20220123-0kali1) kali-experimental; urgency=medium
+
+  [ Kali Janitor ]
+  * Update renamed lintian tag names in lintian overrides.
+
+  [ Ben Wilson ]
+  * Update email address
+  * Update email address
+  * New helper-script format
+
+  [ Sophie Brun ]
+  * New upstream version 20220123
+  * Refresh patches
+  * Update debian/copyright
+  * Update installation for new version
+  * Update build for new version
+  * Bump Standards-Version to 4.6.0
+  * Update doc installation
+  * Update debian/watch
+  * Update upstream repo
+  * Add a patch to remove mention of old metasploit versions
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 27 Jan 2022 15:24:32 +0100
+
+armitage (20160709+ds1-0kali2) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Use secure copyright file specification URI.
+  * Bump debhelper from old 11 to 12.
+  * Set debhelper-compat version in Build-Depends.
+
+  [ Raphaël Hertzog ]
+  * Fix watch file
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 29 Jan 2021 15:54:11 +0100
+
+armitage (20160709+ds1-0kali1) kali-dev; urgency=medium
+
+  * Import new snapshot from Git
+  * Add a patch to fix meterpreter.sl error (see 4968)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 11 Sep 2018 11:56:50 +0200
+
+armitage (20150812-1kali2) kali-dev; urgency=medium
+
+  * Add a patch to be compatible with update of openjdk (see bug 4006)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 11 May 2017 09:48:51 +0200
+
+armitage (20150812-1kali1) kali-dev; urgency=low
+
+  * Upstream update, fixes #2494
+
+ -- Mati Aharoni <muts@kali.org>  Wed, 12 Aug 2015 20:53:18 -0400
+
+armitage (20141120-0kali1) kali-dev; urgency=medium
+
+  * Replace metasploit dependency by metasploit-framework.
+  * Fix watch file.
+  * Clean up packaging:
+    - switch to debhelper compat 9
+    - drop useless files
+    - simplify helper scripts
+
+ -- Raphaël Hertzog <hertzog@debian.org>  Tue, 21 Jul 2015 14:39:25 +0200
+
+armitage (20141120-0kali0) kali; urgency=medium
+
+  * Imported new upstream release (Closes: 0001874)
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 20 Nov 2014 11:57:31 -0700
+
+armitage (20141114-0kali0) kali; urgency=medium
+
+  * Imported new upstream release
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 20 Nov 2014 11:49:15 -0700
+
+armitage (20140818-0kali2) kali; urgency=medium
+
+  * Added lintian overrides
+
+ -- Devon Kearns <dookie@kali.org>  Mon, 18 Aug 2014 13:19:10 -0600
+
+armitage (20140818-0kali1) kali; urgency=low
+
+  * Imported new upstream release
+
+ -- Devon Kearns <dookie@kali.org>  Mon, 18 Aug 2014 04:58:43 -0600
+
+armitage (20140716-0kali1) kali; urgency=low
+
+  * Imported new upstream release (Closes: 0001573)
+
+ -- Devon Kearns <dookie@kali.org>  Wed, 16 Jul 2014 12:11:08 -0600
+
+armitage (20140515-0kali1) kali; urgency=low
+
+  * Imported new upstream release (Closes: 0001242)
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 15 May 2014 12:26:54 -0600
+
+armitage (20140423-0kali1) kali; urgency=low
+
+  * Imported new upstream release
+
+ -- Devon Kearns <dookie@kali.org>  Wed, 23 Apr 2014 11:03:50 -0600
+
+armitage (20140227-0kali1) kali; urgency=low
+
+  * Imported new upstream release (Closes: 0001068)
+
+ -- Devon Kearns <dookie@kali.org>  Fri, 28 Feb 2014 11:24:51 -0700
+
+armitage (20131121-1kali12) kali; urgency=low
+
+  * Fixed helper script for ARM
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 30 Jan 2014 08:47:17 -0700
+
+armitage (20131121-1kali1) kali; urgency=low
+
+  * Added watch file (Closes: 0000851)
+
+ -- Devon Kearns <dookie@kali.org>  Tue, 07 Jan 2014 15:53:48 -0700
+
+armitage (20131121-1kali0) kali; urgency=low
+
+  * Imported new upstream release (Closes: 0000764)
+
+ -- Devon Kearns <dookie@kali.org>  Wed, 11 Dec 2013 07:39:33 -0700
+
+armitage (20130821-1kali2) kali; urgency=low
+
+  * Updated the helper script to use java 1.7 (Closes: 0000640)
+
+ -- Devon Kearns <dookie@kali.org>  Fri, 11 Oct 2013 08:15:04 -0600
+
+armitage (20130821-1kali1) kali; urgency=low
+
+  * Added a helper script for teamserver and added post files to retain data
+
+ -- Devon Kearns <dookie@kali.org>  Fri, 23 Aug 2013 08:07:44 -0600
+
+armitage (20130821-1kali0) kali; urgency=low
+
+  * Imported new upstream release  (Closes: 0000533)
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 22 Aug 2013 11:14:26 -0600
+
+armitage (041013-1kali0) kali; urgency=low
+
+  * Imported new upstream release
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 11 Apr 2013 16:45:02 -0600
+
+armitage (030613-1kali0) kali; urgency=low
+
+  * Initial release
+
+ -- Devon Kearns <dookie@kali.org>  Wed, 13 Mar 2013 02:49:49 -0600

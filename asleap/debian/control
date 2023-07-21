@@ -1,0 +1,18 @@
+Source: asleap
+Section: net
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Devon Kearns <dookie@kali.org>,
+           Mati Aharoni <muts@kali.org>,
+           Sophie Brun <sophie@offensive-security.com>,
+Build-Depends: debhelper-compat (= 13), libpcap-dev
+Standards-Version: 4.6.2
+Homepage: https://www.willhackforsushi.com/
+Vcs-Git: https://gitlab.com/kalilinux/packages/asleap.git
+Vcs-Browser: https://gitlab.com/kalilinux/packages/asleap
+
+Package: asleap
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A tool for exploiting Cisco LEAP networks
+ Demonstrates a serious deficiency in proprietary Cisco LEAP networks.

@@ -1,0 +1,37 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 20 Oct 2020 14:34:42 +0200
+Subject: Write phones.db in ~/.local/apple-bleee
+
+The phones.db file is created inside the hash2phone directory. Change
+this to create it in ~/.local/apple-bleee
+---
+ hash2phone/hashmap_gen_sqlite.py | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/hash2phone/hashmap_gen_sqlite.py b/hash2phone/hashmap_gen_sqlite.py
+index 65b0089..b82c237 100644
+--- a/hash2phone/hashmap_gen_sqlite.py
++++ b/hash2phone/hashmap_gen_sqlite.py
+@@ -9,9 +9,11 @@
+ from hashlib import sha256
+ import sqlite3
+ import sys
++import os
+ 
+ 
+-db_file = 'phones.db'
++db_path = os.path.expanduser("~/.local/apple-blee")
++db_file = os.path.join(db_path, 'phones.db')
+ sql_drop = 'DROP TABLE IF EXISTS map'
+ sql_create = 'CREATE TABLE map (id integer primary key, hash text, phone integer)' # saving up to 20% with integer for phones
+ sql_insert = 'INSERT INTO map (hash, phone) VALUES (?, ?)'
+@@ -32,6 +34,9 @@ You can as well use space or hyphen char as you wish, like:
+ ''' % (progname, progname, progname))
+     exit(0)
+ 
++if not os.path.exists(db_path):
++    os.makedirs(db_path, exist_ok=True)
++
+ conn = sqlite3.connect(db_file)
+ c = conn.cursor()
+ 

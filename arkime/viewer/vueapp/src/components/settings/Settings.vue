@@ -1,0 +1,3096 @@
+<template>
+
+  <!-- settings content -->
+  <div class="settings-page">
+
+    <!-- sub navbar -->
+    <div class="sub-navbar">
+      <span class="sub-navbar-title">
+        <span class="fa-stack">
+          <span class="fa fa-cogs fa-stack-1x"></span>
+          <span class="fa fa-square-o fa-stack-2x"></span>
+        </span>&nbsp;
+        <span>
+          Settings
+          <span v-if="displayName">
+            for {{ displayName }}
+          </span>
+        </span>
+      </span>
+      <div class="pull-right small toast-container">
+        <moloch-toast
+          class="mr-1"
+          :message="msg"
+          :type="msgType"
+          :done="messageDone">
+        </moloch-toast>
+      </div>
+    </div> <!-- /sub navbar -->
+
+    <!-- loading overlay -->
+    <moloch-loading
+      v-if="loading">
+    </moloch-loading> <!-- /loading overlay -->
+
+    <!-- page error -->
+    <moloch-error
+      v-if="error"
+      :message-html="error"
+      class="settings-error">
+    </moloch-error> <!-- /page error -->
+
+    <!-- content -->
+    <div class="settings-content row"
+       v-if="!loading && !error && settings">
+
+      <!-- navigation -->
+      <div class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-xs-12"
+        role="tablist"
+        aria-orientation="vertical">
+        <div class="nav flex-column nav-pills">
+          <a class="nav-link cursor-pointer"
+            @click="openView('general')"
+            :class="{'active':visibleTab === 'general'}">
+            <span class="fa fa-fw fa-cog">
+            </span>&nbsp;
+            General
+          </a>
+          <a class="nav-link cursor-pointer"
+            @click="openView('col')"
+            :class="{'active':visibleTab === 'col'}">
+            <span class="fa fa-fw fa-columns">
+            </span>&nbsp;
+            Column Configs
+          </a>
+          <a class="nav-link cursor-pointer"
+            @click="openView('spiview')"
+            :class="{'active':visibleTab === 'spiview'}">
+            <span class="fa fa-fw fa-eyedropper">
+            </span>&nbsp;
+            SPI View Configs
+          </a>
+          <a class="nav-link cursor-pointer"
+            @click="openView('theme')"
+            :class="{'active':visibleTab === 'theme'}">
+            <span class="fa fa-fw fa-paint-brush">
+            </span>&nbsp;
+            Themes
+          </a>
+          <a v-if="!multiviewer && !disablePassword"
+            class="nav-link cursor-pointer"
+            @click="openView('password')"
+            :class="{'active':visibleTab === 'password'}">
+            <span class="fa fa-fw fa-lock">
+            </span>&nbsp;
+            Password
+          </a>
+          <hr class="hr-small nav-separator" />
+          <a class="nav-link cursor-pointer"
+            @click="openView('views')"
+            :class="{'active':visibleTab === 'views'}">
+            <span class="fa fa-fw fa-eye">
+            </span>&nbsp;
+            Views
+          </a>
+          <a v-if="!multiviewer || (multiviewer && hasUsersES)"
+            class="nav-link cursor-pointer"
+            @click="openView('shortcuts')"
+            :class="{'active':visibleTab === 'shortcuts'}">
+            <span class="fa fa-fw fa-list">
+            </span>&nbsp;
+            Shortcuts
+          </a>
+          <a v-if="!multiviewer"
+            class="nav-link cursor-pointer"
+            @click="openView('cron')"
+            :class="{'active':visibleTab === 'cron'}">
+            <span class="fa fa-fw fa-search">
+            </span>&nbsp;
+            Periodic Queries
+          </a>
+          <a class="nav-link cursor-pointer"
+            v-has-role="{user:user,roles:'arkimeAdmin'}"
+            @click="openView('notifiers')"
+            :class="{'active':visibleTab === 'notifiers'}">
+            <span class="fa fa-fw fa-bell">
+            </span>&nbsp;
+            Notifiers
+          </a>
+        </div>
+      </div> <!-- /navigation -->
+
+      <div class="col-xl-10 col-lg-9 col-md-9 col-sm-8 col-xs-12 settings-right-panel">
+
+        <!-- general settings -->
+        <form class="form-horizontal"
+          v-if="visibleTab === 'general'"
+          id="general">
+
+          <h3>
+            General
+
+            <template class="form-group row justify-content-md-center">
+              <button type="button"
+                title="Reset settings to default"
+                @click="resetSettings"
+                class="btn btn-theme-quaternary btn-sm pull-right ml-1">
+                <span class="fa fa-repeat">
+                </span>&nbsp;
+                Reset General Settings
+              </button>
+            </template>
+          </h3>
+
+          <hr>
+
+          <!-- timezone -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Timezone Format
+            </label>
+            <div class="col-sm-9">
+              <div class="btn-group">
+                <b-form-group>
+                  <b-form-radio-group
+                    size="sm"
+                    buttons
+                    @change="updateTimezone"
+                    v-model="settings.timezone">
+                    <b-radio value="local"
+                      class="btn-radio">
+                      Local
+                    </b-radio>
+                    <b-radio value="localtz"
+                      class="btn-radio">
+                      Local + Timezone
+                    </b-radio>
+                    <b-radio value="gmt"
+                      class="btn-radio">
+                      UTC
+                    </b-radio>
+                  </b-form-radio-group>
+                </b-form-group>
+              </div>
+              <div class="btn-group">
+                <b-form-group>
+                  <b-form-checkbox
+                    button
+                    size="sm"
+                    v-b-tooltip.hover
+                    class="btn-checkbox"
+                    @change="updateMs"
+                    v-model="settings.ms"
+                    :active="settings.ms"
+                    title="(for session and packet timestamps only)">
+                    milliseconds
+                  </b-form-checkbox>
+                </b-form-group>
+              </div>
+              <label class="ml-4 font-weight-bold text-theme-primary">
+                {{ date | timezoneDateString(settings.timezone, settings.ms) }}
+              </label>
+            </div>
+          </div> <!-- /timezone -->
+
+          <!-- session detail format -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Session Detail Format
+            </label>
+            <div class="col-sm-9">
+              <b-form-group>
+                <b-form-radio-group
+                  size="sm"
+                  buttons
+                  @change="updateSessionDetailFormat"
+                  v-model="settings.detailFormat">
+                  <b-radio value="last"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    Last Used
+                  </b-radio>
+                  <b-radio value="natural"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    Natural
+                  </b-radio>
+                  <b-radio value="ascii"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    ASCII
+                  </b-radio>
+                  <b-radio value="utf8"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    UTF-8
+                  </b-radio>
+                  <b-radio value="hex"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    Hex
+                  </b-radio>
+                </b-form-radio-group>
+              </b-form-group>
+            </div>
+          </div> <!-- /session detail format -->
+
+          <!-- number of packets -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Number of Packets
+            </label>
+            <div class="col-sm-9">
+              <b-form-group>
+                <b-form-radio-group
+                  size="sm"
+                  buttons
+                  @change="updateNumberOfPackets"
+                  v-model="settings.numPackets">
+                  <b-radio value="last"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    Last Used
+                  </b-radio>
+                  <b-radio value="50"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    50
+                  </b-radio>
+                  <b-radio value="200"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    200
+                  </b-radio>
+                  <b-radio value="500"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    500
+                  </b-radio>
+                  <b-radio value="1000"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    1,000
+                  </b-radio>
+                  <b-radio value="2000"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    2,000
+                  </b-radio>
+                </b-form-radio-group>
+              </b-form-group>
+            </div>
+          </div> <!-- /number of packets -->
+
+          <!-- show packet timestamp -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Show Packet Info
+            </label>
+            <div class="col-sm-9">
+              <b-form-group>
+                <b-form-radio-group
+                  size="sm"
+                  buttons
+                  @change="updateShowPacketTimestamps"
+                  v-model="settings.showTimestamps">
+                  <b-radio value="last"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    Last Used
+                  </b-radio>
+                  <b-radio value="on"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    On
+                  </b-radio>
+                  <b-radio value="off"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    Off
+                  </b-radio>
+                </b-form-radio-group>
+              </b-form-group>
+            </div>
+          </div> <!-- /show packet timestamp -->
+
+          <!-- issue query on initial page load -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Issue Query on Page Load
+            </label>
+            <div class="col-sm-9">
+              <b-form-group>
+                <b-form-radio-group
+                  buttons
+                  size="sm"
+                  @change="updateQueryOnPageLoad"
+                  v-model="settings.manualQuery">
+                  <b-radio
+                    value="false"
+                    class="btn-radio"
+                    v-b-tooltip.hover
+                    title="Always issue a query on page load">
+                    Yes
+                  </b-radio>
+                  <b-radio
+                    value="true"
+                    class="btn-radio"
+                    v-b-tooltip.hover
+                    title="Only issue a query if there is a search expression">
+                    If Query
+                  </b-radio>
+                </b-form-radio-group>
+              </b-form-group>
+            </div>
+          </div> <!-- /issue query on initial page load -->
+
+          <!-- session sort -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Sort Sessions By
+            </label>
+            <div class="col-sm-6">
+              <select class="form-control form-control-sm"
+                v-model="settings.sortColumn"
+                @change="update">
+                <option value="last">Last Used</option>
+                <option v-for="field in sortableColumns"
+                  :key="field.dbField"
+                  :value="field.dbField">
+                  {{ field.friendlyName }}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <b-form-group>
+                <b-form-radio-group
+                  v-if="settings.sortColumn !== 'last'"
+                  size="sm"
+                  buttons
+                  @change="updateSortDirection"
+                  v-model="settings.sortDirection">
+                  <b-radio value="asc"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    ascending
+                  </b-radio>
+                  <b-radio value="desc"
+                    v-b-tooltip.hover
+                    class="btn-radio">
+                    descending
+                  </b-radio>
+                </b-form-radio-group>
+              </b-form-group>
+            </div>
+          </div> <!-- /session sort -->
+
+          <!-- default spi graph -->
+          <div v-if="fields && settings.spiGraph"
+            class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Default SPI Graph
+            </label>
+            <div class="col-sm-6">
+              <moloch-field-typeahead
+                :dropup="true"
+                :fields="fields"
+                query-param="field"
+                :initial-value="spiGraphTypeahead"
+                @fieldSelected="spiGraphFieldSelected">
+              </moloch-field-typeahead>
+            </div>
+            <div class="col-sm-3">
+              <h4 v-if="spiGraphField">
+                <label class="badge badge-info cursor-help"
+                  v-b-tooltip.hover
+                  :title="spiGraphField.help">
+                  {{ spiGraphTypeahead || 'unknown field' }}
+                </label>
+              </h4>
+            </div>
+          </div> <!-- /default spi graph -->
+
+          <!-- connections src field -->
+          <div v-if="fields && settings.connSrcField"
+            class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Connections Src
+            </label>
+            <div class="col-sm-6">
+              <moloch-field-typeahead
+                :dropup="true"
+                :fields="fields"
+                query-param="field"
+                :initial-value="connSrcFieldTypeahead"
+                @fieldSelected="connSrcFieldSelected">
+              </moloch-field-typeahead>
+            </div>
+            <div class="col-sm-3">
+              <h4 v-if="connSrcField">
+                <label class="badge badge-info cursor-help"
+                  v-b-tooltip.hover
+                  :title="connSrcField.help">
+                  {{ connSrcFieldTypeahead || 'unknown field' }}
+                </label>
+              </h4>
+            </div>
+          </div> <!-- /connections src field -->
+
+          <!-- connections dst field -->
+          <div v-if="fields && settings.connDstField"
+            class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Connections Dst
+            </label>
+            <div class="col-sm-6">
+              <moloch-field-typeahead
+                :dropup="true"
+                :fields="fields"
+                query-param="field"
+                :initial-value="connDstFieldTypeahead"
+                @fieldSelected="connDstFieldSelected">
+              </moloch-field-typeahead>
+            </div>
+            <div class="col-sm-3">
+              <h4 v-if="connDstField">
+                <label class="badge badge-info cursor-help"
+                  v-b-tooltip.hover
+                  :title="connDstField.help">
+                  {{ connDstFieldTypeahead || 'unknown field' }}
+                </label>
+              </h4>
+            </div>
+          </div> <!-- /connections dst field -->
+
+          <div v-if="integerFields"
+            class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Timeline Data Filters (max 4)
+            </label>
+
+            <div class="col-sm-6">
+              <moloch-field-typeahead
+                :dropup="true"
+                :fields="integerFields"
+                :initial-value="filtersTypeahead"
+                query-param="field"
+                @fieldSelected="timelineFilterSelected">
+              </moloch-field-typeahead>
+            </div>
+            <div class="col-sm-3">
+              <h4 v-if="timelineDataFilters.length > 0">
+                <label class="badge badge-info cursor-help small-badge"
+                  v-for="filter in timelineDataFilters" :key="filter.dbField + 'DataFilterBadge'"
+                  @click="timelineFilterSelected(filter)"
+                  v-b-tooltip.hover
+                  :title="filter.help">
+                  <span class="fa fa-times"></span>
+                  {{ filter.friendlyName || 'unknown field' }}
+                </label>
+              </h4>
+              <b-button
+                size="sm"
+                variant="danger"
+                @click="resetDefaultFilters">
+                Reset default timeline filters
+              </b-button>
+            </div>
+          </div>
+        </form>
+
+        <!-- col configs settings -->
+        <form v-if="visibleTab === 'col'"
+          class="form-horizontal"
+          id="col">
+
+          <h3>Custom Column Configurations</h3>
+
+          <p>
+            Custom column configurations allow the user to save their session
+            table's column layout for future use.
+          </p>
+
+          <table class="table table-striped table-sm">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Columns</th>
+                <th>Order</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- default col config -->
+              <tr v-if="defaultColConfig && fieldsMap">
+                <td>
+                  Arkime Default
+                </td>
+                <td>
+                  <template v-for="col in defaultColConfig.visibleHeaders">
+                    <label class="badge badge-secondary mr-1 help-cursor"
+                      v-b-tooltip.hover
+                      :title="fieldsMap[col].help"
+                      v-if="fieldsMap[col]"
+                      :key="col">
+                      {{ fieldsMap[col].friendlyName }}
+                    </label>
+                  </template>
+                </td>
+                <td>
+                  <span v-for="order in defaultColConfig.order"
+                    :key="order[0]">
+                    <label class="badge badge-secondary mr-1 help-cursor"
+                      :title="fieldsMap[order[0]].help"
+                      v-if="fieldsMap[order[0]]"
+                      v-b-tooltip.hover>
+                      {{ fieldsMap[order[0]].friendlyName }}&nbsp;
+                      ({{ order[1] }})
+                    </label>
+                  </span>
+                </td>
+                <td>&nbsp;</td>
+              </tr> <!-- /default col configs -->
+              <!-- col configs -->
+              <template v-if="fieldsMap">
+                <tr v-for="(config, index) in colConfigs"
+                  :key="config.name">
+                  <td>
+                    {{ config.name }}
+                  </td>
+                  <td>
+                    <template v-for="col in config.columns">
+                      <label class="badge badge-secondary mr-1 help-cursor"
+                        :title="fieldsMap[col].help"
+                        v-b-tooltip.hover
+                        v-if="fieldsMap[col]"
+                        :key="col">
+                        {{ fieldsMap[col].friendlyName }}
+                      </label>
+                    </template>
+                  </td>
+                  <td>
+                    <span v-for="order in config.order"
+                      :key="order[0]">
+                      <label class="badge badge-secondary mr-1 help-cursor"
+                        :title="fieldsMap[order[0]].help"
+                        v-if="fieldsMap[order[0]]"
+                        v-b-tooltip.hover>
+                        {{ fieldsMap[order[0]].friendlyName }}&nbsp;
+                        ({{ order[1] }})
+                      </label>
+                    </span>
+                  </td>
+                  <td>
+                    <button type="button"
+                      class="btn btn-sm btn-danger pull-right"
+                      @click="deleteColConfig(config.name, index)"
+                      title="Delete this custom column configuration">
+                      <span class="fa fa-trash-o">
+                      </span>&nbsp;
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </template> <!-- /col configs -->
+              <!-- col config list error -->
+              <tr v-if="colConfigError">
+                <td colspan="3">
+                  <p class="text-danger mb-0">
+                    <span class="fa fa-exclamation-triangle">
+                    </span>&nbsp;
+                    {{ colConfigError }}
+                  </p>
+                </td>
+              </tr> <!-- /col config list error -->
+            </tbody>
+          </table>
+
+          <div v-if="!colConfigs || !colConfigs.length"
+            class="alert alert-info">
+            <span class="fa fa-info-circle fa-lg">
+            </span>
+            <strong>
+              You have no custom column configurations.
+            </strong>
+            <br>
+            <br>
+            To create one, go to the sessions page, rearrange the columns into
+            your preferred configuration, and click the column configuration
+            button ( <span class="fa fa-columns"></span> ) at the top left of the
+            table. Name your new custom column configuration then click the save
+            button. You can now switch to this column configuration anytime you
+            want by clicking on its name in the dropdown!
+          </div>
+
+        </form> <!-- /col configs settings -->
+
+        <!-- spiview field configs settings -->
+        <form v-if="visibleTab === 'spiview'"
+          class="form-horizontal"
+          id="spiview">
+
+          <h3>Custom SPI View Configurations</h3>
+
+          <p>
+            Custom visible field configurations allow the user to save their
+            visible fields on the SPI View page for future use.
+          </p>
+
+          <table class="table table-striped table-sm">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Fields</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- default spiview field config -->
+              <tr v-if="defaultSpiviewConfig && fieldsMap">
+                <td>
+                  Arkime Default
+                </td>
+                <td>
+                  <template v-for="field in defaultSpiviewConfig.fields">
+                    <label
+                      :key="field"
+                      v-b-tooltip.hover
+                      v-if="fieldsMap[field]"
+                      class="badge badge-secondary mr-1 help-cursor"
+                      :title="fieldsMap[field].help">
+                      {{ fieldsMap[field].friendlyName }} (100)
+                    </label>
+                  </template>
+                </td>
+                <td>&nbsp;</td>
+              </tr> <!-- /default spiview field confg -->
+              <!-- spiview field configs -->
+              <template v-if="fieldsMap">
+                <tr v-for="(config, index) in spiviewConfigs"
+                  :key="config.name">
+                  <td>
+                    {{ config.name }}
+                  </td>
+                  <td>
+                    <label class="badge badge-secondary mr-1 help-cursor"
+                      :title="fieldObj.help"
+                      v-b-tooltip.hover
+                      v-for="fieldObj in config.fieldObjs"
+                      :key="fieldObj.dbField">
+                      {{fieldObj.friendlyName}}
+                      ({{fieldObj.count}})
+                    </label>
+                  </td>
+                  <td>
+                    <button type="button"
+                      class="btn btn-sm btn-danger pull-right"
+                      @click="deleteSpiviewConfig(config.name, index)"
+                      title="Delete this custom spiview field configuration">
+                      <span class="fa fa-trash-o">
+                      </span>&nbsp;
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </template> <!-- /spiview field configs -->
+              <!-- spiview field config list error -->
+              <tr v-if="spiviewConfigError">
+                <td colspan="3">
+                  <p class="text-danger mb-0">
+                    <span class="fa fa-exclamation-triangle">
+                    </span>&nbsp;
+                    {{ spiviewConfigError }}
+                  </p>
+                </td>
+              </tr> <!-- /spview field config list error -->
+            </tbody>
+          </table>
+
+          <div v-if="!spiviewConfigs || !spiviewConfigs.length"
+            class="alert alert-info">
+            <span class="fa fa-info-circle fa-lg">
+            </span>
+            <strong>
+              You have no custom SPI View field configurations.
+            </strong>
+            <br>
+            <br>
+            To create one, go to the SPI View page, toggle fields to
+            your preferred configuration, and click the field configuration
+            button ( <span class="fa fa-columns"></span> ) at the top left of the
+            page. Name your new custom field configuration then click the save
+            button. You can now switch to this field configuration anytime you
+            want by clicking on its name in the dropdown!
+          </div>
+
+        </form> <!-- /spiview field configs settings -->
+
+        <!-- theme settings -->
+        <form v-if="visibleTab === 'theme'"
+          id="theme">
+
+          <h3>UI Themes</h3>
+
+          <p>
+            Pick from a preexisting theme below
+          </p>
+
+          <hr>
+
+          <!-- theme picker -->
+          <div class="row">
+            <div class="col-lg-6 col-md-12"
+              v-for="theme in themeDisplays"
+              :class="theme.class"
+              :key="theme.class">
+              <div class="theme-display">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="custom-control custom-radio ml-1">
+                      <input type="radio"
+                        class="custom-control-input cursor-pointer"
+                        v-model="settings.theme"
+                        @change="changeTheme(theme.class)"
+                        :value="theme.class"
+                        :id="theme.class"
+                      />
+                      <label class="custom-control-label cursor-pointer"
+                        :for="theme.class">
+                        {{ theme.name }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <nav class="navbar navbar-dark">
+                  <a class="navbar-brand cursor-pointer">
+                    <img :src="settings.logo"
+                      class="arkime-logo"
+                      alt="hoot"
+                    />
+                  </a>
+                  <ul class="nav">
+                    <a class="nav-item cursor-pointer active">
+                      Current Page
+                    </a>
+                    <a class="nav-item cursor-pointer ml-3">
+                      Other Pages
+                    </a>
+                  </ul>
+                  <ul class="navbar-nav">
+                    <span class="fa fa-info-circle fa-lg health-green">
+                    </span>
+                  </ul>
+                </nav>
+                <div class="display-sub-navbar">
+                  <div class="row">
+                    <div class="col-xl-5 col-lg-4 col-md-5">
+                      <div class="input-group input-group-sm ml-1">
+                        <span class="input-group-prepend">
+                          <span class="input-group-text">
+                            <span class="fa fa-search">
+                            </span>
+                          </span>
+                        </span>
+                        <input type="text"
+                          placeholder="Search"
+                          class="form-control"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-xl-7 col-lg-8 col-sm-7">
+                      <div class="font-weight-bold text-theme-accent">
+                        Important text
+                      </div>
+                      <div class="pull-right display-sub-navbar-buttons">
+                        <a class="btn btn-sm btn-default btn-theme-tertiary-display">
+                          Search
+                        </a>
+                        <a class="btn btn-sm btn-default btn-theme-quaternary-display">
+                          <span class="fa fa-cog fa-lg">
+                          </span>
+                        </a>
+                        <a class="btn btn-sm btn-default btn-theme-secondary-display">
+                          <span class="fa fa-eye fa-lg">
+                          </span>
+                        </a>
+                        <b-dropdown right
+                          size="sm"
+                          class="pull-right ml-1 action-menu-dropdown"
+                          variant="theme-primary-display">
+                          <b-dropdown-item>
+                            Example
+                          </b-dropdown-item>
+                          <b-dropdown-item class="active">
+                            Active Example
+                          </b-dropdown-item>
+                        </b-dropdown>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="display-sub-sub-navbar">
+                  <div class="ml-1 mt-2 pb-2">
+                    <span class="field cursor-pointer">
+                      example field value
+                      <span class="fa fa-caret-down">
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- /theme picker -->
+
+          <!-- logo picker -->
+          <hr>
+          <h3>Logos</h3>
+          <p>
+            Pick from these logos
+          </p>
+          <div class="row well logo-well mr-1 ml-1">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-2 mt-2 logos"
+              v-for="logo in logos"
+              :key="logo.location">
+              <div class="custom-control custom-radio ml-1">
+                <input type="radio"
+                  :id="logo.location"
+                  :value="logo.location"
+                  v-model="settings.logo"
+                  @change="changeLogo(logo.location)"
+                  class="custom-control-input cursor-pointer"
+                />
+                <label class="custom-control-label cursor-pointer"
+                  :for="logo.location">
+                  {{ logo.name }}
+                </label>
+              </div>
+              <img :src="logo.location" :alt="logo.name" />
+            </div>
+          </div> <!-- /logo picker -->
+
+          <div v-if="settings.shiftyEyes">
+            <hr>
+            <h3>
+              Yahaha! You found me!
+              <button class="btn btn-primary"
+                @click="toggleShiftyEyes">
+                Turn Me Off
+              </button>
+            </h3>
+            <p>
+              I am now watching you while data loads
+            </p>
+            <img src="assets/watching.gif" />
+          </div>
+
+          <hr>
+
+          <!-- custom theme -->
+          <p v-if="!creatingCustom">
+            Want more control
+            <small>(to make the UI completely unusable)</small>?
+            <a href="javascript:void(0)"
+              class="cursor-pointer"
+              @click="creatingCustom = true">
+              Create your own custom theme
+            </a>
+            <br><br>
+          </p>
+
+          <div v-if="creatingCustom">
+
+            <!-- custom theme display -->
+            <div class="row">
+              <div class="col-md-4">
+                <h3 class="mt-0 mb-3">
+                  Custom Theme
+                  <button type="button"
+                    class="btn btn-theme-tertiary pull-right"
+                    title="Toggle color theme help"
+                    v-b-tooltip.hover
+                    @click="displayHelp = !displayHelp">
+                    <span class="fa fa-question-circle">
+                    </span>&nbsp;
+                    <span v-if="displayHelp">
+                      Hide
+                    </span>
+                    <span v-else>
+                      Show
+                    </span>
+                    Help
+                  </button>
+                </h3>
+                <color-picker :color="background"
+                  @colorSelected="changeColor"
+                  colorName="background"
+                  fieldName="Background"
+                  :class="{'mb-2':!displayHelp}">
+                </color-picker>
+                <p class="help-block small"
+                  v-if="displayHelp">
+                  This color should either be very light or very dark.
+                </p>
+                <color-picker :color="foreground"
+                  @colorSelected="changeColor"
+                  colorName="foreground"
+                  fieldName="Foreground"
+                  :class="{'mb-2':!displayHelp}">
+                </color-picker>
+                <p class="help-block small"
+                  v-if="displayHelp">
+                  This color should be visible on the background.
+                </p>
+                <color-picker :color="foregroundAccent"
+                  @colorSelected="changeColor"
+                  colorName="foregroundAccent"
+                  fieldName="Foreground Accent">
+                </color-picker>
+                <p class="help-block small"
+                  v-if="displayHelp">
+                  This color should stand out.
+                  It displays session field values and important text in navbars.
+                </p>
+              </div>
+              <div class="col-md-8">
+
+                <div class="custom-theme"
+                  id="custom-theme-display">
+                  <div class="theme-display">
+                    <div class="navbar navbar-dark">
+                      <a class="navbar-brand cursor-pointer">
+                        <img :src="settings.logo"
+                          class="arkime-logo"
+                          alt="hoot"
+                        />
+                      </a>
+                      <ul class="nav">
+                        <a class="nav-item cursor-pointer active">
+                          Current Page
+                        </a>
+                        <a class="nav-item cursor-pointer ml-3">
+                          Other Pages
+                        </a>
+                      </ul>
+                      <ul class="navbar-nav">
+                        <span class="fa fa-info-circle fa-lg health-green">
+                        </span>
+                      </ul>
+                    </div>
+                    <div class="display-sub-navbar">
+                      <div class="row">
+                        <div class="col-xl-5 col-lg-4 col-md-5">
+                          <div class="input-group input-group-sm ml-1">
+                            <span class="input-group-prepend">
+                              <span class="input-group-text">
+                                <span class="fa fa-search">
+                                </span>
+                              </span>
+                            </span>
+                            <input type="text"
+                              placeholder="Search"
+                              class="form-control"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-xl-7 col-lg-8 col-sm-7">
+                          <div class="font-weight-bold text-theme-accent">
+                            Important text
+                          </div>
+                          <div class="pull-right display-sub-navbar-buttons">
+                            <a class="btn btn-sm btn-default btn-theme-tertiary-display">
+                              Search
+                            </a>
+                            <a class="btn btn-sm btn-default btn-theme-quaternary-display">
+                              <span class="fa fa-cog fa-lg">
+                              </span>
+                            </a>
+                            <a class="btn btn-sm btn-default btn-theme-secondary-display">
+                              <span class="fa fa-eye fa-lg">
+                              </span>
+                            </a>
+                            <b-dropdown right
+                              size="sm"
+                              class="pull-right ml-1 action-menu-dropdown"
+                              variant="theme-primary-display">
+                              <b-dropdown-item>
+                                Example
+                              </b-dropdown-item>
+                              <b-dropdown-item class="active">
+                                Active Example
+                              </b-dropdown-item>
+                            </b-dropdown>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="display-sub-sub-navbar">
+                      <moloch-paging
+                        class="mt-1 ml-1"
+                        :records-total="200"
+                        :records-filtered="100">
+                      </moloch-paging>
+                    </div>
+                    <div>
+                      <div class="ml-1 mr-1 mt-2 pb-2">
+                        <span class="field cursor-pointer">
+                          example field value
+                          <span class="fa fa-caret-down">
+                          </span>
+                        </span>
+                        <br><br>
+                        <div class="row">
+                          <div class="col-md-6 sessionsrc">
+                            <small class="session-detail-ts font-weight-bold">
+                              <em class="ts-value">
+                                2013/11/18 03:06:52.831
+                              </em>
+                              <span class="pull-right">
+                                27 bytes
+                              </span>
+                            </small>
+                            <pre>Source packet text</pre>
+                          </div>
+                          <div class="col-md-6 sessiondst">
+                            <small class="session-detail-ts font-weight-bold">
+                              <em class="ts-value">
+                                2013/11/18 03:06:52.841
+                              </em>
+                              <span class="pull-right">
+                                160 bytes
+                              </span>
+                            </small>
+                            <pre>Destination packet text</pre>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div> <!-- /custom theme display -->
+
+            <br>
+
+            <p v-if="displayHelp"
+              class="help-block">
+              Main theme colors are lightened/darkened programmatically to
+              provide dark borders, active buttons, hover colors, etc.
+            </p>
+
+            <!-- main colors -->
+            <div class="row form-group">
+              <div class="col-md-3">
+                <color-picker :color="primary"
+                  @colorSelected="changeColor"
+                  colorName="primary"
+                  fieldName="Primary">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Primary navbar, buttons, active item(s) in lists
+                </p>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="secondary"
+                  @colorSelected="changeColor"
+                  colorName="secondary"
+                  fieldName="Secondary">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Buttons
+                </p>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="tertiary"
+                  @colorSelected="changeColor"
+                  colorName="tertiary"
+                  fieldName="Tertiary">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Action buttons (search, apply, open, etc)
+                </p>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="quaternary"
+                  @colorSelected="changeColor"
+                  colorName="quaternary"
+                  fieldName="Quaternary">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Accent and all other buttons
+                </p>
+              </div>
+            </div> <!-- /main colors -->
+
+            <p v-if="displayHelp"
+              class="help-block">
+              <em>Highlight colors should be similar to their parent color, above.</em>
+              <br>
+              For <strong>light themes</strong>, the highlight color should be <strong>lighter</strong> than the original.
+              For <strong>dark themes</strong>, the highlight color should be <strong>darker</strong> than original.
+            </p>
+
+            <!-- main color highlights/backgrounds -->
+            <div class="row form-group">
+              <div class="col-md-3">
+                <color-picker :color="primaryLightest"
+                  @colorSelected="changeColor"
+                  colorName="primaryLightest"
+                  fieldName="Highlight 1">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Backgrounds
+                </p>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="secondaryLightest"
+                  @colorSelected="changeColor"
+                  colorName="secondaryLightest"
+                  fieldName="Highlight 2">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Search/Secondary navbar
+                </p>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="tertiaryLightest"
+                  @colorSelected="changeColor"
+                  colorName="tertiaryLightest"
+                  fieldName="Highlight 3">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Tertiary navbar, table hover
+                </p>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="quaternaryLightest"
+                  @colorSelected="changeColor"
+                  colorName="quaternaryLightest"
+                  fieldName="Highlight 4">
+                </color-picker>
+                <p v-if="displayHelp"
+                  class="help-block small">
+                  Session detail background
+                </p>
+              </div>
+            </div> <!-- /main color highlights/backgrounds -->
+
+            <br>
+
+            <div v-if="displayHelp"
+              class="row">
+              <div class="col-6">
+                <p class="help-block">
+                  <em>Map colors</em>
+                  <br>
+                  These should be different to show contrast between land and water.
+                </p>
+              </div>
+              <div class="col-6">
+                <p class="help-block">
+                  <em>Packet colors</em>
+                  <br>
+                  These are displayed when viewing session packets and in the
+                  sessions timeline graph. They should be very different colors.
+                </p>
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <!-- visualization colors -->
+              <div class="col-md-3">
+                <color-picker :color="water"
+                  @colorSelected="changeColor"
+                  colorName="water"
+                  fieldName="Map Water">
+                </color-picker>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="land"
+                  @colorSelected="changeColor"
+                  colorName="land"
+                  fieldName="Map Land">
+                </color-picker>
+              </div> <!-- /visualization colors -->
+              <!-- packet colors -->
+              <div class="col-md-3">
+                <color-picker :color="src"
+                  @colorSelected="changeColor"
+                  colorName="src"
+                  fieldName="Source Packets">
+                </color-picker>
+              </div>
+              <div class="col-md-3">
+                <color-picker :color="dst"
+                  @colorSelected="changeColor"
+                  colorName="dst"
+                  fieldName="Destination Packets">
+                </color-picker>
+              </div> <!-- /packet colors -->
+            </div>
+
+            <br>
+
+            <div class="row mb-4">
+              <div class="col-md-12">
+                <label>
+                  Share your theme with others:
+                </label>
+                <div class="input-group input-group-sm">
+                  <input type="text"
+                    class="form-control"
+                    v-model="themeString"
+                    @keyup.37.38.39.40.65.66="secretStuff"
+                  />
+                  <span class="input-group-append">
+                    <button class="btn btn-theme-secondary"
+                      type="button"
+                      @click="copyValue(themeString)">
+                      <span class="fa fa-clipboard">
+                      </span>&nbsp;
+                      Copy
+                    </button>
+                    <button class="btn btn-theme-primary"
+                      type="button"
+                      @click="updateThemeString">
+                      <span class="fa fa-check">
+                      </span>&nbsp;
+                      Apply
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div> <!-- /custom theme -->
+
+        </form> <!-- /theme settings -->
+
+        <!-- password settings -->
+        <form v-if="visibleTab === 'password' && !multiviewer && !disablePassword"
+          class="form-horizontal"
+          @keyup.enter="changePassword"
+          id="password">
+
+          <h3>Change Password</h3>
+
+          <hr>
+
+          <!-- current password -->
+          <div v-if="!userId"
+            class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              Current Password
+            </label>
+            <div class="col-sm-6">
+              <input type="password"
+                class="form-control form-control-sm"
+                v-model="currentPassword"
+                placeholder="Enter your current password"
+              />
+            </div>
+          </div>
+
+          <!-- new password -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              New Password
+            </label>
+            <div class="col-sm-6">
+              <input type="password"
+                class="form-control form-control-sm"
+                v-model="newPassword"
+                placeholder="Enter a new password"
+              />
+            </div>
+          </div>
+
+          <!-- confirm new password -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label text-right font-weight-bold">
+              New Password
+            </label>
+            <div class="col-sm-6">
+              <input type="password"
+                class="form-control form-control-sm"
+                v-model="confirmNewPassword"
+                placeholder="Confirm your new password"
+              />
+            </div>
+          </div>
+
+          <!-- change password button/error -->
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">&nbsp;</label>
+            <div class="col-sm-9">
+              <button type="button"
+                class="btn btn-theme-tertiary"
+                @click="changePassword">
+                Change Password
+              </button>
+              <span v-if="changePasswordError"
+                class="small text-danger pl-4">
+                <span class="fa fa-exclamation-triangle">
+                </span>&nbsp;
+                {{ changePasswordError }}
+              </span>
+            </div>
+          </div> <!-- /change password button/error -->
+
+        </form> <!-- /password settings -->
+
+        <!-- notifiers settings -->
+        <Notifiers
+          id="notifiers"
+          @display-message="displayMessage"
+          v-if="visibleTab === 'notifiers'"
+          v-has-role="{user:user,roles:'arkimeAdmin'}"
+        />
+
+        <!-- shortcut settings -->
+        <Shortcuts
+          id="shortcuts"
+          @copy-value="copyValue"
+          v-if="visibleTab === 'shortcuts'"
+          @display-message="displayMessage"
+        />
+
+        <!-- view settings -->
+        <Views
+          id="views"
+          :userId="userId"
+          :fields-map="fieldsMap"
+          @copy-value="copyValue"
+          v-if="visibleTab === 'views'"
+          @display-message="displayMessage"
+        />
+
+        <!-- cron query settings -->
+        <PeriodicQueries
+          id="cron"
+          :userId="userId"
+          @display-message="displayMessage"
+          v-if="visibleTab === 'cron' && !multiviewer"
+        />
+
+      </div>
+
+    </div> <!-- /content -->
+
+  </div> <!-- /settings content -->
+
+</template>
+
+<script>
+import CommonUserService from '../../../../../common/vueapp/UserService';
+import UserService from '../users/UserService';
+import FieldService from '../search/FieldService';
+import SettingsService from './SettingsService';
+import customCols from '../sessions/customCols.json';
+import MolochToast from '../utils/Toast';
+import MolochError from '../utils/Error';
+import MolochLoading from '../utils/Loading';
+import MolochFieldTypeahead from '../utils/FieldTypeahead';
+import ColorPicker from '../utils/ColorPicker';
+import MolochPaging from '../utils/Pagination';
+import Utils from '../utils/utils';
+import PeriodicQueries from './PeriodicQueries';
+import Shortcuts from './Shortcuts';
+import Notifiers from './Notifiers';
+import Views from './Views';
+
+let clockInterval;
+
+const defaultSpiviewConfig = { fields: ['destination.ip', 'protocol', 'source.ip'] };
+const secretMatch = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+let secrets = [];
+
+export default {
+  name: 'Settings',
+  components: {
+    MolochError,
+    MolochLoading,
+    MolochToast,
+    MolochFieldTypeahead,
+    ColorPicker,
+    MolochPaging,
+    PeriodicQueries,
+    Shortcuts,
+    Notifiers,
+    Views
+  },
+  data: function () {
+    return {
+      // page vars
+      userId: undefined,
+      error: '',
+      loading: true,
+      msg: '',
+      msgType: undefined,
+      displayName: undefined,
+      visibleTab: 'general', // default tab
+      settings: {},
+      integerFields: undefined,
+      columns: [],
+      // general settings vars
+      date: undefined,
+      spiGraphField: undefined,
+      spiGraphTypeahead: undefined,
+      connSrcField: undefined,
+      connSrcFieldTypeahead: undefined,
+      connDstField: undefined,
+      connDstFieldTypeahead: undefined,
+      timelineDataFilters: [],
+      filtersTypeahead: '',
+      // column config settings vars
+      colConfigs: undefined,
+      colConfigError: '',
+      defaultColConfig: Utils.getDefaultTableState(),
+      // spiview field config settings vars
+      spiviewConfigs: undefined,
+      spiviewConfigError: '',
+      defaultSpiviewConfig,
+      // theme settings vars
+      themeDisplays: [
+        { name: 'Arkime Light', class: 'arkime-light-theme' },
+        { name: 'Arkime Dark', class: 'arkime-dark-theme' },
+        { name: 'Purp-purp', class: 'purp-theme' },
+        { name: 'Blue', class: 'blue-theme' },
+        { name: 'Green', class: 'green-theme' },
+        { name: 'Cotton Candy', class: 'cotton-candy-theme' },
+        { name: 'Green on Black', class: 'dark-2-theme' },
+        { name: 'Dark Blue', class: 'dark-3-theme' }
+      ],
+      logos: [
+        { name: 'Arkime Light', location: 'assets/Arkime_Logo_Mark_White.png' },
+        { name: 'Arkime Dark', location: 'assets/Arkime_Logo_Mark_Black.png' },
+        { name: 'Arkime Color', location: 'assets/Arkime_Logo_Mark_Full.png' },
+        { name: 'Arkime Gradient', location: 'assets/Arkime_Logo_Mark_FullGradient.png' },
+        { name: 'Arkime Circle Light', location: 'assets/Arkime_Icon_White.png' },
+        { name: 'Arkime Circle Dark', location: 'assets/Arkime_Icon_Black.png' },
+        { name: 'Arkime Circle Mint', location: 'assets/Arkime_Icon_ColorMint.png' },
+        { name: 'Arkime Circle Blue', location: 'assets/Arkime_Icon_ColorBlue.png' }
+      ],
+      creatingCustom: false,
+      displayHelp: true,
+      // password settings vars
+      currentPassword: '',
+      newPassword: '',
+      confirmNewPassword: '',
+      changePasswordError: '',
+      multiviewer: this.$constants.MOLOCH_MULTIVIEWER,
+      hasUsersES: this.$constants.MOLOCH_HASUSERSES
+    };
+  },
+  computed: {
+    user: function () {
+      return this.$store.state.user;
+    },
+    sortableColumns: function () {
+      return this.columns.filter(column => !column.unsortable);
+    },
+    fields: function () {
+      return FieldService.addIpDstPortField(this.$store.state.fieldsArr);
+    },
+    fieldsMap: function () {
+      const fieldsMap = JSON.parse(JSON.stringify(this.$store.state.fieldsMap));
+      for (const key in customCols) {
+        fieldsMap[key] = customCols[key];
+      }
+      return FieldService.addIpDstPortField(this.$store.state.fieldsMap);
+    },
+    notifiers () {
+      return this.$store.state.notifiers;
+    },
+    disablePassword () {
+      return !!this.$constants.DISABLE_USER_PASSWORD_UI && !!this.user.headerAuthEnabled;
+    }
+  },
+  created: function () {
+    // does the url specify a tab in hash
+    let tab = window.location.hash;
+    if (tab) { // if there is a tab specified and it's a valid tab
+      tab = tab.replace(/^#/, '');
+      if (tab === 'general' || tab === 'views' || tab === 'cron' ||
+        tab === 'col' || tab === 'theme' || tab === 'password' ||
+        tab === 'spiview' || tab === 'notifiers' || tab === 'shortcuts') {
+        this.visibleTab = tab;
+      }
+
+      if ((tab === 'password' && this.multiviewer) || (tab === 'cron' && this.multiviewer)) {
+        // multiviewer user can't change password or configure periodic queries
+        this.openView('general');
+      }
+    }
+
+    this.getThemeColors();
+
+    UserService.getCurrent().then((response) => {
+      this.displayName = response.userId;
+      // only admins can edit other users' settings
+      if (response.roles.includes('arkimeAdmin') && this.$route.query.userId) {
+        if (response.userId === this.$route.query.userId) {
+          // admin editing their own user so the routeParam is unnecessary
+          this.$router.push({
+            hash: this.$route.hash,
+            query: {
+              ...this.$route.query,
+              userId: undefined
+            }
+          });
+        } else { // admin editing another user
+          this.userId = this.$route.query.userId;
+          this.displayName = this.$route.query.userId;
+        }
+      } else if (this.$route.query.userId) {
+        // normal user has no permission, so remove the routeParam
+        // (even if it's their own userId because it's unnecessary)
+        this.$router.push({
+          hash: this.$route.hash,
+          query: {
+            ...this.$route.query,
+            userId: undefined
+          }
+        });
+      }
+
+      // always get the user's settings because current user is cached
+      // so response.settings might be stale
+      // NOTE: this kicks of fetching all the other data
+      this.getSettings(true);
+    }).catch((error) => {
+      this.error = error.text;
+      this.loading = false;
+    });
+  },
+  methods: {
+    /* vue-clipboard2 directives are broken, use their internal method instead */
+    copyValue: function (val) {
+      this.$copyText(val);
+    },
+    /* exposed page functions ---------------------------------------------- */
+    /* opens a specific settings tab */
+    openView: function (tabName) {
+      this.visibleTab = tabName;
+      this.$router.push({
+        hash: tabName
+      });
+    },
+    /* remove the message when user is done with it or duration ends */
+    messageDone: function () {
+      this.msg = '';
+      this.msgType = undefined;
+    },
+    /* displays a message in the navbar */
+    displayMessage ({ msg, type }) {
+      this.msg = msg;
+      this.msgType = type || 'success';
+    },
+    /* GENERAL ------------------------------- */
+    /**
+     * saves the user's settings and displays a message
+     * @param updateTheme whether to update the UI theme
+     */
+    update: function (updateTheme) {
+      UserService.saveSettings(this.settings, this.userId).then((response) => {
+        // display success message to user
+        this.msg = response.text;
+        this.msgType = 'success';
+
+        if (updateTheme) {
+          const now = Date.now();
+          if ($('link[href^="api/user/css"]').length) {
+            $('link[href^="api/user/css"]').remove();
+          }
+          $('head').append(`<link rel="stylesheet"
+                            href="api/user/css?v${now}"
+                            type="text/css" />`);
+        }
+      }).catch((error) => {
+        // display error message to user
+        this.msg = error.text;
+        this.msgType = 'danger';
+      });
+    },
+    resetSettings: function () {
+      // Choosing to skip reset of theme. UserService will save state to store
+      UserService.resetSettings(this.userId, this.settings.theme).then((response) => {
+        // display success message to user
+        this.msg = response.text;
+        this.msgType = 'success';
+        this.getSettings(false);
+      }).catch((error) => {
+        // display error message to user
+        this.msg = error.text;
+        this.msgType = 'danger';
+      });
+    },
+    // attach the full field object to the component's timelineDataFilters from array of dbField
+    setTimelineDataFilterFields: function () {
+      this.timelineDataFilters = [];
+      for (let i = 0, len = this.settings.timelineDataFilters.length; i < len; i++) {
+        const filter = this.settings.timelineDataFilters[i];
+        const fieldOBJ = FieldService.getField(filter);
+        if (fieldOBJ) {
+          this.timelineDataFilters.push(fieldOBJ);
+        }
+      }
+    },
+    resetDefaultFilters: function () {
+      this.$set(this.settings, 'timelineDataFilters', UserService.getDefaultSettings().timelineDataFilters);
+      this.setTimelineDataFilterFields();
+      this.update();
+    },
+    updateTimezone (newTimezone) {
+      this.settings.timezone = newTimezone;
+      this.updateTime();
+    },
+    updateMs (newMs) {
+      this.settings.ms = newMs;
+      this.updateTime();
+    },
+    /* updates the displayed date for the timzeone setting
+     * triggered by the user changing the timezone/ms settings */
+    updateTime: function () {
+      this.tick();
+      this.update();
+    },
+    updateSessionDetailFormat: function (newDetailFormat) {
+      this.settings.detailFormat = newDetailFormat;
+      this.update();
+    },
+    updateNumberOfPackets: function (newNumPackets) {
+      this.settings.numPackets = newNumPackets;
+      this.update();
+    },
+    updateShowPacketTimestamps: function (newShowTimestamps) {
+      this.settings.showTimestamps = newShowTimestamps;
+      this.update();
+    },
+    updateQueryOnPageLoad: function (newManualQuery) {
+      this.settings.manualQuery = newManualQuery;
+      this.update();
+    },
+    updateSortDirection: function (newSortDirection) {
+      this.settings.sortDirection = newSortDirection;
+      this.update();
+    },
+    spiGraphFieldSelected: function (field) {
+      this.$set(this, 'spiGraphField', field);
+      this.$set(this.settings, 'spiGraph', field.dbField);
+      this.$set(this, 'spiGraphTypeahead', field.friendlyName);
+      this.update();
+    },
+    connSrcFieldSelected: function (field) {
+      this.$set(this, 'connSrcField', field);
+      this.$set(this.settings, 'connSrcField', field.dbField);
+      this.$set(this, 'connSrcFieldTypeahead', field.friendlyName);
+      this.update();
+    },
+    connDstFieldSelected: function (field) {
+      this.$set(this, 'connDstField', field);
+      this.$set(this.settings, 'connDstField', field.dbField);
+      this.$set(this, 'connDstFieldTypeahead', field.friendlyName);
+      this.update();
+    },
+    timelineFilterSelected: function (field) {
+      let index;
+      for (index = 0; index < this.settings.timelineDataFilters.length; index++) {
+        const filter = this.settings.timelineDataFilters[index];
+        const filterDbField = FieldService.getFieldProperty(filter, 'dbField');
+        if (filterDbField && filterDbField === field.dbField) {
+          break;
+        }
+      }
+      if (index === this.settings.timelineDataFilters.length) { index = -1; }
+
+      if (index > -1) {
+        this.timelineDataFilters.splice(index, 1);
+        this.settings.timelineDataFilters.splice(index, 1);
+        this.update();
+      } else if (this.timelineDataFilters.length < 4) {
+        this.timelineDataFilters.push(field);
+        this.settings.timelineDataFilters.push(field.dbField);
+        this.update();
+      }
+    },
+    /* starts the clock for the timezone setting */
+    startClock: function () {
+      this.tick();
+      clockInterval = setInterval(() => {
+        this.tick();
+      }, 1000);
+    },
+    /* updates the date and format for the timezone setting */
+    tick: function () {
+      this.date = new Date();
+      if (this.settings.timezone === 'gmt') {
+        this.dateFormat = 'yyyy/MM/dd HH:mm:ss\'Z\'';
+      } else {
+        this.dateFormat = 'yyyy/MM/dd HH:mm:ss';
+      }
+    },
+    /**
+     * Displays the field.exp instead of field.dbField in the
+     * field typeahead inputs
+     * @param {string} value The dbField of the field
+     */
+    formatField: function (value) {
+      for (let i = 0, len = this.fields.length; i < len; i++) {
+        if (value === this.fields[i].dbField) {
+          return this.fields[i].friendlyName;
+        }
+      }
+    },
+    /* COLUMN CONFIGURATIONS --------------------------- */
+    /**
+     * Deletes a previously saved custom column configuration
+     * @param {string} colName  The name of the column config to remove
+     * @param {int} index       The index in the array of the column config to remove
+     */
+    deleteColConfig: function (colName, index) {
+      UserService.deleteColumnConfig(colName, this.userId).then((response) => {
+        this.colConfigs.splice(index, 1);
+        // display success message to user
+        this.msg = response.text;
+        this.msgType = 'success';
+      }).catch((error) => {
+        // display error message to user
+        this.msg = error.text;
+        this.msgType = 'danger';
+      });
+    },
+    /* SPIVIEW FIELD CONFIGURATIONS -------------------- */
+    /**
+     * Deletes a previously saved custom spiview field configuration
+     * @param {string} spiName  The name of the field config to remove
+     * @param {int} index       The index in the array of the field config to remove
+     */
+    deleteSpiviewConfig: function (spiName, index) {
+      UserService.deleteSpiviewFieldConfig(spiName, this.userId).then((response) => {
+        this.spiviewConfigs.splice(index, 1);
+        // display success message to user
+        this.msg = response.text;
+        this.msgType = 'success';
+      }).catch((error) => {
+        // display error message to user
+        this.msg = error.text;
+        this.msgType = 'danger';
+      });
+    },
+    /* THEMES ------------------------------------------ */
+    setTheme: function () {
+      // default to default theme if the user has not set a theme
+      if (!this.settings.theme) { this.settings.theme = 'arkime-light-theme'; }
+      if (this.settings.theme.startsWith('custom')) {
+        this.settings.theme = 'custom-theme';
+        this.creatingCustom = true;
+      }
+      if (!this.settings.logo) {
+        this.settings.logo = 'assets/Arkime_Logo_Mark_White.png';
+      }
+    },
+    /* changes the ui theme (picked from existing themes) */
+    changeTheme: function (newTheme) {
+      document.body.className = newTheme;
+      this.getThemeColors();
+      this.update();
+    },
+    /* changes a color value of a custom theme and applies the theme */
+    changeColor: function (newColor) {
+      if (newColor) {
+        this[newColor.name] = newColor.value;
+      }
+
+      document.body.className = 'custom-theme';
+
+      this.setThemeString();
+
+      this.settings.theme = `custom1:${this.themeString}`;
+
+      this.update(true);
+    },
+    updateThemeString: function () {
+      const colors = this.themeString.split(',');
+
+      this.background = colors[0];
+      this.foreground = colors[1];
+      this.foregroundAccent = colors[2];
+
+      this.primary = colors[3];
+      this.primaryLightest = colors[4];
+
+      this.secondary = colors[5];
+      this.secondaryLightest = colors[6];
+
+      this.tertiary = colors[7];
+      this.tertiaryLightest = colors[8];
+
+      this.quaternary = colors[9];
+      this.quaternaryLightest = colors[10];
+
+      this.water = colors[11];
+      this.land = colors[12];
+
+      this.src = colors[13];
+      this.dst = colors[14];
+
+      this.changeColor();
+    },
+    changeLogo: function (newLogoLocation) {
+      this.settings.logo = newLogoLocation;
+      this.update();
+    },
+    secretStuff: function (e) {
+      secrets.push(e.keyCode);
+      for (let i = 0; i < secrets.length; i++) {
+        if (secrets[i] !== secretMatch[i]) {
+          secrets = [];
+          break;
+        }
+      }
+
+      if (secrets.length === secretMatch.length) {
+        this.toggleShiftyEyes();
+      }
+    },
+    toggleShiftyEyes: function () {
+      this.settings.shiftyEyes = !this.settings.shiftyEyes;
+      UserService.saveSettings(this.settings, this.userId).then((response) => {
+        // display success message to user
+        this.msg = 'SUPER SECRET THING HAPPENED!';
+        this.msgType = 'success';
+      }).catch((error) => {
+        // display error message to user
+        this.msg = error.text;
+        this.msgType = 'danger';
+      });
+    },
+    /* PASSWORD ---------------------------------------- */
+    /* changes the user's password given the current password, the new password,
+     * and confirmation of the new password */
+    changePassword: function () {
+      if (!this.userId && (!this.currentPassword || this.currentPassword === '')) {
+        this.changePasswordError = 'You must enter your current password';
+        return;
+      }
+
+      if (!this.newPassword || this.newPassword === '') {
+        this.changePasswordError = 'You must enter a new password';
+        return;
+      }
+
+      if (!this.confirmNewPassword || this.confirmNewPassword === '') {
+        this.changePasswordError = 'You must confirm your new password';
+        return;
+      }
+
+      if (this.newPassword !== this.confirmNewPassword) {
+        this.changePasswordError = 'Your passwords don\'t match';
+        return;
+      }
+
+      const data = {
+        newPassword: this.newPassword,
+        currentPassword: this.currentPassword
+      };
+
+      CommonUserService.changePassword(data, this.userId).then((response) => {
+        this.changePasswordError = false;
+        this.currentPassword = null;
+        this.newPassword = null;
+        this.confirmNewPassword = null;
+        // display success message to user
+        this.msg = response.text;
+        this.msgType = 'success';
+      }).catch((error) => {
+        // display error message to user
+        this.msg = error.text;
+        this.msgType = 'danger';
+      });
+    },
+
+    /* helper functions ---------------------------------------------------- */
+    /* retrievs the theme colors from the document body's property values */
+    getThemeColors: function () {
+      const styles = window.getComputedStyle(document.body);
+
+      this.background = styles.getPropertyValue('--color-background').trim() || '#FFFFFF';
+      this.foreground = styles.getPropertyValue('--color-foreground').trim() || '#333333';
+      this.foregroundAccent = styles.getPropertyValue('--color-foreground-accent').trim();
+
+      this.primary = styles.getPropertyValue('--color-primary').trim();
+      this.primaryLightest = styles.getPropertyValue('--color-primary-lightest').trim();
+
+      this.secondary = styles.getPropertyValue('--color-secondary').trim();
+      this.secondaryLightest = styles.getPropertyValue('--color-secondary-lightest').trim();
+
+      this.tertiary = styles.getPropertyValue('--color-tertiary').trim();
+      this.tertiaryLightest = styles.getPropertyValue('--color-tertiary-lightest').trim();
+
+      this.quaternary = styles.getPropertyValue('--color-quaternary').trim();
+      this.quaternaryLightest = styles.getPropertyValue('--color-quaternary-lightest').trim();
+
+      this.water = styles.getPropertyValue('--color-water').trim();
+      this.land = styles.getPropertyValue('--color-land').trim() || this.primary;
+
+      this.src = styles.getPropertyValue('--color-src').trim() || '#CA0404';
+      this.dst = styles.getPropertyValue('--color-dst').trim() || '#0000FF';
+
+      this.setThemeString();
+    },
+    setThemeString: function () {
+      this.themeString = `${this.background},${this.foreground},${this.foregroundAccent},${this.primary},${this.primaryLightest},${this.secondary},${this.secondaryLightest},${this.tertiary},${this.tertiaryLightest},${this.quaternary},${this.quaternaryLightest},${this.water},${this.land},${this.src},${this.dst}`;
+    },
+    /* retrieves the specified user's settings */
+    getSettings: function (initLoad) {
+      UserService.getSettings(this.userId).then((response) => {
+        // set the user settings individually
+        for (const key in response) {
+          this.$set(this.settings, key, response[key]);
+        }
+
+        // set defaults if a user setting doesn't exists
+        // so that radio buttons show the default value
+        if (!response.timezone) {
+          this.$set(this.settings, 'timezone', 'local');
+        }
+        if (!response.detailFormat) {
+          this.$set(this.settings, 'detailFormat', 'last');
+        }
+        if (!response.numPackets) {
+          this.$set(this.settings, 'numPackets', 'last');
+        }
+        if (!response.showTimestamps) {
+          this.$set(this.settings, 'showTimestamps', 'last');
+        }
+        if (!response.manualQuery) {
+          this.$set(this.settings, 'manualQuery', false);
+        }
+
+        this.setupFields().then(() => {
+          this.loading = false;
+
+          if (initLoad) {
+            // get all the other things!
+            this.getColConfigs();
+            this.getSpiviewConfigs();
+            SettingsService.getNotifiers(); // sets notifiers in the store
+          }
+
+          this.setTheme();
+          this.startClock();
+        }).catch((error) => {
+          console.log('ERROR getting fields to populdate page', error);
+        });
+      }).catch((error) => {
+        this.loading = false;
+        if (error.text === 'User not found') {
+          this.error = `<div class="text-center">
+                          ${error.text}
+                          <small><a href="settings">View your own settings?</a></small>
+                        </div>`;
+        } else {
+          this.error = error.text;
+        }
+        this.displayName = '';
+      });
+    },
+    /* retrieves moloch fields and visible column headers for sessions table
+     * adds custom columns to fields
+     * sets user settings for spigraph field & connections src/dst fields
+     * creates fields map for quick lookups
+     */
+    setupFields: function () {
+      return new Promise((resolve, reject) => {
+        this.integerFields = this.fields.filter(i => i.type === 'integer');
+
+        this.setTimelineDataFilterFields();
+
+        // update the user settings for spigraph field & connections src/dst fields
+        // NOTE: dbField is saved in settings, but show the field's friendlyName
+        const spigraphField = FieldService.getField(this.settings.spiGraph);
+        if (spigraphField) {
+          this.$set(this, 'spiGraphField', spigraphField);
+          this.$set(this, 'spiGraphTypeahead', spigraphField.friendlyName);
+        }
+        const connSrcField = FieldService.getField(this.settings.connSrcField);
+        if (connSrcField) {
+          this.$set(this, 'connSrcField', connSrcField);
+          this.$set(this, 'connSrcFieldTypeahead', connSrcField.friendlyName);
+        }
+        const connDstField = FieldService.getField(this.settings.connDstField);
+        if (connDstField) {
+          this.$set(this, 'connDstField', connDstField);
+          this.$set(this, 'connDstFieldTypeahead', connDstField.friendlyName);
+        }
+
+        this.$set(this, 'filtersTypeahead', '');
+
+        // get the visible headers for the sessions table configuration
+        UserService.getState('sessionsNew').then((sessionsTableRes) => {
+          const headers = sessionsTableRes.data.visibleHeaders || this.defaultColConfig.visibleHeaders;
+          this.setupColumns(headers);
+          // if the sort column setting does not match any of the visible
+          // headers, set the sort column setting to last
+          if (headers.indexOf(this.settings.sortColumn) === -1) {
+            this.settings.sortColumn = 'last';
+          }
+          resolve();
+        }).catch((error) => {
+          this.setupColumns(this.defaultColConfig.visibleHeaders);
+          resolve();
+        });
+      });
+    },
+    /* retrieves the specified user's custom column configurations */
+    getColConfigs: function () {
+      UserService.getColumnConfigs(this.userId).then((response) => {
+        this.colConfigs = response;
+      }).catch((error) => {
+        this.colConfigError = error.text;
+      });
+    },
+    /* retrieves the specified user's custom spiview fields configurations.
+     * dissects the visible spiview fields for view consumption */
+    getSpiviewConfigs: function () {
+      UserService.getSpiviewFields(this.userId).then((response) => {
+        this.spiviewConfigs = response;
+
+        for (let x = 0, xlen = this.spiviewConfigs.length; x < xlen; ++x) {
+          const config = this.spiviewConfigs[x];
+          const spiParamsArray = config.fields.split(',');
+
+          // get each field from the spi query parameter and issue
+          // a query for one field at a time
+          for (let i = 0, len = spiParamsArray.length; i < len; ++i) {
+            const param = spiParamsArray[i];
+            const split = param.split(':');
+            const fieldID = split[0];
+            const count = split[1];
+
+            const field = FieldService.getField(fieldID);
+
+            if (field) {
+              if (!config.fieldObjs) { config.fieldObjs = []; }
+
+              field.count = count;
+              config.fieldObjs.push(field);
+            }
+          }
+        }
+      }).catch((error) => {
+        this.spiviewConfigError = error.text;
+      });
+    },
+    /**
+     * Setup this.columns with a list of field objects
+     * @param {array} colIdArray The array of column ids
+     */
+    setupColumns: function (colIdArray) {
+      this.columns = [];
+      for (let i = 0, len = colIdArray.length; i < len; ++i) {
+        const field = FieldService.getField(colIdArray[i], true);
+        if (field !== undefined) {
+          this.columns.push(FieldService.getField(colIdArray[i], true));
+        }
+      }
+    }
+  },
+  beforeDestroy: function () {
+    if (clockInterval) { clearInterval(clockInterval); }
+
+    // remove userId route query parameter so that when a user
+    // comes back to this page, they are on their own settings
+    if (!this.$route.query.userId) { return; }
+    this.$router.replace({
+      query: {
+        ...this.$route.query,
+        userId: undefined
+      }
+    });
+  }
+};
+</script>
+
+<style>
+.settings-content {
+  margin-top: 90px;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-x: hidden;
+}
+.settings-content .settings-right-panel {
+  overflow-x: auto;
+}
+
+.settings-page .sub-navbar {
+  z-index: 4;
+}
+
+.settings-page .small-badge {
+  font-size: 60%;
+  margin-right: 5px;
+}
+
+.settings-page .small-badge:hover {
+  background-color: #dc3545;
+  cursor: pointer;
+}
+
+/* fixed tab buttons */
+.settings-page div.nav-pills {
+  position: fixed;
+}
+
+.settings-page .nav-separator {
+  width: 100%;
+  border-top: 1px solid var(--color-gray);
+}
+
+/* make sure the form is taller than the nav pills */
+.settings-page form:not(.b-dropdown-form) {
+  min-height: 280px;
+}
+
+.settings-page .settings-error {
+  margin-top: 6rem;
+  margin-bottom: 1rem;
+}
+
+/* apply theme color to notifier cards */
+.card {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+  background-color: var(--color-gray-lighter);
+  border: 1px solid var(--color-gray-light);
+}
+
+/* theme displays ----------------- */
+.logo-well {
+  background-color: #CCCCCC !important;
+}
+.logo-well .logos {
+  text-align: center;
+}
+.logo-well .logos img {
+  height: 100px;
+}
+
+.field {
+  cursor: pointer;
+  padding: 0 1px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+}
+.field .fa {
+  opacity: 0;
+  visibility: hidden;
+}
+.field:hover .fa {
+  opacity: 1;
+  visibility: visible;
+}
+
+.settings-page .control-label {
+  font-weight: bolder;
+}
+
+.settings-page .theme-display {
+  overflow: hidden;
+  border-radius: 6px;
+  padding-bottom: 20px;
+}
+
+.settings-page .navbar {
+  min-height: 20px;
+  height: 36px;
+  border-radius: 6px 6px 0 0;
+  z-index: 1;
+}
+
+.settings-page .navbar .arkime-logo {
+  top: 0;
+  left: 20px;
+  height: 36px;
+  position: absolute;
+}
+/* icon logos (logo in circle) are wider */
+.settings-page .navbar .arkime-logo[src*="Icon"] {
+  left: 8px;
+}
+
+.settings-page .navbar .nav {
+  position: absolute;
+  left: 50px
+}
+
+.settings-page .navbar .navbar-nav {
+  margin-right: -8px;
+}
+
+.settings-page .navbar .navbar-nav .health-green {
+  color: #00aa00;
+}
+
+.settings-page .navbar-dark a {
+  padding: 6px;
+  color: #FFFFFF;
+}
+
+.settings-page .display-sub-navbar {
+  height: 40px;
+  position: relative;
+  -webkit-box-shadow: 0 0 16px -2px black;
+     -moz-box-shadow: 0 0 16px -2px black;
+          box-shadow: 0 0 16px -2px black;
+}
+.settings-page .display-sub-navbar .input-group {
+  padding-top: 4px;
+}
+
+.settings-page .display-sub-navbar .display-sub-navbar-buttons {
+  margin-top: 4px;
+  margin-right: 4px;
+  margin-left: -10px;
+}
+
+.settings-page .display-sub-navbar .text-theme-accent {
+  display: inline-block;
+  margin-left: -20px;
+  padding-top: 11px;
+  font-size: 12px;
+}
+
+.settings-page .display-sub-sub-navbar {
+  border-radius: 0 0 6px 6px;
+  margin-top: -6px;
+  padding-top: 6px;
+}
+
+/* arkime light (default) */
+.settings-page .arkime-light-theme .navbar {
+  background-color: #212121;
+  border-color: #111111;
+}
+
+.settings-page .arkime-light-theme .navbar-dark a:hover,
+.settings-page .arkime-light-theme .navbar-dark a.active {
+  background-color: #303030;
+}
+
+.settings-page .arkime-light-theme .input-group-prepend > .input-group-text {
+  color: #333333 !important;
+  background-color: #EEEEEE !important;
+  border-color: #CCCCCC !important;
+}
+
+.settings-page .arkime-light-theme input.form-control,
+.settings-page .arkime-light-theme input.form-control:focus {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+.settings-page .arkime-light-theme .display-sub-navbar {
+  background-color: #A4C2D6;
+}
+
+.settings-page .arkime-light-theme .display-sub-sub-navbar {
+  background-color: #E6F3EB;
+}
+
+.settings-page .arkime-light-theme .display-sub-navbar .text-theme-accent {
+  color: #004C83;
+}
+
+.settings-page .arkime-light-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #303030;
+  border-color: #212121;
+}
+.settings-page .arkime-light-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #004C83;
+  border-color: #003A64;
+}
+.settings-page .arkime-light-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #66B689;
+  border-color: #52AC79;
+}
+.settings-page .arkime-light-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #2F7D86;
+  border-color: #27686F;
+}
+
+.settings-page .arkime-light-theme .dropdown-menu {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .arkime-light-theme .dropdown-menu .dropdown-item {
+  color: #212529;
+  padding: 2px 8px;
+}
+.settings-page .arkime-light-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #EEEEEE;
+  color: #212529;
+}
+.settings-page .arkime-light-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #FFFFFF;
+  color: #212529;
+}
+.settings-page .arkime-light-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #303030;
+  color: #FFFFFF;
+}
+
+.settings-page .arkime-light-theme .field {
+  color: #004C83;
+}
+.settings-page .arkime-light-theme .field:hover {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+}
+
+.settings-page .arkime-light-theme .btn {
+  color: #FFFFFF !important;
+}
+
+/* arkime dark */
+.settings-page .arkime-dark-theme .navbar {
+  background-color: #9E9E9E;
+  border-color: #8E8E8E;
+}
+
+.settings-page .arkime-dark-theme .navbar-dark a:hover,
+.settings-page .arkime-dark-theme .navbar-dark a.active {
+  background-color: #ADADAD;
+}
+
+.settings-page .arkime-dark-theme .input-group-prepend > .input-group-text {
+  color: #FFFFFF !important;
+  background-color: #303030 !important;
+  border-color: #CCCCCC !important;
+}
+
+.settings-page .arkime-dark-theme .display-sub-navbar {
+  background-color: #003B66;
+}
+
+.settings-page .arkime-dark-theme .display-sub-sub-navbar {
+  background-color: #237543;
+}
+
+.settings-page .arkime-dark-theme .display-sub-navbar .text-theme-accent {
+  color: #D1E9DC;
+}
+
+.settings-page .arkime-dark-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #ADADAD;
+  border-color: #9E9E9E;
+}
+.settings-page .arkime-dark-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #80A9C7;
+  border-color: #6B9BBE;
+}
+.settings-page .arkime-dark-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #079B72;
+  border-color: #077D5C;
+}
+.settings-page .arkime-dark-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #66B689;
+  border-color: #52AC79;
+}
+
+.settings-page .arkime-dark-theme .dropdown-menu {
+  background-color: #303030;
+  border-color: #555555;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .arkime-dark-theme .dropdown-menu .dropdown-item {
+  color: #FFFFFF;
+  padding: 2px 8px;
+}
+.settings-page .arkime-dark-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #555555;
+  color: #FFFFFF;
+}
+.settings-page .arkime-dark-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #555555;
+  color: #FFFFFF;
+}
+.settings-page .arkime-dark-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #ADADAD;
+  color: #303030;
+}
+
+.settings-page .arkime-dark-theme .field {
+  color: #D1E9DC;
+}
+.settings-page .arkime-dark-theme .field:hover {
+  background-color: #303030;
+  border-color: #555555;
+}
+
+.settings-page .arkime-dark-theme .btn {
+  color: #FFFFFF !important;
+}
+
+.settings-page .arkime-dark-theme input.form-control {
+  color: #FFFFFF;
+  background-color: #222222;
+}
+
+/* purp */
+.settings-page .purp-theme .navbar {
+  background-color: #530763;
+  border-color: #360540;
+}
+
+.settings-page .purp-theme .navbar-dark a:hover,
+.settings-page .purp-theme .navbar-dark a.active {
+  background-color: #830b9c;
+}
+
+.settings-page .purp-theme .input-group-prepend > .input-group-text {
+  color: #333333 !important;
+  background-color: #EEEEEE !important;
+  border-color: #CCCCCC !important;
+}
+
+.settings-page .purp-theme input.form-control,
+.settings-page .purp-theme input.form-control:focus {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+.settings-page .purp-theme .display-sub-navbar {
+  background-color: #EDFCFF;
+}
+
+.settings-page .purp-theme .display-sub-sub-navbar {
+  background-color: #FFF7E5;
+}
+
+.settings-page .purp-theme .display-sub-navbar .text-theme-accent {
+  color: #76207d;
+}
+
+.settings-page .purp-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #830B9C;
+  border-color: #530763;
+}
+.settings-page .purp-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #1F1FA5;
+  border-color: #1A1A87;
+}
+.settings-page .purp-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #079B72;
+  border-color: #077D5C;
+}
+.settings-page .purp-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #ECB30A;
+  border-color: #CD9A09;
+}
+
+.settings-page .purp-theme .dropdown-menu {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .purp-theme .dropdown-menu .dropdown-item {
+  color: #212529;
+  padding: 2px 8px;
+}
+.settings-page .purp-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #EEEEEE;
+  color: #212529;
+}
+.settings-page .purp-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #FFFFFF;
+  color: #212529;
+}
+.settings-page .purp-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #830B9C;
+  color: #FFFFFF;
+}
+
+.settings-page .purp-theme .field {
+  color: #76207d;
+}
+.settings-page .purp-theme .field:hover {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+}
+
+.settings-page .purp-theme .btn {
+  color: #FFFFFF !important;
+}
+
+/* blue */
+.settings-page .blue-theme .navbar {
+  background-color: #163254;
+  border-color: #000000;
+}
+
+.settings-page .blue-theme .navbar-dark a:hover,
+.settings-page .blue-theme .navbar-dark a.active {
+  background-color: #214b78;
+}
+
+.settings-page .blue-theme .input-group-prepend > .input-group-text {
+  color: #333333 !important;
+  background-color: #EEEEEE !important;
+  border-color: #CCCCCC !important;
+}
+
+.settings-page .blue-theme input.form-control,
+.settings-page .blue-theme input.form-control:focus {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+.settings-page .blue-theme .display-sub-navbar {
+  background-color: #DBECE7;
+}
+
+.settings-page .blue-theme .display-sub-sub-navbar {
+  background-color: #FFF7E5;
+}
+
+.settings-page .blue-theme .display-sub-navbar .text-theme-accent {
+  color: #9A4E93;
+}
+
+.settings-page .blue-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #214B78;
+  border-color: #530763;
+}
+.settings-page .blue-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #3D7B7E;
+  border-color: #306264;
+}
+.settings-page .blue-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #42B7C5;
+  border-color: #33919b;
+}
+.settings-page .blue-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #ECB30A;
+  border-color: #CD9A09;
+}
+
+.settings-page .blue-theme .dropdown-menu {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .blue-theme .dropdown-menu .dropdown-item {
+  color: #212529;
+  padding: 2px 8px;
+}
+.settings-page .blue-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #EEEEEE;
+  color: #212529;
+}
+.settings-page .blue-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #FFFFFF;
+  color: #212529;
+}
+.settings-page .blue-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #214B78;
+  color: #FFFFFF;
+}
+
+.settings-page .green-theme .field {
+  color: #9A4E93;
+}
+.settings-page .green-theme .field:hover {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+}
+
+.settings-page .blue-theme .btn {
+  color: #FFFFFF !important;
+}
+
+/* green */
+.settings-page .green-theme .navbar {
+  background-color: #2A6E3d;
+  border-color: #235A32;
+}
+
+.settings-page .green-theme .navbar-dark a:hover,
+.settings-page .green-theme .navbar-dark a.active {
+  background-color: #2a7847;
+}
+
+.settings-page .green-theme .input-group-prepend > .input-group-text {
+  color: #333333 !important;
+  background-color: #EEEEEE !important;
+  border-color: #CCCCCC !important;
+}
+
+.settings-page .green-theme input.form-control,
+.settings-page .green-theme input.form-control:focus {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+.settings-page .green-theme .display-sub-navbar {
+  background-color: #DBECE7;
+}
+
+.settings-page .green-theme .display-sub-sub-navbar {
+  background-color: #FDFFE2;
+}
+
+.settings-page .green-theme .display-sub-navbar .text-theme-accent {
+  color: #38738d;
+}
+
+.settings-page .green-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #2A7847;
+  border-color: #2A6E3d;
+}
+.settings-page .green-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #3D7B7E;
+  border-color: #306264;
+}
+.settings-page .green-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #91C563;
+  border-color: #7EAA57;
+}
+.settings-page .green-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #BECF14;
+  border-color: #ADBC12;
+}
+
+.settings-page .green-theme .dropdown-menu {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .green-theme .dropdown-menu .dropdown-item {
+  color: #212529;
+  padding: 2px 8px;
+}
+.settings-page .green-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #EEEEEE;
+  color: #212529;
+}
+.settings-page .green-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #FFFFFF;
+  color: #212529;
+}
+.settings-page .green-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #2A7847;
+  color: #FFFFFF;
+}
+
+.settings-page .blue-theme .field {
+  color: #38738d;
+}
+.settings-page .blue-theme .field:hover {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+}
+
+.settings-page .green-theme .btn {
+  color: #FFFFFF !important;
+}
+
+/* cotton candy */
+.settings-page .cotton-candy-theme .navbar {
+  background-color: #B0346D;
+  border-color: #9B335A;
+}
+
+.settings-page .cotton-candy-theme .navbar-dark a:hover,
+.settings-page .cotton-candy-theme .navbar-dark a.active {
+  background-color: #c43d75;
+}
+
+.settings-page .cotton-candy-theme .input-group-prepend > .input-group-text {
+  color: #333333 !important;
+  background-color: #EEEEEE !important;
+  border-color: #CCCCCC !important;
+}
+
+.settings-page .cotton-candy-theme input.form-control,
+.settings-page .cotton-candy-theme input.form-control:focus {
+  color: #000000;
+  background-color: #FFFFFF;
+}
+
+.settings-page .cotton-candy-theme .display-sub-navbar {
+  background-color: #D7F1FF;
+}
+
+.settings-page .cotton-candy-theme .display-sub-sub-navbar {
+  background-color: #FFF8DD;
+}
+
+.settings-page .cotton-candy-theme .display-sub-navbar .text-theme-accent {
+  color: #9A4E93;
+}
+
+.settings-page .cotton-candy-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #C43D75;
+  border-color: #B0346D;
+}
+.settings-page .cotton-candy-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #3CAED2;
+  border-color: #389BBE;
+}
+.settings-page .cotton-candy-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #079B72;
+  border-color: #077D5C;
+}
+.settings-page .cotton-candy-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #F39C12;
+  border-color: #D78A10;
+}
+
+.settings-page .cotton-candy-theme .dropdown-menu {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .cotton-candy-theme .dropdown-menu .dropdown-item {
+  color: #212529;
+  padding: 2px 8px;
+}
+.settings-page .cotton-candy-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #EEEEEE;
+  color: #212529;
+}
+.settings-page .cotton-candy-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #FFFFFF;
+  color: #212529;
+}
+.settings-page .cotton-candy-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #C43D75;
+  color: #FFFFFF;
+}
+
+.settings-page .cotton-candy-theme .field {
+  color: #9A4E93;
+}
+.settings-page .cotton-candy-theme .field:hover {
+  background-color: #FFFFFF;
+  border-color: #EEEEEE;
+}
+
+.settings-page .cotton-candy-theme .btn {
+  color: #FFFFFF !important;
+}
+
+/* green on black */
+.settings-page .dark-2-theme .navbar {
+  background-color: #363A7D;
+  border-color: #2F2F5F;
+}
+
+.settings-page .dark-2-theme .navbar-dark a:hover,
+.settings-page .dark-2-theme .navbar-dark a.active {
+  background-color: #444a9b;
+}
+
+.settings-page .dark-2-theme .display-sub-navbar {
+  background-color: #0F2237;
+}
+
+.settings-page .dark-2-theme .display-sub-sub-navbar {
+  background-color: #191919;
+}
+
+.settings-page .dark-2-theme .display-sub-navbar .text-theme-accent {
+  color: #00CA16;
+}
+
+.settings-page .dark-2-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #444A9B;
+  border-color: #363A7D;
+}
+.settings-page .dark-2-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #2E5D9B;
+  border-color: #264B7E;
+}
+.settings-page .dark-2-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #00BB20;
+  border-color: #009D1D;
+}
+.settings-page .dark-2-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #686868;
+  border-color: #4B4B4B;
+}
+
+.settings-page .dark-2-theme .input-group-prepend > .input-group-text {
+  color: #C7C7C7 !important;
+  background-color: #222222 !important;
+  border-color: #AAAAAA !important;
+}
+
+.settings-page .dark-2-theme .dropdown-menu {
+  background-color: #222222;
+  border-color: #555555;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .dark-2-theme .dropdown-menu .dropdown-item {
+  color: #C7C7C7;
+  padding: 2px 8px;
+}
+.settings-page .dark-2-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #555555;
+  color: #C7C7C7;
+}
+.settings-page .dark-2-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #222222;
+  color: #C7C7C7;
+}
+.settings-page .dark-2-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #444A9B;
+  color: #333333;
+}
+
+.settings-page .dark-2-theme .field {
+  color: #00CA16;
+}
+.settings-page .dark-2-theme .field:hover {
+  background-color: #222222;
+  border-color: #555555;
+}
+
+.settings-page .dark-2-theme .btn {
+  color: #FFFFFF !important;
+}
+
+.settings-page .dark-2-theme input.form-control {
+  color: #FFFFFF;
+  background-color: #111111;
+}
+
+/* Dark Blue */
+.settings-page .dark-3-theme .navbar {
+  background-color: #9F9F9F;
+  border-color: #C3C3C3;
+}
+
+.settings-page .dark-3-theme .navbar-dark a:hover,
+.settings-page .dark-3-theme .navbar-dark a.active {
+  background-color: #8A8A8A;
+}
+
+.settings-page .dark-3-theme .navbar-dark li.active a {
+  color: #FFFFFF;
+  background-color: #C3C3C3 !important;
+}
+
+.settings-page .dark-3-theme .display-sub-navbar {
+  background-color: #124B47;
+}
+
+.settings-page .dark-3-theme .display-sub-sub-navbar {
+  background-color: #460C3A;
+}
+.settings-page .dark-3-theme .display-sub-navbar .text-theme-accent{
+  color: #A6A8E2;
+}
+
+.settings-page .dark-3-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: #8A8A8A;
+  border-color: #9F9F9F;
+}
+.settings-page .dark-3-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: #2AA198;
+  border-color: #23837B;
+}
+.settings-page .dark-3-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: #268BD2;
+  border-color: #1F76B4;
+}
+.settings-page .dark-3-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: #D33682;
+  border-color: #B42C72;
+}
+
+.settings-page .dark-3-theme .input-group-prepend > .input-group-text {
+  color: #ADC1C3 !important;
+  background-color: #002833 !important;
+  border-color: #AAAAAA !important;
+}
+
+.settings-page .dark-3-theme .dropdown-menu {
+  background-color: #002833;
+  border-color: #555555;
+  padding: 2px 0;
+  font-size: .85rem;
+  min-width: 12rem;
+}
+.settings-page .dark-3-theme .dropdown-menu .dropdown-item {
+  color: #ADC1C3;
+  padding: 2px 8px;
+}
+.settings-page .dark-3-theme .dropdown-menu .dropdown-item:hover {
+  background-color: #555555;
+  color: #ADC1C3;
+}
+.settings-page .dark-3-theme .dropdown-menu .dropdown-item:focus {
+  background-color: #002833;
+  color: #ADC1C3;
+}
+.settings-page .dark-3-theme .dropdown-menu li.active .dropdown-item {
+  background-color: #8A8A8A;
+  color: #333333;
+}
+
+.settings-page .dark-3-theme .field {
+  color: #A6A8E2;
+}
+.settings-page .dark-3-theme .field:hover {
+  background-color: #002833;
+  border-color: #555555;
+}
+
+.settings-page .dark-3-theme .btn {
+  color: #FFFFFF !important;
+}
+
+.settings-page .dark-3-theme input.form-control {
+  color: #EEEEEE;
+  background-color: #222222;
+}
+
+/* Custom */
+.settings-page .custom-theme .theme-display {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-box-shadow: 0 0 16px -2px black;
+     -moz-box-shadow: 0 0 16px -2px black;
+          box-shadow: 0 0 16px -2px black;
+}
+
+.settings-page .custom-theme .navbar {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-darker);
+}
+.settings-page .custom-theme .navbar a.nav-item {
+  color: var(--color-button);
+}
+.settings-page .custom-theme .navbar a.nav-item:hover,
+.settings-page .custom-theme .navbar a.nav-item.active {
+  background-color: var(--color-primary);
+}
+
+.settings-page .custom-theme .display-sub-navbar {
+  background-color: var(--color-secondary-lightest);
+}
+
+.settings-page .custom-theme .display-sub-sub-navbar {
+  border-radius: 0;
+  height: 46px;
+  background-color: var(--color-quaternary-lightest);
+  -webkit-box-shadow: 0 0 16px -2px black;
+     -moz-box-shadow: 0 0 16px -2px black;
+          box-shadow: 0 0 16px -2px black;
+}
+
+.settings-page .custom-theme .display-sub-navbar .btn-theme-primary-display {
+  color: #FFFFFF;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary-dark);
+}
+.settings-page .custom-theme .display-sub-navbar .btn-theme-secondary-display {
+  color: #FFFFFF;
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary-dark);
+}
+.settings-page .custom-theme .display-sub-navbar .btn-theme-tertiary-display {
+  color: #FFFFFF;
+  background-color: var(--color-tertiary);
+  border-color: var(--color-tertiary-dark);
+}
+.settings-page .custom-theme .display-sub-navbar .btn-theme-quaternary-display {
+  color: #FFFFFF;
+  background-color: var(--color-quaternary);
+  border-color: var(--color-quaternary-dark);
+}
+
+.settings-page .custom-theme .dropdown-menu {
+  color: var(--color-foreground);
+  background-color: var(--color-background, #FFFFFF);
+  border-color: var(--color-gray-light);
+}
+
+.settings-page .custom-theme .field {
+  color: var(--color-foreground-accent);
+}
+.settings-page .custom-theme .field:hover {
+  z-index: 4;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-light);
+}
+
+.settings-page .custom-theme .session-detail-ts {
+  color: var(--color-foreground-accent);
+  padding: 0 4px;
+}
+.settings-page .custom-theme .sessionsrc > pre {
+  color: var(--color-src, #CA0404);
+  padding: 2px 4px;
+}
+.settings-page .custom-theme .sessiondst > pre {
+  color: var(--color-dst, #0000FF);
+  padding: 2px 4px;
+}
+</style>

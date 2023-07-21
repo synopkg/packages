@@ -1,0 +1,57 @@
+Source: airgeddon
+Section: net
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.6.2
+Homepage: https://github.com/v1s1t0r1sh3r3/airgeddon
+Vcs-Browser: https://gitlab.com/kalilinux/packages/airgeddon
+Vcs-Git: https://gitlab.com/kalilinux/packages/airgeddon.git
+
+Package: airgeddon
+Architecture: any
+Depends: aircrack-ng,
+         bash (>= 4.2),
+         gawk,
+         iproute2,
+         iw,
+         pciutils,
+         procps,
+         tmux,
+         xterm,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: asleap,
+          beef-xss,
+          bettercap,
+          bully,
+          ccze,
+          crunch,
+          dnsmasq,
+          ethtool,
+          ettercap-text-only,
+          hashcat,
+          hcxdumptool,
+          hcxtools,
+          hostapd,
+          hostapd-wpe,
+          iptables,
+          isc-dhcp-server,
+          john,
+          lighttpd,
+          mdk3,
+          mdk4,
+          nftables,
+          openssl,
+          pixiewps,
+          reaver,
+          rfkill,
+	  systemd,
+          tshark,
+          usbutils,
+          x11-utils,
+          x11-xserver-utils
+Description: multi-use bash script for Linux systems to audit wireless networks
+ airgeddon is a menu driven 3rd party tools wrapper to audit wireless networks
+ with many features.

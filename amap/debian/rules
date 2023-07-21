@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --no-parallel
+
+override_dh_auto_configure:
+	./configure --prefix=/usr
+
+override_dh_auto_install:
+	dh_auto_install
+	mkdir -p debian/amap/usr/share debian/amap/etc
+	mv debian/amap/usr/man debian/amap/usr/share/
+	mv debian/amap/usr/etc debian/amap/etc/amap

@@ -1,0 +1,22 @@
+From: netniV <netniV@users.noreply.github.com>
+Date: Tue, 14 Nov 2017 13:06:32 +0000
+Subject: [PATCH] Update meterpreter.sl
+
+Fix issue with Auxiliary scanner output
+---
+ armitage/src/main/resources/scripts/meterpreter.sl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/armitage/src/main/resources/scripts/meterpreter.sl b/armitage/src/main/resources/scripts/meterpreter.sl
+index 77447d3..1e1d989 100644
+--- a/armitage/src/main/resources/scripts/meterpreter.sl
++++ b/armitage/src/main/resources/scripts/meterpreter.sl
+@@ -378,7 +378,7 @@ sub launch_msf_scans {
+ 			local('$text $host $port $hosts $modules $module $options');
+ 
+ 			foreach $text (split("\n", $3)) {
+-				if ($text ismatch '... (.*?): +- \1:(\d+) - TCP OPEN') {
++				if ($text ismatch '... (.*?):\s+-\s+\1:(\d+)\s+-\s+TCP OPEN') {
+ 					($host, $port) = matched();
+ 					push(%discover[$port], $host);
+ 				}

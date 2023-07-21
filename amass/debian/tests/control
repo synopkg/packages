@@ -1,0 +1,3 @@
+Tests: debian/tests/runtests.sh
+Depends: @
+Restrictions: needs-internet, allow-stderr

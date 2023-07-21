@@ -1,0 +1,35 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Thu, 27 Jan 2022 14:11:18 +0100
+Subject: Remove mentions of old metasploit versions
+
+---
+ armitage/src/main/resources/scripts/armitage.sl    | 2 +-
+ armitage/src/main/resources/scripts/preferences.sl | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/armitage/src/main/resources/scripts/armitage.sl b/armitage/src/main/resources/scripts/armitage.sl
+index 36df202..9c79ab5 100644
+--- a/armitage/src/main/resources/scripts/armitage.sl
++++ b/armitage/src/main/resources/scripts/armitage.sl
+@@ -261,7 +261,7 @@ sub _connectToMetasploit {
+ 				[JOptionPane showMessageDialog: $null, [$exception getMessage]];
+ 			}
+ 			else {
+-				[JOptionPane showMessageDialog: $null, "Could not connect to database.\n\nKali Linux 1.x users, try:\n\nservice postgresql start\nservice metasploit start\nservice metasploit stop\n\nKali Linux 2.x users, try:\n\n/etc/init.d/postgresql start\n\n" . [$exception getMessage]];
++				[JOptionPane showMessageDialog: $null, "Could not connect to database.\n\nKali Linux users, try:\n\nservice postgresql start\n\n" . [$exception getMessage]];
+ 			}
+ 			if ($msfrpc_handle) { closef($msfrpc_handle); }
+ 			[System exit: 0];
+diff --git a/armitage/src/main/resources/scripts/preferences.sl b/armitage/src/main/resources/scripts/preferences.sl
+index b14a240..84c0082 100644
+--- a/armitage/src/main/resources/scripts/preferences.sl
++++ b/armitage/src/main/resources/scripts/preferences.sl
+@@ -181,7 +181,7 @@ sub loadDatabasePreferences {
+ 	}
+ 
+ 	if (!-exists $yaml_file) {
+-		throw [new RuntimeException: "I can not find a database.yml file. I *really* need it.\nHere's how to fix this:\n\n1. Try setting MSF_DATABASE_CONFIG to a file that exists.\n2. Did you use sudo to start this program? Try sudo -E\n3. Kali Linux 1.x users, try this:\n\n\tservice metasploit start\n\tservice metasploit stop\n\nKali Linux 2.x users, try this:\n\nmsfdb init"];
++		throw [new RuntimeException: "I can not find a database.yml file. I *really* need it.\nHere's how to fix this:\n\n1. Try setting MSF_DATABASE_CONFIG to a file that exists.\n2. Did you use sudo to start this program? Try sudo -E\n3. Kali Linux users, try this:\n\nmsfdb init"];
+ 	}
+ 	else if (!-canread $yaml_file) {
+ 		throw [new RuntimeException: "I do not have permission to read: $yaml_file $+ .\nRun me as root please."];

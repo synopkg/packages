@@ -1,0 +1,32 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 13 Dec 2022 17:40:12 +0100
+Subject: Use lua 5.4
+
+We need to add the version in Debian because the lib is not found wihtout
+the version
+---
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 7ef4955..fa24b39 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -420,7 +420,7 @@ AC_ARG_WITH(lua,
+ [  --with-lua=DIR use lua build directory],
+ [ case "$withval" in
+   yes)
+-    AC_CHECK_LIB(lua, main,,AC_MSG_ERROR(please install lua library))
++    AC_CHECK_LIB(lua5.4, main,,AC_MSG_ERROR(please install lua library))
+      ;;
+   no)
+      AC_MSG_RESULT(no)
+@@ -441,7 +441,7 @@ AC_ARG_WITH(lua,
+     ;;
+ esac ], [
+   LUA_CFLAGS=
+-  LUA_LIBS=-llua
++  LUA_LIBS=-llua5.4
+ AC_MSG_RESULT(yes) ])
+ AC_SUBST(LUA_CFLAGS)
+ AC_SUBST(LUA_LIBS)

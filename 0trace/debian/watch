@@ -1,0 +1,6 @@
+version=4
+opts=dversionmangle=s/.*/0.No-Track/ \
+https://people.debian.org/~eriberto/ FakeWatchNoUpstreamTrackingForThisPackage-(\d\S+)\.gz
+# Originally available here, upstream doesn't tag the tarball with a version,
+# and hasn't had a release since 2007.
+#https://lcamtuf.coredump.cx/soft 0trace\.tgz

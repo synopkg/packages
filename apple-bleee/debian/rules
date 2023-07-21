@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+
+# output every command that modifies files on the build system.
+#export DH_VERBOSE = 1
+
+%:
+	dh $@ --with python3
+
+override_dh_fixperms:
+	dh_fixperms
+	find debian/apple-bleee/usr/share/apple-bleee/npyscreen/ -type f -print0 | xargs -0 chmod 644
+
+override_dh_installdocs:
+	dh_installdocs
+	mv debian/apple-bleee/usr/share/apple-bleee/hash2phone/README.md debian/apple-bleee/usr/share/doc/apple-bleee/README-hash2phone.md

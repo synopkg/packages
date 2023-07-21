@@ -1,0 +1,18 @@
+Source: armitage
+Section: utils
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Devon Kearns <dookie@kali.org>
+Build-Depends: debhelper-compat (= 12), ant, javahelper, openjdk-11-jdk
+Standards-Version: 4.6.2
+Homepage: https://github.com/r00t0v3rr1d3/armitage
+Vcs-Git: https://gitlab.com/kalilinux/packages/armitage.git
+Vcs-Browser: https://gitlab.com/kalilinux/packages/armitage
+
+Package: armitage
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-11-jre, metasploit-framework
+Description: Cyber attack management for Metasploit
+ Armitage is a scriptable red team collaboration tool for Metasploit that
+ visualizes targets, recommends exploits, and exposes the advanced post-
+ exploitation features in the framework.

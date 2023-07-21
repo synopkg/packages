@@ -1,0 +1,61 @@
+amap (5.4-4kali3) kali-dev; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Switch to debhelper compat level 13
+  * Bump Standards-Version to 4.5.1
+  [ Ben Wilson ]
+  * Update email address
+  [ Kali Janitor ]
+  * Update standards version to 4.6.1, no changes needed.
+  [ Steev Klimaszewski ]
+  * d/watch: Update to point out there is no longer a site.
+  * Prepare for Release
+
+ -- Steev Klimaszewski <steev@kali.org>  Thu, 05 Jan 2023 16:24:36 -0600
+
+amap (5.4-4kali2) kali-dev; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Update Vcs-* fields for the move to gitlab.com
+  * Add GitLab's CI configuration file
+  * Configure git-buildpackage for Kali
+  * Update URL in GitLab's CI configuration file
+
+  [ Kali Janitor ]
+  * Use secure copyright file specification URI.
+  * Use secure URI in Homepage field.
+  * Set debhelper-compat version in Build-Depends.
+  * Update standards version to 4.2.1, no changes needed.
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 30 Sep 2020 09:56:38 +0200
+
+amap (5.4-4kali1) kali-dev; urgency=medium
+
+  * Add kali marker to the version string.
+  * Cleanup the packaging.
+
+ -- Raphaël Hertzog <buxy@kali.org>  Mon, 27 Aug 2018 16:38:28 +0200
+
+amap (5.4-4) kali; urgency=low
+
+  * Removed desktop file per new menu structure
+
+ -- Mati Aharoni <muts@kali.org>  Thu, 13 Dec 2012 16:31:54 -0500
+
+amap (5.4-3) kali; urgency=low
+
+  * Added desktop file
+
+ -- Mati Aharoni <muts@kali.org>  Sat, 01 Dec 2012 10:16:26 -0500
+
+amap (5.4-2) kali; urgency=low
+
+  * Upload with no changes to rebuild in kali/wheezy environment.
+
+ -- Raphaël Hertzog <buxy@kali.org>  Mon, 13 Aug 2012 22:20:44 +0200
+
+amap (5.4-1) kali; urgency=low
+
+  * Initial release.
+
+ -- Raphaël Hertzog <buxy@kali.org>  Mon, 02 Apr 2012 13:34:23 +0000

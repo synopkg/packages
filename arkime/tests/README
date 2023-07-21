@@ -1,0 +1,60 @@
+Moloch has both capture and viewer regression tests that are run seperately.
+
+* Requires Test::Differences pacakge: `yum install perl-Test-Differences` or `cpan Test::Differences`
+
+1) Capture
+Tests if the capture pcap parsers produce consistent results.  
+Each pcap file is run thru Moloch capture with the results compared against the matching .test file.
+The pcap file have been mostly anonymized.  mostly...  If you see data that shouldn't be there please let us know.
+If you have simple sample pcap files that we can use please share them!
+
+Run ./tests.pl <optional PCAP files>
+
+PCAP files with known non Moloch source:
+bigendian.pcap - https://bugs.wireshark.org/bugzilla/show_bug.cgi?id=7221
+smbtorture-ntlmssp*.pcap - Subset of https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=smbtorture.cap.gz
+dns-wireshark.pcap - https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=dns.cap
+v6-http.pcap - https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=v6-http.cap
+v6.pcap - https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=v6.pcap
+gre-sample.pcap - http://www.stearns.org/pcap/gre-sample.pcap
+ldap-ssl.pcap  -  Reformat of https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=ldap-ssl.pcapng
+ldap-and-search.pcap - https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=ldap-and-search.pcap
+quic24-wireshark.pcap - Reformat of https://bugs.wireshark.org/bugzilla/attachment.cgi?id=13844
+quic33-wireshark.pcap - https://bugs.wireshark.org/bugzilla/attachment.cgi?id=14565
+dns-notify.pcap - http://pcapr.net/view/bortzmeyer+pcapr/2013/8/1/13/dns-notify.pcap.html
+pppoe.pcap - Subset of http://www.pcapr.net/view/tyson.key/2009/8/0/14/AOLTraffic_00000_20071029163901.html
+fbzero-android.pcap - Subset of https://github.com/ntop/nDPI/issues/300#issuecomment-261893575
+wireshark-bdat.pcap - https://www.wireshark.org/lists/wireshark-bugs/201610/msg00410.html
+mpls-basic.pcap - https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=mpls-basic.cap
+wireshark-dhcp.pcap - https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=dhcp.pcap
+CVE-2018-6794.pcap - https://redmine.openinfosecfoundation.org/issues/2427
+sctp-www.pcap - https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=sctp-www.cap
+80211http.pcap - Subset of https://github.com/aol/moloch/issues/834
+icmp-frame-relay.pcap - http://packetlife.net/captures/protocol/fr/  named ICMP_across_frame_relay.cap
+ipv6-in-ipv4.pcap - http://packetlife.net/captures/protocol/ipv6/  named IPv6_in_IP.cap
+6-4-gre-ppp-udp-4-dns.pcap - http://packetlife.net/captures/protocol/ipv6/  named gre_and_4over6.cap
+wireshark-esp.pcap - Subset of capture.pcap from https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=view&target=ipsec_esp_capture_1.tgz
+gre-erspan.pcap - https://www.cloudshark.org/captures/76ce4261df29
+gre-erspan-vxlan.pcap - https://github.com/arkime/arkime/issues/1676
+gtp-u.pcap - https://www.cloudshark.org/captures/374cf36574b6
+gtp-iphone.pcap - Subset of http://www.pcapr.net/view/paulc/2014/10/5/11/iphone6_volte_limited.pcap.html
+http-post-upload.pcap - https://github.com/aol/moloch/issues/1037
+vxlan.pcap - https://www.cloudshark.org/captures/670aeb7bad79
+wireshark-dtls0.pcap - Subset of https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=snakeoil.tgz
+wireshark-dtls12.pcap - Subset of https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=ThreadCommissioning-JPAKE-DTLS-1.pcapng
+cloudshark-dtls1.pcap - Subset of https://www.cloudshark.org/captures/7d2ae4cfe155
+cloudshark-bgp-md5.pcap - Subset of https://www.cloudshark.org/captures/2ca4c6348a99
+cloudshark-arp.pcap - https://www.cloudshark.org/captures/e4d6ea732135
+wireshark-lldp.pcap - merge of https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=lldp.minimal.pcap https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=lldp.detailed.pcap https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=lldpmed_civicloc.pcap
+packetlife-ISIS_level2_adjacency.pcap - https://packetlife.net/media/captures/ISIS_p2p_adjacency.cap
+wireshark-retrans.pcap - Subset of https://wiki.wireshark.org/SampleCaptures?action=AttachFile&do=get&target=Example1.pcap
+tcpdump-geneve.pcap - https://github.com/the-tcpdump-group/tcpdump/blob/master/tests/geneve.pcap
+SNMPv2c_get_requests.pcap - https://packetlife.net/media/captures/SNMPv2c_get_requests.cap
+
+
+2) Viewer
+Test various viewer apis.  Requires that an elasticsearch already be running on the local host.
+
+Run ./tests.pl --viewer <optional testname.t files>
+
+

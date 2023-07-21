@@ -1,0 +1,7 @@
+/var/lib/arkime/logs/capture.log /var/lib/arkime/logs/viewer.log /var/lib/arkime/logs/wise.log /var/lib/arkime/logs/cont3xt.log /var/lib/arkime/logs/parliament.log {
+    daily
+    rotate 14
+    notifempty
+    copytruncate
+    missingok
+}

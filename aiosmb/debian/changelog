@@ -1,0 +1,18 @@
+aiosmb (0.4.4-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository-Browse.
+  * Update standards version to 4.6.1, no changes needed.
+  * Update standards version to 4.6.2, no changes needed.
+
+  [ Sophie Brun ]
+  * New upstream version 0.4.4
+  * Update debian/copyright
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 23 Mar 2023 15:44:14 +0100
+
+aiosmb (0.2.50-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 18 Jan 2022 11:24:33 +0100

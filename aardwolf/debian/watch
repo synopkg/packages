@@ -1,0 +1,4 @@
+version=4
+opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%aardwolf-$1.tar.gz%" \
+   https://github.com/skelsec/aardwolf/tags \
+   (?:.*?/)?v?(\d[\d.]*)\.tar\.gz debian uupdate

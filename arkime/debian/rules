@@ -1,0 +1,74 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE = 1
+
+export LUA_LIBS = -llua5.4
+export DEB_CFLAGS_MAINT_APPEND = -I/usr/include/lua5.4/
+export HOME=$(CURDIR)/debian/fakehomenpm
+export PATH := $(CURDIR)/debian/node/bin:$(PATH)
+
+NODE_VERSION=16.16.0
+# it can be x64 arm64 armv7l
+ifeq ($(DEB_HOST_ARCH),amd64)
+        ARCH=x64
+else ifeq ($(DEB_HOST_ARCH),arm64)
+        ARCH=arm64
+else ifeq ($(DEB_HOST_ARCH),armhf)
+        ARCH=armv7l
+endif
+
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- --with-lua=yes --prefix=$(CURDIR)/builddir
+
+execute_after_dh_auto_build:
+	cd capture/plugins/lua && make
+	cd capture/plugins/daq && make
+# We can't build the following plugins, build-deps are not available in
+# Kali:
+#	cd capture/plugins/pfring && make
+#	cd capture/plugins/snf && make
+
+override_dh_auto_test:
+
+execute_before_dh_auto_install:
+	wget https://nodejs.org/download/release/v$(NODE_VERSION)/node-v$(NODE_VERSION)-linux-$(ARCH).tar.gz -O $(CURDIR)/debian/node.tar.gz
+	cd debian && tar -xzvf node.tar.gz
+	mv debian/node-v$(NODE_VERSION)-linux-$(ARCH) debian/node
+
+override_dh_install:
+	dh_install -Xeslint -Xnpmignore -Xpycache -Xgitattributes -Xgitmodules
+	# move *.service to correct dir and rename them
+	mkdir -p $(CURDIR)/debian/arkime/lib/systemd/system
+	for fileservice in $(CURDIR)/debian/arkime/usr/lib/arkime/etc/*.service; do \
+		newname=$$(echo $$(basename $$fileservice) | cut -d. -f1,3); \
+		mv $$fileservice $(CURDIR)/debian/arkime/lib/systemd/system/$$newname; \
+	done
+	# move config files to /etc/arkime
+	mkdir -p $(CURDIR)/debian/arkime/etc/arkime
+	mv $(CURDIR)/debian/arkime/usr/lib/arkime/etc/* $(CURDIR)/debian/arkime/etc/arkime/
+	rm -rf $(CURDIR)/debian/arkime/usr/lib/arkime/etc
+
+	# embed correct version of node
+	cp $(CURDIR)/debian/node/bin/node $(CURDIR)/debian/arkime/usr/lib/arkime/bin/node
+
+execute_after_dh_fixperms:
+	chmod 644 $(CURDIR)/debian/arkime/etc/arkime/*.example
+	chmod 644 $(CURDIR)/debian/arkime/etc/arkime/*.sample
+
+override_dh_dwz:
+	dh_dwz -Xdebian/arkime/usr/lib/arkime/node_modules
+
+override_dh_strip:
+	dh_strip -Xdebian/arkime/usr/lib/arkime/node_modules
+
+override_dh_shlibdeps:
+	dh_shlibdeps -Xdebian/arkime/usr/lib/arkime/node_modules
+
+execute_after_dh_clean:
+	rm -rf $(CURDIR)/debian/fakehomenpm
+	rm -rf $(CURDIR)/debian/bin
+	rm -rf $(CURDIR)/debian/node*

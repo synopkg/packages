@@ -1,0 +1,20 @@
+# ignore in node_modules
+library-not-linked-against-libc [usr/lib/arkime/node_modules/*]
+privacy-breach-uses-embedded-file You may use the libjs-jquery package. *
+executable-not-elf-or-script [usr/lib/arkime/node_modules/*]
+macos-ds-store-file-in-package [usr/lib/arkime/node_modules/*]
+privacy-breach-generic *
+script-not-executable [usr/lib/arkime/node_modules*]
+extra-license-file [usr/lib/arkime/*]
+windows-devel-file-in-package [usr/lib/arkime/node_modules/*]
+package-contains-documentation-outside-usr-share-doc [usr/lib/arkime/*]
+package-contains-empty-directory [usr/lib/arkime/node_modules/*]
+unusual-interpreter ./node_modules/.bin/coffee [usr/lib/arkime/node_modules/*]
+hardening-no-bindnow [usr/lib/arkime/node_modules/*]
+hardening-no-fortify-functions [usr/lib/arkime/node_modules/*]
+unstripped-binary-or-object [usr/lib/arkime/node_modules/*]
+# we don't use debian nodejs
+missing-dep-for-interpreter node (does not satisfy nodejs:any) [usr/lib/arkime*]
+# we keep embedded files
+embedded-javascript-library please use libjs-*
+embedded-library zlib [usr/lib/arkime/bin/node]

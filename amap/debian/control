@@ -1,0 +1,22 @@
+Source: amap
+Section: net
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Raphaël Hertzog <hertzog@debian.org>
+Build-Depends: debhelper-compat (= 13), libssl-dev, libpcre3-dev
+Standards-Version: 4.6.2
+Homepage: https://www.thc.org
+Vcs-Git: https://gitlab.com/kalilinux/packages/amap.git
+Vcs-Browser: https://gitlab.com/kalilinux/packages/amap
+
+Package: amap
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: next-generation scanning tool for pentesters
+ AMAP stands for Application MAPper. It is a next-generation scanning
+ tool for pentesters. It attempts to identify applications even if they
+ are running on a different port than normal.
+ .
+ It also identifies non-ascii based applications. This is achieved by
+ sending trigger packets, and looking up the responses in a list of
+ response strings.

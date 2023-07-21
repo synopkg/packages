@@ -1,0 +1,7 @@
+.airgeddonrc usr/share/airgeddon/
+airgeddon.sh usr/share/airgeddon/
+debian/helper-script/airgeddon usr/bin/
+imgs usr/share/airgeddon/
+known_pins.db usr/share/airgeddon/
+language_strings.sh usr/share/airgeddon/
+plugins usr/share/airgeddon/

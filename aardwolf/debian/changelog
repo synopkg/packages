@@ -1,0 +1,15 @@
+aardwolf (0.2.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 0.2.2
+  * Refresh patches
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 30 Jan 2023 11:58:03 +0100
+
+aardwolf (0.2.0-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+  * Add GitLab's CI configuration file
+  * Configure git-buildpackage for Kali
+  * New upstream version 0.2.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 11 Oct 2022 10:01:49 +0200

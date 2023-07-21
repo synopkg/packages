@@ -1,0 +1,6 @@
+builddir/* usr/lib/arkime
+common usr/lib/arkime
+capture/plugins/lua/samples/* usr/lib/arkime/lua
+debian/helper-script/* usr/bin
+debian/99-arkime.conf etc/security/limits.d
+debian/logrotate/* etc/logrotate.d

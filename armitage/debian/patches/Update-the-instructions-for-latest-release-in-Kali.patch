@@ -1,0 +1,41 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 29 Mar 2022 11:59:47 +0200
+Subject: Update the instructions for latest release in Kali
+
+---
+ readme.txt | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
+
+diff --git a/readme.txt b/readme.txt
+index 6f130fc..e1c1702 100644
+--- a/readme.txt
++++ b/readme.txt
+@@ -7,27 +7,7 @@ Instructions for Armitage on Kali 2021.4a with latest updates. Do everything bel
+ 
+ msfdb init
+ 
+-edit /etc/postgresql/14/main/pg_hba.conf
+-
+-on the line 97 (IPV4 local connections)
+-switch “scram-sha-256” to “trust”
+-
+-systemctl enable postgresql
+-systemctl start postgresql
+-
+-apt install -y default-jdk 
+-
+-cd /opt
+-
+-git clone https://github.com/r00t0v3rr1d3/armitage.git
+-
+-cd armitage
+-
+-./package.sh
+-
+-cd release/unix
+-
+-./armitage
++armitage
+ 
+ username: msf
+ password: msf

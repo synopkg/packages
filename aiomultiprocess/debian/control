@@ -1,0 +1,24 @@
+Source: aiomultiprocess
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 12), dh-python, python3-all,
+ pybuild-plugin-pyproject, python3-flit-scm, flit
+Standards-Version: 4.6.2
+Homepage: https://github.com/omnilib/aiomultiprocess
+Vcs-Browser: https://gitlab.com/kalilinux/packages/aiomultiprocess
+Vcs-Git: https://gitlab.com/kalilinux/packages/aiomultiprocess.git
+Testsuite: autopkgtest-pkg-python
+
+Package: python3-aiomultiprocess
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Take a modern Python codebase to the next level of performance (Python 3)
+ This package contains a simple interface, while running a full AsyncIO
+ event loop on each child process, enabling levels of concurrency never before
+ seen in a Python application. Each child process can execute multiple
+ coroutines at once, limited only by the workload and number of cores
+ available.
+ .
+ This package installs the library for Python 3.

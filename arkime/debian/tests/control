@@ -1,0 +1,2 @@
+Test-Command: debian/tests/test-services.sh
+Restrictions: needs-root, isolation-container, allow-stderr

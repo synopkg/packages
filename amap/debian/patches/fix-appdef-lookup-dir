@@ -1,0 +1,33 @@
+The Debian packaging moves the "etc" directory out of the AMAP_PREFIX
+directory because /usr/etc/ is not a FHS-compliant directory.
+
+Adapt the upstream source code to still find the files in their new place.
+--- a/amap-lib.c
++++ b/amap-lib.c
+@@ -303,10 +303,7 @@ FILE *amap_open_file(char *fnam, char *t
+     strcat(file_name, AMAP_DEFAULT_FILENAME);
+     strcat(file_name, extension);
+     if ((f = fopen(file_name, "r")) == NULL) {
+-      strcpy(file_name, AMAP_PREFIX);
+-      if (file_name[strlen(file_name) - 1] != '/')
+-        strcat(file_name, "/");
+-      strcat(file_name, "etc/");
++      strcpy(file_name, "/etc/amap/");
+       strcat(file_name, AMAP_DEFAULT_FILENAME);
+       strcat(file_name, extension);
+       f = fopen(file_name, "r");
+@@ -2057,12 +2054,8 @@ int amap_main(amap_struct_options *opt,
+   // ONLINE UPDATE //
+   if (opt->update) {
+     printf("Running Online Update for fingerprints, connecting to %s\n", AMAP_RESOURCE);
+-    if (opt->filename == NULL) {
+-      opt->filename = malloc(strlen(AMAP_PREFIX) + 5 + strlen(AMAP_DEFAULT_FILENAME) + 2);
+-      strcpy(opt->filename, AMAP_PREFIX);
+-      strcat(opt->filename, "/etc/");
+-      strcat(opt->filename, AMAP_DEFAULT_FILENAME);
+-    }
++    if (opt->filename == NULL)
++      opt->filename = strdup("/etc/amap/" AMAP_DEFAULT_FILENAME);
+     opt->file_log = malloc(strlen(opt->filename) + 6);
+     strcpy(opt->file_log, opt->filename);
+     opt->file_nmap = malloc(strlen(AMAP_RESOURCE) + strlen(opt->file_log) + 16);

@@ -1,0 +1,8 @@
+if (session.test && (session.test.string || session.test.number || session.test.ip))
+  div.sessionDetailMeta.bold Test
+  dl.sessionDetailMeta
+    -console.log(session.test);
+    +arrayList(session.test, "number", "Number", "test.number")
+    +arrayList(session.test, "string", "String", "test.string")
+    +arrayList(session.test, 'float', 'Float', 'test.float')
+    +ipArrayList(session.test, "ip", "IPs", "test.ip")

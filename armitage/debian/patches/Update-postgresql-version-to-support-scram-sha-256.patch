@@ -1,0 +1,28 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 29 Mar 2022 11:15:04 +0200
+Subject: Update postgresql version to support scram-sha-256
+
+---
+ armitage/build.gradle | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/armitage/build.gradle b/armitage/build.gradle
+index 43a5d08..a081f2e 100644
+--- a/armitage/build.gradle
++++ b/armitage/build.gradle
+@@ -26,7 +26,7 @@ dependencies {
+     implementation files('../lib/sleep.jar', '../lib/jgraphx.jar')
+ 
+     implementation group: 'org.javassist', name: 'javassist', version: '3.28.0-GA'
+-    implementation group: 'org.postgresql', name: 'postgresql', version: '9.4.1212'
++    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
+     implementation group: 'org.msgpack', name: 'msgpack', version: '0.6.12'
+ 
+     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+@@ -42,4 +42,4 @@ task copyJar(type: Copy) {
+     into "../build"
+ }
+ 
+-assemble.finalizedBy(copyJar)
+\ No newline at end of file
++assemble.finalizedBy(copyJar)

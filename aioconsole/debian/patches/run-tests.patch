@@ -1,0 +1,23 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 17 Nov 2020 09:01:34 +0100
+Subject: Fix how to run tests
+
+---
+ setup.cfg | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/setup.cfg b/setup.cfg
+index fc56a98..c62373c 100644
+--- a/setup.cfg
++++ b/setup.cfg
+@@ -1,8 +1,5 @@
+-[tool:pytest]
+-addopts = tests --strict --cov aioconsole --count 2
+-
+ [aliases]
+ test = pytest
+ 
+ [flake8]
+-max-line-length = 88
+\ No newline at end of file
++max-line-length = 88

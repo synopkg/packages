@@ -1,0 +1,1595 @@
+<template>
+
+  <div class="packet-search-page ml-2 mr-2">
+
+    <MolochCollapsible>
+      <span class="fixed-header">
+        <!-- search navbar -->
+        <moloch-search
+          v-if="user.settings"
+          :start="sessionsQuery.start"
+          :hide-actions="true"
+          :hide-interval="true"
+          @changeSearch="cancelAndLoad(true)">
+        </moloch-search> <!-- /search navbar -->
+
+        <!-- hunt create navbar -->
+        <form class="hunt-create-navbar">
+          <div class="p-2 form-inline justify-content-between flex-row-reverse">
+            <button
+              type="button"
+              v-if="!createFormOpened"
+              @click="createFormOpened = true"
+              title="Open a form to create a new hunt"
+              class="btn btn-theme-tertiary btn-sm pull-right">
+              Create a packet search job
+            </button>
+            <span v-if="loadingSessions">
+              <div class="mt-1" style="display:inline-block;">
+                <span class="fa fa-spinner fa-spin fa-fw">
+                </span>
+                Loading sessions...
+              </div>
+              <button type="button"
+                class="btn btn-warning btn-sm ml-3"
+                @click="cancelAndLoad">
+                <span class="fa fa-ban">
+                </span>&nbsp;
+                cancel
+              </button>
+            </span>
+            <span v-else-if="loadingSessionsError">
+              <div class="mt-1" style="display:inline-block;">
+                <span class="fa fa-exclamation-triangle fa-fw">
+                </span>
+                {{ loadingSessionsError }}
+              </div>
+            </span>
+            <span v-else-if="!loadingSessions && !loadingSessionsError">
+              <div class="mt-1" style="display:inline-block;">
+                <span class="fa fa-info-circle fa-fw">
+                </span>&nbsp;
+                Creating a new packet search job will search the packets of
+                <strong>
+                  {{ sessions.recordsFiltered | commaString }}
+                </strong>
+                sessions.
+              </div>
+            </span>
+          </div>
+        </form> <!-- /hunt create navbar -->
+      </span>
+    </MolochCollapsible>
+
+    <!-- loading overlay -->
+    <moloch-loading
+      v-if="loading">
+    </moloch-loading> <!-- /loading overlay -->
+
+    <!-- configuration error -->
+    <b-alert
+      variant="danger"
+      style="z-index: 2000;"
+      :show="nodeInfo && !nodeInfo.node"
+      class="position-fixed fixed-bottom m-0 rounded-0">
+      <span class="fa fa-exclamation-triangle mr-2"></span>
+      Hunts are not configured correctly.
+      See the
+      <a class="no-decoration"
+        href="https://arkime.com/faq#hunts-not-working">
+        Arkime FAQ</a> for more information.
+    </b-alert> <!-- /configuration error -->
+
+    <!-- permission error -->
+    <b-alert
+      class="mt-4"
+      variant="danger"
+      :show="permissionDenied">
+      <p class="mb-0">
+        <span class="fa fa-exclamation-triangle fa-fw mr-2"></span>
+        <strong>Permission denied!</strong>
+      </p>
+      <p class="mb-0">
+        <span class="fa fa-info-circle fa-fw mr-2"></span>
+        <template v-if="user.roles.includes('usersAdmin')">
+          Enable this feature on the Users page by expanding your user,
+          unchecking "Disable Arkime Hunting," then clicking save.
+        </template>
+        <template v-else>
+          Contact your Arkime administrator to enable this feature by
+          unchecking "Disable Arkime Hunting" for your user.
+        </template>
+      </p>
+    </b-alert> <!-- /permission error -->
+
+    <!-- packet search jobs content -->
+    <div v-if="!permissionDenied"
+      class="packet-search-content ml-2 mr-2">
+
+      <!-- create new packet search job -->
+      <div class="mb-3">
+        <transition name="slide">
+          <div v-if="createFormOpened"
+            class="card">
+            <form class="card-body"
+              @keyup.enter="createJob">
+              <div class="row">
+                <div class="col-12">
+                  <div class="alert"
+                    :class="{'alert-info':sessions.recordsFiltered < huntWarn || !sessions.recordsFiltered,'alert-danger':sessions.recordsFiltered >= huntWarn}">
+                    <em v-if="sessions.recordsFiltered > huntWarn && !loadingSessions">
+                      That's a lot of sessions, this job will take a while.
+                      <strong>
+                        Proceed with caution.
+                      </strong>
+                      <br>
+                    </em>
+                    <em v-if="loadingSessions">
+                      <span class="fa fa-spinner fa-spin fa-fw">
+                      </span>&nbsp;
+                      Wait for session totals to be calculated.
+                      <br>
+                    </em>
+                    <span v-if="!loadingSessions">
+                    <span class="fa fa-exclamation-triangle fa-fw">
+                      </span>&nbsp;
+                      Make sure your sessions search above contains only the sessions that
+                      you want in your packet search!
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-lg-4 col-md-12">
+                  <!-- packet search job name -->
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-prepend cursor-help"
+                      v-b-tooltip.hover
+                      title="Give your packet search job a short name (multiple jobs can have the same name)">
+                      <span class="input-group-text">
+                        Name
+                      </span>
+                    </span>
+                    <input
+                      type="text"
+                      v-model="jobName"
+                      v-focus="true"
+                      placeholder="Name your packet search job"
+                      class="form-control"
+                      maxlength="40"
+                    />
+                  </div> <!-- /packet search job name -->
+                </div>
+                <!-- packet search size -->
+                <div class="form-group col-lg-4 col-md-12">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-prepend">
+                      <span class="input-group-text">
+                        Max number of packets to examine per session
+                      </span>
+                    </span>
+                    <b-select
+                      role="listbox"
+                      v-model="jobSize"
+                      class="form-control"
+                      style="-webkit-appearance: none;"
+                      :options="[50, 500, 5000, 10000]">
+                    </b-select>
+                  </div>
+                </div> <!-- /packet search size -->
+                <!-- notifier -->
+                <div class="form-group col-lg-4 col-md-12">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-prepend cursor-help"
+                      v-b-tooltip.hover="'Notifies upon completion. Admins can configure Notifiers on the Settings page.'">
+                      <span class="input-group-text">
+                        Notify
+                      </span>
+                    </span>
+                    <select class="form-control"
+                      v-model="jobNotifier"
+                      style="-webkit-appearance: none;">
+                      <option value=undefined>none</option>
+                      <option v-for="notifier in notifiers"
+                        :key="notifier.id"
+                        :value="notifier.id">
+                        {{ notifier.name }} ({{ notifier.type }})
+                      </option>
+                    </select>
+                  </div>
+                </div> <!-- /notifier -->
+              </div>
+              <div class="row">
+                <div class="form-group col-12">
+                  <div class="input-group input-group-sm">
+                    <span
+                      v-b-tooltip.hover
+                      class="input-group-prepend cursor-help"
+                      title="Describe what or why you are hunting">
+                      <span class="input-group-text">
+                        Description
+                      </span>
+                    </span>
+                    <input
+                      type="text"
+                      class="form-control"
+                      v-model="jobDescription"
+                      placeholder="What are you hunting for? Or why are you hunting?"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <!-- packet search text & text type -->
+                <div class="form-group col-12">
+                  <div class="input-group input-group-sm">
+                    <span class="input-group-prepend cursor-help"
+                      v-b-tooltip.hover
+                      title="Search for this text in packets">
+                      <span class="input-group-text">
+                        <span class="fa fa-search">
+                        </span>
+                      </span>
+                    </span>
+                    <input type="text"
+                      v-model="jobSearch"
+                      placeholder="Search packets for"
+                      class="form-control"
+                    />
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                      :checked="jobSearchType === 'ascii'"
+                      @click="setJobSearchType('ascii')"
+                      type="radio"
+                      id="ascii"
+                      value="ascii"
+                      name="packetSearchTextType"
+                    />
+                    <label class="form-check-label"
+                      for="ascii">
+                      ascii
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                      :checked="jobSearchType === 'asciicase'"
+                      @click="setJobSearchType('asciicase')"
+                      type="radio"
+                      id="asciicase"
+                      value="asciicase"
+                      name="packetSearchTextType"
+                    />
+                    <label class="form-check-label"
+                      for="asciicase">
+                      ascii (case sensitive)
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                      :checked="jobSearchType === 'hex'"
+                      @click="setJobSearchType('hex')"
+                      type="radio"
+                      id="hex"
+                      value="hex"
+                      name="packetSearchTextType"
+                    />
+                    <label class="form-check-label"
+                      for="hex">
+                      hex
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                      :checked="jobSearchType === 'regex'"
+                      @click="setJobSearchType('regex')"
+                      type="radio"
+                      id="regex"
+                      value="regex"
+                      name="packetSearchTextType"
+                    />
+                    <label class="form-check-label"
+                      for="regex">
+                      safe regex
+                    </label>
+                    <a href="https://github.com/google/re2/wiki/Syntax"
+                      target="_blank"
+                      class="regex-help">
+                      <span class="fa fa-question-circle">
+                      </span>
+                    </a>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                      :checked="jobSearchType === 'hexregex'"
+                      @click="setJobSearchType('hexregex')"
+                      type="radio"
+                      id="hexregex"
+                      value="hexregex"
+                      name="packetSearchTextType"
+                    />
+                    <label class="form-check-label"
+                      for="hexregex">
+                      safe hex regex
+                    </label>
+                    <a href="https://github.com/google/re2/wiki/Syntax"
+                      target="_blank"
+                      class="regex-help">
+                      <span class="fa fa-question-circle">
+                      </span>
+                    </a>
+                  </div>
+                </div> <!-- /packet search text & text type -->
+              </div>
+              <div class="row">
+                <!-- packet search direction -->
+                <div class="form-group col-lg-3 col-md-12">
+                  <div class="form-check">
+                    <input
+                      id="src"
+                      value="src"
+                      type="checkbox"
+                      role="checkbox"
+                      :checked="jobSrc"
+                      @click="jobSrc = !jobSrc"
+                      class="form-check-input"
+                    />
+                    <label class="form-check-label"
+                      for="src">
+                      search src packets
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input
+                      id="dst"
+                      value="dst"
+                      type="checkbox"
+                      role="checkbox"
+                      :checked="jobDst"
+                      class="form-check-input"
+                      @click="jobDst = !jobDst"
+                    />
+                    <label class="form-check-label"
+                      for="dst">
+                      search dst packets
+                    </label>
+                  </div>
+                </div> <!-- /packet search direction -->
+                <!-- packet search type -->
+                <div class="form-group col-lg-3 col-md-12">
+                  <div class="form-check">
+                    <input class="form-check-input"
+                      :checked="jobType === 'raw'"
+                      @click="setJobType('raw')"
+                      type="radio"
+                      id="raw"
+                      value="raw"
+                      name="packetSearchType"
+                    />
+                    <label class="form-check-label"
+                      for="raw">
+                      search raw packets
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input"
+                      :checked="jobType === 'reassembled'"
+                      @click="setJobType('reassembled')"
+                      type="radio"
+                      id="reassembled"
+                      value="reassembled"
+                      name="packetSearchType"
+                    />
+                    <label class="form-check-label"
+                      for="reassembled">
+                      search reassembled packets
+                    </label>
+                  </div>
+                </div> <!-- /packet search type -->
+                <!-- sharing with users/roles -->
+                <div class="form-group d-flex col-lg-6 col-md-12"
+                  v-if="!anonymousMode">
+                  <div class="align-self-start">
+                    <RoleDropdown
+                      :roles="roles"
+                      :selected-roles="jobRoles"
+                      display-text="Share with roles"
+                      @selected-roles-updated="updateNewJobRoles"
+                    />
+                  </div>
+                  <div class="flex-grow-1 ml-2">
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-prepend cursor-help"
+                        v-b-tooltip.hover
+                        title="Let these users view the results of this hunt">
+                        <span class="input-group-text">
+                          <span class="fa fa-user">
+                          </span>
+                        </span>
+                      </span>
+                      <input type="text"
+                        v-model="jobUsers"
+                        placeholder="Comma separated list of additional users that can view the hunt"
+                        class="form-control"
+                      />
+                    </div>
+                  </div>
+                </div> <!-- /sharing with users/roles -->
+              </div>
+              <div class="row">
+                <div class="col-12 mt-1">
+                  <div v-if="createFormError"
+                    class="pull-left alert alert-danger alert-sm">
+                    <span class="fa fa-exclamation-triangle">
+                    </span>&nbsp;
+                    {{ createFormError }}
+                  </div>
+                  <!-- create search job button -->
+                  <button
+                    type="button"
+                    @click="createJob"
+                    :disabled="loadingSessions"
+                    title="Create this hunt"
+                    class="pull-right btn btn-theme-tertiary pull-right ml-1">
+                    <span class="fa fa-plus fa-fw">
+                    </span>&nbsp;
+                    Create
+                  </button> <!-- /create search job button -->
+                  <!-- cancel create search job button -->
+                  <button
+                    type="button"
+                    @click="cancelCreateForm"
+                    title="Cancel creating this hunt"
+                    class="pull-right btn btn-warning pull-right">
+                    <span class="fa fa-ban fa-fw">
+                    </span>&nbsp;
+                    Cancel
+                  </button> <!-- /cancel create search job button -->
+                </div>
+              </div>
+            </form>
+          </div>
+        </transition>
+      </div> <!-- /create new packet search job -->
+
+      <!-- running job -->
+      <transition name="slide">
+        <div v-if="runningJob"
+          class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">
+              Running Hunt Job:
+              {{ runningJob.name }} by
+              {{ runningJob.userId }}
+              <span class="pull-right">
+                <button v-if="canEdit"
+                  @click="removeJob(runningJob, 'results')"
+                  :disabled="runningJob.disabled"
+                  type="button"
+                  v-b-tooltip.hover
+                  title="Cancel and remove this job"
+                  class="ml-1 pull-right btn btn-sm btn-danger">
+                  <span v-if="!runningJob.loading"
+                    class="fa fa-trash-o fa-fw">
+                  </span>
+                  <span v-else
+                    class="fa fa-spinner fa-spin fa-fw">
+                  </span>
+                </button>
+                <span v-if="canView">
+                  <button type="button"
+                    @click="openSessions(runningJob)"
+                    v-if="runningJob.matchedSessions"
+                    :id="`openresults${runningJob.id}`"
+                    class="ml-1 pull-right btn btn-sm btn-theme-primary">
+                    <span class="fa fa-folder-open fa-fw">
+                    </span>
+                  </button>
+                  <b-tooltip v-if="runningJob.matchedSessions"
+                    :target="`openresults${runningJob.id}`">
+                    Open <strong>partial</strong> results in a new Sessions tab.
+                    <br>
+                    <strong>Note:</strong> ES takes a while to update sessions, so your results
+                    might take a minute to show up.
+                  </b-tooltip>
+                </span>
+                <button v-if="canEdit"
+                  @click="cancelJob(runningJob)"
+                  :disabled="runningJob.disabled"
+                  type="button"
+                  v-b-tooltip.hover
+                  title="Cancel this job. It can be viewed in the history after the cancelation is complete."
+                  class="ml-1 pull-right btn btn-sm btn-danger">
+                  <span v-if="!runningJob.loading"
+                    class="fa fa-ban fa-fw">
+                  </span>
+                  <span v-else
+                    class="fa fa-spinner fa-spin fa-fw">
+                  </span>
+                </button>
+                <button v-if="canEdit"
+                  @click="pauseJob(runningJob)"
+                  :disabled="runningJob.loading"
+                  type="button"
+                  v-b-tooltip.hover
+                  title="Pause this job"
+                  class="pull-right btn btn-sm btn-warning">
+                  <span v-if="!runningJob.loading"
+                    class="fa fa-pause fa-fw">
+                  </span>
+                  <span v-else
+                    class="fa fa-spinner fa-spin fa-fw">
+                  </span>
+                </button>
+              </span>
+            </h5>
+            <div class="card-text">
+              <div class="row">
+                <div class="col">
+                  <toggle-btn
+                    v-if="canView"
+                    :opened="runningJob.expanded"
+                    @toggle="toggleJobDetail(runningJob)">
+                  </toggle-btn>
+                  <div class="progress cursor-help"
+                    id="runningJob"
+                    v-b-tooltip.hover
+                    style="height:26px;"
+                    :class="{'progress-toggle':canView}">
+                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                      role="progressbar"
+                      :style="{width: runningJob.progress + '%'}"
+                      :aria-valuenow="runningJob.progress"
+                      aria-valuemin="0"
+                      aria-valuemax="100">
+                      {{ runningJob.progress | round(1) }}%
+                    </div>
+                  </div>
+                  <b-tooltip target="runningJob">
+                    <div class="mt-2">
+                      Found <strong>{{ runningJob.matchedSessions | commaString }}</strong> sessions
+                      <span v-if="canView">
+                        matching <strong>{{ runningJob.search }}</strong> ({{ runningJob.searchType }})
+                      </span>
+                      <span v-if="runningJob.failedSessionIds && runningJob.failedSessionIds.length">
+                        out of <strong>{{ runningJob.searchedSessions - runningJob.failedSessionIds.length | commaString }}</strong>
+                        sessions searched.
+                        (Still need to search
+                        <strong>{{ (runningJob.totalSessions - runningJob.searchedSessions + runningJob.failedSessionIds.length) | commaString }}</strong>
+                        of <strong>{{ runningJob.totalSessions | commaString  }}</strong>
+                        total sessions.)
+                      </span>
+                      <span v-else>
+                        out of <strong>{{ runningJob.searchedSessions | commaString }}</strong>
+                        sessions searched.
+                        (Still need to search
+                        <strong>{{ (runningJob.totalSessions - runningJob.searchedSessions) | commaString }}</strong>
+                        of <strong>{{ runningJob.totalSessions | commaString  }}</strong>
+                        total sessions.)
+                      </span>
+                    </div>
+                  </b-tooltip>
+                </div>
+              </div>
+              <transition name="grow">
+                <div v-if="runningJob.expanded"
+                  class="mt-3">
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="fa fa-id-card fa-fw">
+                      </span>&nbsp;
+                      Hunt Job ID: {{ runningJob.id }}
+                    </div>
+                  </div>
+                  <hunt-data :job="runningJob"
+                    @removeUser="removeUser"
+                    @addUsers="addUsers"
+                    :user="user"
+                    @updateHunt="updateHunt"
+                    :notifierName="getNotifierName(runningJob.notifier)">
+                  </hunt-data>
+                </div>
+              </transition>
+            </div>
+          </div>
+        </div>
+      </transition> <!-- /running job -->
+
+      <h4 v-if="results.length">
+        <span class="fa fa-list-ol">
+        </span>&nbsp;
+        Hunt Job Queue
+      </h4>
+
+      <!-- hunt job queue errors -->
+      <div v-if="queuedListError"
+        class="alert alert-danger">
+        {{ queuedListError }}
+      </div>
+      <div v-if="queuedListLoadingError"
+        class="alert alert-danger">
+        Error loading hunt job queue:
+        {{ queuedListLoadingError }}
+      </div> <!-- /hunt job queue errors -->
+
+      <table v-if="results.length"
+        class="table table-sm table-striped mb-4">
+        <thead>
+          <tr>
+            <th width="40px">&nbsp;</th>
+            <th>
+              Status
+            </th>
+            <th>
+              Matches
+            </th>
+            <th>
+              Name
+            </th>
+            <th>
+              User
+            </th>
+            <th>
+              Search text
+            </th>
+            <th>
+              Notify
+            </th>
+            <th>
+              Created
+            </th>
+            <th>
+              ID
+            </th>
+            <th width="260px">&nbsp;</th>
+          </tr>
+        </thead>
+        <transition-group name="list"
+          tag="tbody">
+          <!-- packet search jobs -->
+          <template v-for="job in results">
+            <hunt-row :key="`${job.id}-row`"
+              :job="job"
+              :user="user"
+              :canRerun="true"
+              :canRepeat="true"
+              :canCancel="true"
+              arrayName="results"
+              @playJob="playJob"
+              @rerunJob="rerunJob"
+              @repeatJob="repeatJob"
+              @pauseJob="pauseJob"
+              @cancelJob="cancelJob"
+              @removeJob="removeJob"
+              @toggle="toggleJobDetail"
+              @openSessions="openSessions"
+              :notifierName="getNotifierName(job.notifier)">
+            </hunt-row>
+            <tr :key="`${job.id}-detail`"
+              v-if="job.expanded">
+              <td colspan="10">
+                <hunt-data :job="job"
+                  @removeUser="removeUser"
+                  @addUsers="addUsers"
+                  :user="user"
+                  @updateHunt="updateHunt"
+                  :notifierName="getNotifierName(job.notifier)">
+                </hunt-data>
+              </td>
+            </tr>
+          </template> <!-- /packet search jobs -->
+        </transition-group>
+      </table>
+
+      <!-- hunt job history errors -->
+      <div v-if="historyListError"
+        class="alert alert-danger">
+        <span class="fa fa-exclamation-triangle mr-2"></span>
+        {{ historyListError }}
+      </div>
+      <div v-if="historyListLoadingError"
+        class="alert alert-danger">
+        <span class="fa fa-exclamation-triangle mr-2"></span>
+        Error loading hunt job history:
+        {{ historyListLoadingError }}
+      </div> <!-- /hunt job history errors -->
+
+      <template v-if="!historyListLoadingError">
+        <h4>
+          <span class="fa fa-clock-o mr-2"></span>
+          Hunt Job History
+        </h4>
+        <div class="row form-inline">
+          <div class="col-12">
+          <!-- job history paging -->
+          <moloch-paging
+            class="pull-right ml-2"
+            :records-total="historyResults.recordsTotal"
+            :records-filtered="historyResults.recordsFiltered"
+            @changePaging="changePaging">
+          </moloch-paging> <!-- /job history paging -->
+            <!-- search packet search jobs -->
+            <div class="input-group input-group-sm">
+              <span class="input-group-prepend cursor-help">
+                <span class="input-group-text">
+                  <span class="fa fa-search">
+                  </span>
+                </span>
+              </span>
+              <input type="text"
+                v-model="query.searchTerm"
+                @input="debounceSearch"
+                placeholder="Search your packet search job history"
+                class="form-control"
+              />
+              <span class="input-group-append">
+                <button type="button"
+                  @click="clear"
+                  :disabled="!query.searchTerm"
+                  class="btn btn-outline-secondary btn-clear-input">
+                  <span class="fa fa-close">
+                  </span>
+                </button>
+              </span>
+            </div> <!-- /search packet search jobs -->
+          </div>
+        </div>
+
+        <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th width="40px">&nbsp;</th>
+              <th class="cursor-pointer"
+                @click="columnClick('status')">
+                Status
+                <span v-show="query.sortField === 'status' && !query.desc" class="fa fa-sort-asc"></span>
+                <span v-show="query.sortField === 'status' && query.desc" class="fa fa-sort-desc"></span>
+                <span v-show="query.sortField !== 'status'" class="fa fa-sort"></span>
+              </th>
+              <th>
+                Matches
+              </th>
+              <th class="cursor-pointer"
+                @click="columnClick('name')">
+                Name
+                <span v-show="query.sortField === 'name' && !query.desc" class="fa fa-sort-asc"></span>
+                <span v-show="query.sortField === 'name' && query.desc" class="fa fa-sort-desc"></span>
+                <span v-show="query.sortField !== 'name'" class="fa fa-sort"></span>
+              </th>
+              <th class="cursor-pointer no-wrap"
+                @click="columnClick('userId')">
+                User
+                <span v-show="query.sortField === 'userId' && !query.desc" class="fa fa-sort-asc"></span>
+                <span v-show="query.sortField === 'userId' && query.desc" class="fa fa-sort-desc"></span>
+                <span v-show="query.sortField !== 'userId'" class="fa fa-sort"></span>
+              </th>
+              <th>
+                Search text
+              </th>
+              <th>
+                Notify
+              </th>
+              <th class="cursor-pointer"
+                @click="columnClick('created')">
+                Created
+                <span v-show="query.sortField === 'created' && !query.desc" class="fa fa-sort-asc"></span>
+                <span v-show="query.sortField === 'created' && query.desc" class="fa fa-sort-desc"></span>
+                <span v-show="query.sortField !== 'created'" class="fa fa-sort"></span>
+              </th>
+              <th>
+                ID
+              </th>
+              <th width="260px">&nbsp;</th>
+            </tr>
+          </thead>
+          <transition-group name="list"
+            tag="tbody">
+            <!-- packet search jobs -->
+            <template v-for="job in historyResults.data">
+              <hunt-row :key="`${job.id}-row`"
+                :job="job"
+                :user="user"
+                :canRerun="true"
+                :canRepeat="true"
+                arrayName="historyResults"
+                :canRemoveFromSessions="true"
+                @playJob="playJob"
+                @pauseJob="pauseJob"
+                @rerunJob="rerunJob"
+                @repeatJob="repeatJob"
+                @removeJob="removeJob"
+                @toggle="toggleJobDetail"
+                @openSessions="openSessions"
+                @removeFromSessions="removeFromSessions"
+                :notifierName="getNotifierName(job.notifier)">
+              </hunt-row>
+              <tr :key="`${job.id}-detail`"
+                v-if="job.expanded">
+                <td colspan="10">
+                  <hunt-data :job="job"
+                    @removeJob="removeJob"
+                    @removeUser="removeUser"
+                    @addUsers="addUsers"
+                    :user="user"
+                    @updateHunt="updateHunt"
+                    :notifierName="getNotifierName(job.notifier)">
+                  </hunt-data>
+                </td>
+              </tr>
+            </template> <!-- /packet search jobs -->
+          </transition-group>
+        </table>
+
+        <!-- no results -->
+        <div v-if="!loading && !historyResults.data.length"
+          class="ml-1 mr-1">
+          <div class="mb-5 info-area horizontal-center">
+            <div>
+              <span class="fa fa-3x text-muted-more fa-folder-open">
+              </span>&nbsp;
+              <span v-if="!query.searchTerm">
+                There are currently no packet search jobs in the history.
+                <span v-if="!results.length">
+                  <br>
+                  Click the "Create a packet search job" button above, and fill out the form to create one.
+                </span>
+              </span>
+              <span v-else>
+                There are no packet search jobs that match your search.
+              </span>
+            </div>
+          </div>
+        </div> <!-- /no results -->
+      </template>
+
+    </div> <!-- /packet search jobs content -->
+
+    <!-- floating error -->
+    <transition name="slide-fade">
+      <div v-if="floatingError || floatingSuccess"
+        class="card floating-msg">
+        <div class="card-body">
+          <a @click="floatingError = false; floatingSuccess = false"
+            class="no-decoration cursor-pointer pull-right"
+            v-b-tooltip.hover
+            title="Dismiss">
+            <span class="fa fa-close">
+            </span>
+          </a>
+          <span :class="floatingError ? 'text-danger' : 'text-success'">
+            <span v-if="floatingError"
+              class="fa fa-exclamation-triangle mr-2">
+            </span>
+            <span v-else
+              class="fa fa-check mr-2">
+            </span>
+            {{ floatingError || floatingSuccess }}
+          </span>
+        </div>
+      </div>
+    </transition> <!-- /floating error -->
+
+  </div>
+
+</template>
+
+<script>
+// import external
+import Vue from 'vue';
+// import services
+import SettingsService from '../settings/SettingsService';
+import SessionsService from '../sessions/SessionsService';
+import ConfigService from '../utils/ConfigService';
+import HuntService from './HuntService';
+// import components
+import ToggleBtn from '../../../../../common/vueapp/ToggleBtn';
+import MolochSearch from '../search/Search';
+import MolochLoading from '../utils/Loading';
+import MolochPaging from '../utils/Pagination';
+import MolochCollapsible from '../utils/CollapsibleWrapper';
+import Focus from '../../../../../common/vueapp/Focus';
+import HuntData from './HuntData';
+import HuntRow from './HuntRow';
+import RoleDropdown from '../../../../../common/vueapp/RoleDropdown';
+// import utils
+import Utils from '../utils/utils';
+
+let timeout;
+let interval;
+let respondedAt;
+let pendingPromise; // save a pending promise to be able to cancel it
+
+export default {
+  name: 'PacketSearch',
+  components: {
+    ToggleBtn,
+    MolochSearch,
+    MolochLoading,
+    MolochCollapsible,
+    MolochPaging,
+    HuntData,
+    HuntRow,
+    RoleDropdown
+  },
+  directives: { Focus },
+  data: function () {
+    return {
+      queuedListError: '',
+      queuedListLoadingError: '',
+      historyListError: '',
+      historyListLoadingError: '',
+      permissionDenied: false,
+      floatingError: '',
+      floatingSuccess: '',
+      loading: true,
+      results: [], // running/queued/paused hunt jobs
+      historyResults: { // finished hunt jobs
+        data: [],
+        recordsTotal: 0,
+        recordsFiltered: 0
+      },
+      runningJob: undefined, // the currently running hunt job obj
+      sessions: {}, // sessions a new job applies to
+      loadingSessionsError: '',
+      loadingSessions: false,
+      // new job search form
+      createFormError: '',
+      createFormOpened: false,
+      // new job search default values
+      jobName: '',
+      jobSize: 50,
+      jobSearch: '',
+      jobSearchType: 'ascii',
+      jobSrc: true,
+      jobDst: true,
+      jobType: 'reassembled',
+      jobNotifier: undefined,
+      jobUsers: '',
+      jobDescription: '',
+      jobRoles: [],
+      // hunt limits
+      huntWarn: this.$constants.MOLOCH_HUNTWARN,
+      huntLimit: this.$constants.MOLOCH_HUNTLIMIT,
+      anonymousMode: this.$constants.MOLOCH_ANONYMOUS_MODE,
+      // hunt configured?
+      nodeInfo: undefined
+    };
+  },
+  computed: {
+    query: function () {
+      return { // packet search job history search query
+        sortField: 'created',
+        desc: true,
+        searchTerm: '',
+        start: 0, // first item index
+        length: Math.min(this.$route.query.length || 50, 10000)
+      };
+    },
+    sessionsQuery: function () {
+      return { // sessions query defaults
+        length: this.$route.query.length || 50, // page length
+        start: 0, // first item index
+        facets: 0,
+        date: this.$store.state.timeRange,
+        startTime: this.$store.state.time.startTime,
+        stopTime: this.$store.state.time.stopTime,
+        bounding: this.$route.query.bounding || 'last',
+        interval: this.$route.query.interval || 'auto',
+        expression: this.$store.state.expression || undefined,
+        view: this.$route.query.view || undefined
+      };
+    },
+    user: function () {
+      return this.$store.state.user;
+    },
+    roles () {
+      return this.$store.state.roles;
+    },
+    canEdit () {
+      return HuntService.canEditHunt(this.user, this.runningJob);
+    },
+    canView () {
+      return HuntService.canViewHunt(this.user, this.runningJob);
+    },
+    notifiers () {
+      return this.$store.state.notifiers;
+    }
+  },
+  mounted: function () {
+    this.$nextTick(() => {
+      // wait for computed queries
+      this.loadData();
+      this.cancelAndLoad(true);
+      SettingsService.getNotifiers(); // sets notifiers in store
+    });
+
+    // interval to load jobs every 5 seconds
+    interval = setInterval(() => {
+      if (respondedAt && Date.now() - respondedAt >= 5000) {
+        this.loadData();
+      }
+    }, 500);
+  },
+  methods: {
+    /**
+     * Cancels the pending session query (if it's still pending) and runs a new
+     * query if requested
+     * @param {bool} runNewQuery  Whether to run a new spigraph query after
+     *                            canceling the request
+     */
+    cancelAndLoad: function (runNewQuery) {
+      const clientCancel = () => {
+        if (pendingPromise) {
+          pendingPromise.source.cancel();
+          pendingPromise = null;
+        }
+
+        if (!runNewQuery) {
+          this.loadingSessions = false;
+          if (!this.sessions.data) {
+            // show a page error if there is no data on the page
+            this.loadingSessionsError = 'You canceled the search';
+          }
+          return;
+        }
+
+        this.loadSessions();
+      };
+
+      if (pendingPromise) {
+        ConfigService.cancelEsTask(pendingPromise.cancelId)
+          .then((response) => {
+            clientCancel();
+          }).catch((error) => {
+            clientCancel();
+          });
+      } else if (runNewQuery) {
+        this.loadSessions();
+      }
+    },
+    cancelCreateForm: function () {
+      this.jobName = '';
+      this.jobUsers = '';
+      this.jobSearch = '';
+      this.jobDescription = '';
+      this.createFormError = '';
+      this.createFormOpened = false;
+    },
+    updateNewJobRoles (roles) {
+      this.jobRoles = roles;
+    },
+    createJob: function () {
+      this.createFormError = '';
+
+      if (!this.sessions.recordsFiltered) {
+        this.createFormError = 'This hunt applies to no sessions. Try searching for sessions first.';
+        return;
+      }
+      if (this.sessions.recordsFiltered > this.huntLimit) {
+        this.createFormError = `This hunt applies to too many sessions. Narrow down your session search to less than ${this.huntLimit} first.`;
+        return;
+      }
+      if (!this.jobName) {
+        this.createFormError = 'Hunt name required';
+        return;
+      }
+      if (!this.jobSearch) {
+        this.createFormError = 'Hunt search text required';
+        return;
+      }
+      if (!this.jobSrc && !this.jobDst) {
+        this.createFormError = 'The hunt must search source or destination packets (or both)';
+        return;
+      }
+
+      const newJob = {
+        name: this.jobName,
+        size: this.jobSize,
+        search: this.jobSearch,
+        searchType: this.jobSearchType,
+        type: this.jobType,
+        src: this.jobSrc,
+        dst: this.jobDst,
+        totalSessions: this.sessions.recordsFiltered,
+        query: this.sessionsQuery,
+        notifier: this.jobNotifier,
+        users: this.jobUsers,
+        description: this.jobDescription,
+        roles: this.jobRoles
+      };
+
+      HuntService.create(newJob).then((response) => {
+        this.createFormOpened = false;
+        this.jobName = '';
+        this.jobUsers = '';
+        this.jobRoles = [];
+        this.jobSearch = '';
+        this.jobDescription = '';
+        this.createFormError = '';
+        this.jobNotifier = undefined;
+        this.loadData();
+      }).catch((error) => {
+        this.createFormError = error.text || error;
+      });
+    },
+    removeFromSessions: function (job) {
+      if (job.loading) { return; } // it's already trying to do something
+
+      this.setErrorForList('historyResults', '');
+      this.$set(job, 'loading', true);
+
+      HuntService.cleanup(job.id).then((response) => {
+        this.$set(job, 'loading', false);
+        this.$set(job, 'removed', true);
+        this.$set(this, 'floatingSuccess', response.data.text || 'Successfully removed hunt ID and name from the matched sessions.');
+        setTimeout(() => {
+          this.$set(this, 'floatingSuccess', '');
+        }, 5000);
+      }).catch((error) => {
+        this.$set(job, 'loading', false);
+        this.setErrorForList('historyResults', error.text || error);
+      });
+    },
+    removeJob: function (job, arrayName) {
+      if (job.loading) { return; } // it's already trying to do something
+
+      this.setErrorForList(arrayName, '');
+      this.$set(job, 'loading', true);
+
+      HuntService.delete(job.id).then((response) => {
+        this.$set(job, 'loading', false);
+        let array = this.results;
+        if (arrayName === 'historyResults') {
+          array = this.historyResults.data;
+        }
+        for (let i = 0, len = array.length; i < len; ++i) {
+          if (array[i].id === job.id) {
+            array.splice(i, 1);
+            return;
+          }
+        }
+        if (job.status === 'queued') { this.calculateQueue(); }
+      }).catch((error) => {
+        this.$set(job, 'loading', false);
+        this.setErrorForList(arrayName, error.text || error);
+      });
+    },
+    cancelJob: function (job) {
+      if (job.loading) { return; } // it's already trying to do something
+
+      this.setErrorForList('results', '');
+      this.$set(job, 'loading', true);
+
+      HuntService.cancel(job.id).then((response) => {
+        this.$set(job, 'loading', false);
+        this.loadData();
+      }).catch((error) => {
+        this.$set(job, 'loading', false);
+        this.setErrorForList('results', error.text || error);
+      });
+    },
+    pauseJob: function (job) {
+      if (job.loading) { return; } // it's already trying to do something
+
+      this.setErrorForList('results', '');
+      this.$set(job, 'loading', true);
+
+      HuntService.pause(job.id).then((response) => {
+        if (job.status === 'running') {
+          this.loadData();
+          return;
+        }
+        this.$set(job, 'status', 'paused');
+        this.$set(job, 'loading', false);
+        this.calculateQueue();
+      }).catch((error) => {
+        this.$set(job, 'loading', false);
+        this.setErrorForList('results', error.text || error);
+      });
+    },
+    playJob: function (job) {
+      if (job.loading) { return; } // it's already trying to do something
+
+      this.setErrorForList('results', '');
+      this.$set(job, 'loading', true);
+
+      HuntService.play(job.id).then((response) => {
+        this.$set(job, 'status', 'queued');
+        this.$set(job, 'loading', false);
+        this.calculateQueue();
+      }).catch((error) => {
+        this.$set(job, 'loading', false);
+        this.setErrorForList('results', error.text || error);
+      });
+    },
+    openSessions: function (job) {
+      const url = `sessions?expression=huntId == ${job.id}&stopTime=${job.query.stopTime}&startTime=${job.query.startTime}`;
+      window.open(url, '_blank');
+    },
+    setJobSearchType: function (val) {
+      this.jobSearchType = val;
+    },
+    setJobType: function (val) {
+      this.jobType = val;
+    },
+    toggleJobDetail: function (job) {
+      this.$set(job, 'expanded', !job.expanded);
+    },
+    debounceSearch: function () {
+      if (timeout) { clearTimeout(timeout); }
+      timeout = setTimeout(() => {
+        this.loadData();
+      }, 400);
+    },
+    clear () {
+      this.query.searchTerm = undefined;
+      this.loadData();
+    },
+    columnClick: function (colName) {
+      if (colName === this.query.sortField) {
+        // same sort field, so toggle order direction
+        this.query.desc = !this.query.desc;
+      } else { // new sort field, so set default order (desc)
+        this.query.sortField = colName;
+        this.query.desc = true;
+      }
+
+      this.loadData();
+    },
+    changePaging: function (args) {
+      this.query.start = args.start;
+      this.query.length = args.length;
+      this.loadData();
+    },
+    rerunJob: function (job) {
+      this.jobSrc = job.src;
+      this.jobDst = job.dst;
+      this.jobSize = job.size;
+      this.jobType = job.type;
+      this.jobName = job.name;
+      this.jobSearch = job.search;
+      this.jobNotifier = job.notifier;
+      this.jobSearchType = job.searchType;
+      this.jobDescription = job.description;
+      this.createFormOpened = true;
+    },
+    repeatJob: function (job) {
+      this.$store.commit('setExpression', job.query.expression);
+      this.$store.commit('setTimeRange', '0');
+      this.$store.commit('setTime', {
+        stopTime: job.query.stopTime,
+        startTime: job.query.startTime
+      });
+      this.$store.commit('setIssueSearch', true);
+      this.rerunJob(job);
+    },
+    removeUser: function (user, job) {
+      this.$set(this, 'floatingError', '');
+
+      HuntService.removeUser(job.id, user).then((response) => {
+        this.$set(job, 'users', response.data.users);
+      }).catch((error) => {
+        this.$set(this, 'floatingError', error.text || error);
+      });
+    },
+    addUsers: function (users, job) {
+      this.$set(this, 'floatingError', '');
+
+      HuntService.addUsers(job.id, users).then((response) => {
+        this.$set(job, 'users', response.data.users);
+      }).catch((error) => {
+        this.$set(this, 'floatingError', error.text || error);
+      });
+    },
+    updateHunt: function (job) {
+      this.$set(this, 'floatingError', '');
+      this.$set(this, 'floatingSuccess', '');
+
+      const data = {
+        roles: job.roles,
+        description: job.description
+      };
+
+      HuntService.updateHunt(job.id, data).then((response) => {
+        this.$set(this, 'floatingSuccess', response.data.text);
+        setTimeout(() => {
+          this.$set(this, 'floatingSuccess', '');
+        }, 5000);
+      }).catch((error) => {
+        this.$set(this, 'floatingError', error.text || error);
+      });
+    },
+    getNotifierName (id) {
+      if (!this.notifiers) { return; }
+      for (const notifier of this.notifiers) {
+        if (notifier.id === id) {
+          return notifier.name;
+        }
+      }
+    },
+    /* helper functions ---------------------------------------------------- */
+    setErrorForList: function (arrayName, errorText) {
+      let errorArea = 'queuedListError';
+      if (arrayName === 'historyResults') {
+        errorArea = 'historyListError';
+      }
+      this[errorArea] = errorText;
+    },
+    calculateQueue: function () {
+      let queueCount = 1;
+      for (const job of this.results) {
+        if (job.status === 'queued') {
+          this.$set(job, 'queueCount', queueCount);
+          queueCount++;
+        }
+      }
+    },
+    loadData: function () {
+      respondedAt = undefined;
+      this.permissionDenied = false;
+
+      const loading = {};
+      const expanded = {};
+      const runningJobLoading = this.runningJob && this.runningJob.loading;
+      const runningJobExpanded = this.runningJob && this.runningJob.expanded;
+      if (this.results && this.results.length) {
+        // save the expanded and loading ones
+        for (const result of this.results) {
+          if (result.expanded) {
+            expanded[result.id] = true;
+          }
+          if (result.loading) {
+            loading[result.id] = true;
+          }
+        }
+      }
+      if (this.historyResults.data && this.historyResults.data.length) {
+        // save the expanded and loading ones
+        for (const result of this.historyResults.data) {
+          if (result.expanded) {
+            expanded[result.id] = true;
+          }
+          if (result.loading) {
+            loading[result.id] = true;
+          }
+        }
+      }
+
+      // get the hunt history
+      const historyReq = HuntService.get(this.query, true);
+      historyReq.then((response) => {
+        this.historyListLoadingError = '';
+
+        if (Object.keys(expanded).length || Object.keys(loading).length) {
+          for (const result of response.data.data) {
+            // make sure expanded ones are still expanded
+            if (Object.keys(expanded).length) {
+              if (expanded[result.id]) {
+                result.expanded = true;
+              }
+            }
+            // make sure the loading ones are still loading
+            if (Object.keys(loading).length) {
+              if (loading[result.id]) {
+                result.loading = true;
+              }
+            }
+          }
+        }
+
+        this.nodeInfo = response.data.nodeInfo;
+        this.$set(this, 'historyResults', response.data);
+      }).catch((error) => {
+        if (error.status === 403) { this.permissionDenied = true; }
+        this.historyListLoadingError = error.text || error;
+      });
+
+      // get the running, queued, paused hunts
+      const queuedQuery = JSON.parse(JSON.stringify(this.query));
+      queuedQuery.desc = false;
+      queuedQuery.length = undefined;
+      queuedQuery.start = 0;
+      const queueReq = HuntService.get(queuedQuery);
+      queueReq.then((response) => {
+        this.queuedListLoadingError = '';
+
+        if (Object.keys(expanded).length || Object.keys(loading).length) {
+          for (const result of response.data.data) {
+            // make sure expanded ones are still expanded
+            if (Object.keys(expanded).length) {
+              if (expanded[result.id]) {
+                result.expanded = true;
+              }
+            }
+            // make sure the loading ones are still loading
+            if (Object.keys(loading).length) {
+              if (loading[result.id]) {
+                result.loading = true;
+              }
+            }
+          }
+        }
+
+        this.results = response.data.data;
+        this.runningJob = response.data.runningJob;
+        if (this.runningJob) {
+          this.$set(this.runningJob, 'loading', runningJobLoading);
+          this.$set(this.runningJob, 'expanded', runningJobExpanded);
+          let searchedSessions = this.runningJob.searchedSessions;
+          if (this.runningJob.failedSessionIds && this.runningJob.failedSessionIds.length) {
+            searchedSessions = searchedSessions - this.runningJob.failedSessionIds.length;
+          }
+          this.$set(
+            this.runningJob,
+            'progress',
+            (searchedSessions / this.runningJob.totalSessions) * 100
+          );
+        }
+        this.calculateQueue();
+      }).catch((error) => {
+        this.queuedListLoadingError = error.text || error;
+      });
+
+      // stop loading when both requests are done
+      Promise.all([historyReq, queueReq]).then((values) => {
+        respondedAt = Date.now();
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
+        respondedAt = undefined;
+      });
+    },
+    loadSessions: function () {
+      this.loadingSessions = true;
+      this.loadingSessionsError = '';
+
+      // create unique cancel id to make canel req for corresponding es task
+      const cancelId = Utils.createRandomString();
+      this.sessionsQuery.cancelId = cancelId;
+
+      const source = Vue.axios.CancelToken.source();
+      const cancellablePromise = SessionsService.get(this.sessionsQuery, source.token);
+
+      // set pending promise info so it can be cancelled
+      pendingPromise = { cancellablePromise, source, cancelId };
+
+      cancellablePromise.then((response) => {
+        pendingPromise = null;
+        this.sessions = response.data;
+        this.loadingSessions = false;
+      }).catch((error) => {
+        pendingPromise = null;
+        this.sessions = {};
+        this.loadingSessions = false;
+        this.loadingSessionsError = 'Problem loading sessions. Try narrowing down your results on the sessions page first.';
+      });
+    }
+  },
+  beforeDestroy: function () {
+    if (pendingPromise) {
+      pendingPromise.source.cancel();
+      pendingPromise = null;
+    }
+
+    if (interval) { clearInterval(interval); }
+  }
+};
+</script>
+
+<style scoped>
+.packet-search-content {
+  margin-top: 10px;
+}
+
+.info-area {
+  font-size: var(--px-xxlg);
+}
+
+form.hunt-create-navbar {
+  z-index: 4;
+  height: 45px;
+  background-color: var(--color-quaternary-lightest);
+
+  -webkit-box-shadow: 0 0 16px -2px black;
+     -moz-box-shadow: 0 0 16px -2px black;
+          box-shadow: 0 0 16px -2px black;
+}
+
+/* offset the progress bar to accommodate toggle button */
+.progress-toggle {
+  margin-left: 40px;
+  margin-top: -26px;
+}
+
+/* slide running job in/out animation */
+.slide-leave-active {
+  transition: all .3s;
+}
+.slide-enter-active {
+  max-height: 500px;
+  transition: max-height .8s;
+}
+.slide-enter,
+.slide-leave-active {
+  max-height: 0px;
+}
+.slide-leave {
+  max-height: 500px;
+}
+.slide-leave-to {
+  transform: translateY(-500px);
+}
+
+/* running job info animation */
+.grow-leave-active {
+  transition: all .3s;
+}
+.grow-enter-active {
+  max-height: 500px;
+  transition: max-height .3s;
+}
+.grow-enter,
+.grow-leave-active {
+  max-height: 0px;
+}
+.grow-leave {
+  max-height: 500px;
+}
+.grow-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+
+/* job list animation */
+.list-enter-active, .list-leave-active {
+  transition: all .8s;
+}
+.list-enter {
+  opacity: 0;
+  transform: translateX(30px);
+}
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+.list-move {
+  transition: transform .8s;
+}
+
+/* regex help icon positioning */
+.regex-help {
+  margin-top: 3px;
+  margin-left: 6px;
+}
+
+/* floating message */
+.floating-msg {
+  position: fixed;
+  bottom: 15px;
+  left: 10px;
+  z-index: 999;
+  width: 350px;
+}
+
+.floating-msg .card {
+  background-color: var(--color-gray-lighter);
+  border: 1px solid var(--color-gray-light);
+  -webkit-box-shadow: 4px 4px 16px -2px black;
+     -moz-box-shadow: 4px 4px 16px -2px black;
+          box-shadow: 4px 4px 16px -2px black;
+}
+.floating-msg .card > .card-body {
+  padding: 0.8rem;
+}
+
+.slide-fade-enter-active {
+  transition: all .8s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s ease;
+}
+.slide-fade-enter, .slide-fade-leave-to {
+  transform: translateX(-365px);
+  opacity: 0;
+}
+</style>

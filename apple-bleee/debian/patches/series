@@ -1,0 +1,5 @@
+Change-shebang-to-use-python3.patch
+Write-db-in-local-dir.patch
+Update-documentation-for-Kali.patch
+Replace-Crypto-with-Cryptodome.patch
+add-missing-init.py.patch

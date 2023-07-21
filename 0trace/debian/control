@@ -1,0 +1,18 @@
+Source: 0trace
+Section: net
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 12)
+Standards-Version: 4.6.2
+Homepage: https://lcamtuf.coredump.cx
+Vcs-Git: https://gitlab.com/kalilinux/packages/0trace.git
+Vcs-Browser: https://gitlab.com/kalilinux/packages/0trace
+
+Package: 0trace
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, tcpdump
+Description: traceroute tool that can run within an existing TCP connection
+ The package is traceroute tool that can be run within an existing, open TCP
+ connection, therefore bypassing some types of stateful packet filters with
+ ease.

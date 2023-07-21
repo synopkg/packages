@@ -1,0 +1,3 @@
+etc/arkime usr/lib/arkime/etc
+var/lib/arkime/logs usr/lib/arkime/logs
+usr/share/wireshark/manuf etc/arkime/oui.txt

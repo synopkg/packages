@@ -1,0 +1,32 @@
+Fix upstream build system to support the $DESTDIR variable
+used by debhelper to install files in debian/amap/ instead
+of in the root directory.
+
+Catch failures and improve rules to not generate failures when
+everything goes as expected.
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -34,15 +34,14 @@ debug:	amap.c
+ 	$(CC) $(OPT_DEBUG) -o amapcrap amapcrap.c $(XLIBS) $(XLIBPATHS) $(XIPATHS) $(XDEFINES)
+ 
+ install:	all
+-	@echo Installing to $(PREFIX), change this by running ./configure --prefix=path
+-	-mkdir -vp $(PREFIX)$(BINDIR) 2> /dev/null
+-	-mkdir -vp $(PREFIX)$(DATADIR) 2> /dev/null
+-	-mkdir -vp $(PREFIX)$(MANDIR) 2> /dev/null
+-	-test -e amap.exe || cp -f amap amap6 amapcrap $(PREFIX)$(BINDIR)
+-	-test -e amap.exe && cp -f amap.exe amapcrap.exe $(PREFIX)$(BINDIR) || echo
+-	-cp -f $(SCRIPTS) $(PREFIX)$(DATADIR)
+-	-cp -f $(MANPAGE) $(PREFIX)$(MANDIR)
+-	-test $(PREFIX)$(BINDIR)/amap6 || cd $(PREFIX)$(BINDIR) && ln -s amap amap6
++	@echo Installing to $(DESTDIR)$(PREFIX), change this by running ./configure --prefix=path
++	mkdir -vp $(DESTDIR)$(PREFIX)$(BINDIR) 2> /dev/null
++	mkdir -vp $(DESTDIR)$(PREFIX)$(DATADIR) 2> /dev/null
++	mkdir -vp $(DESTDIR)$(PREFIX)$(MANDIR) 2> /dev/null
++	test -e amap.exe || cp -fd amap amap6 amapcrap $(DESTDIR)$(PREFIX)$(BINDIR)
++	test -e amap.exe && cp -f amap.exe amapcrap.exe $(DESTDIR)$(PREFIX)$(BINDIR) || echo
++	cp -f $(SCRIPTS) $(DESTDIR)$(PREFIX)$(DATADIR)
++	cp -f $(MANPAGE) $(DESTDIR)$(PREFIX)$(MANDIR)
+ 
+ clean:	
+ 	cd pcre-3.9 && make clean

@@ -1,0 +1,22 @@
+aiowinreg (0.0.7-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+  * Import upstream version 0.0.4, md5 de5dd204e61ee120d14a10788eeda131
+
+  [ Ben Wilson ]
+  * Remove template comment and switch spaces to tabs
+
+  [ Sophie Brun ]
+  * New upstream version 0.0.7
+  * Update debian/copyright
+  * Bump Standards-Version to 4.6.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 18 Jan 2022 11:19:28 +0100
+
+aiowinreg (0.0.3-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 26 Mar 2020 10:45:08 +0100

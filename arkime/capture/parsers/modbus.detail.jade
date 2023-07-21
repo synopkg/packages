@@ -1,0 +1,8 @@
+if (session.modbus)
+  div.sessionDetailMeta.bold modbus
+  dl.sessionDetailMeta
+    +arrayList(session.modbus, "transactionid", "Transaction IDs", "modbus.transactionid")
+    +arrayList(session.modbus, "protocolid", "Protocol ID", "modbus.protocolid")
+    +arrayList(session.modbus, "unitid", "Unit ID", "modbus.unitid")
+    +arrayList(session.modbus, "funccode", "Function Codes", "modbus.funccode")
+    +arrayList(session.modbus, "exccode", "Exception Codes", "modbus.exccode")

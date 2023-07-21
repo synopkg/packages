@@ -1,0 +1,50 @@
+arkime (4.3.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 4.3.2
+  * Bump Standards-Version to 4.6.2
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 15 Jun 2023 13:50:25 +0200
+
+arkime (4.3.1-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 4.3.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 09 May 2023 15:34:02 +0200
+
+arkime (4.3.0-0kali1) kali-dev; urgency=medium
+
+  * CI: disable reprotest
+  * Fix logrotate if log dir does not exist
+  * Fix lintian-overrides
+  * Fix lintian-overrides
+  * New upstream version 4.3.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 28 Apr 2023 09:58:29 +0200
+
+arkime (4.2.0-0kali1) kali-dev; urgency=medium
+
+  [ Steev Klimaszewski ]
+  * ci: Don't build on 32bit architectures.
+  * Fix autopkgtest script path
+  * Make autopkgtest script executable.
+  * Fix autopkgtest script to call correct scripts.
+  * Allow autopkgtest to output to stderr
+
+  [ Sophie Brun ]
+  * New upstream version 4.2.0
+  * Refresh patches
+  * Update lintian-overrides
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 18 Apr 2023 16:17:30 +0200
+
+arkime (4.0.3-0kali2) kali-dev; urgency=medium
+
+  * Add logrotate for logs files
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 16 Jan 2023 16:09:03 +0100
+
+arkime (4.0.3-0kali1) kali-dev; urgency=medium
+
+  * Initial release. (see 8073)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 09 Jan 2023 17:06:19 +0100

@@ -1,0 +1,51 @@
+Index: 0trace/0trace.sh
+===================================================================
+--- 0trace.orig/0trace.sh	2013-08-09 19:40:22.978405930 -0400
++++ 0trace/0trace.sh	2013-08-09 19:59:17.820486087 -0400
+@@ -14,13 +14,6 @@
+   exit 1
+ fi
+ 
+-if [ ! "`uname`" = "Linux" ]; then
+-  echo "[-] WARNING: Only Linux is believed to work fine with this utility." 1>&2
+-fi
+-
+-make sendprobe >/dev/null
+-test -f ./sendprobe || exit 1
+-
+ echo "0trace v0.01 PoC by <lcamtuf@coredump.cx>"
+ 
+ RULE="(tcp[13] & 0x17 == 0x10) and src host $2"
+@@ -28,7 +21,7 @@
+ 
+ echo "[+] Waiting for traffic from target on $1..."
+ 
+-/usr/sbin/tcpdump -c 1 -s 200 -S -q -i "$1" -n -x "$RULE" >"$T" 2>/dev/null
++tcpdump -c 1 -s 200 -S -q -i "$1" -n -x "$RULE" >"$T" 2>/dev/null
+ 
+ if [ ! -s "$T" ]; then
+   echo "[-] Something went wrong with tcpdump (check parameters)."
+@@ -42,7 +35,7 @@
+ WAITTIME=0
+ 
+ while [ "$WAITTIME" -lt "80" ]; do
+-  /usr/sbin/tcpdump -c 1 -s 200 -S -q -i "$1" -n -x "$RULE" >"$T-2" 2>/dev/null &
++  tcpdump -c 1 -s 200 -S -q -i "$1" -n -x "$RULE" >"$T-2" 2>/dev/null &
+   TPID="$!"
+   usleep 100000
+ 
+@@ -80,12 +73,12 @@
+ 
+ echo "[+] Setting up a sniffer..."
+ 
+-/usr/sbin/tcpdump -l -s 200 -S -q -i "$1" -n -x "icmp or ($RULE)" >"$T" 2>/dev/null &
++tcpdump -l -s 200 -S -q -i "$1" -n -x "icmp or ($RULE)" >"$T" 2>/dev/null &
+ TPID="$!"
+ 
+ echo "[+] Sending probes..."
+ 
+-./sendprobe $SADDR $DADDR $SPORT $DPORT $SEQ $ACK
++sendprobe $SADDR $DADDR $SPORT $DPORT $SEQ $ACK
+ sleep 2
+ kill "$TPID" 2>/dev/null
+ 

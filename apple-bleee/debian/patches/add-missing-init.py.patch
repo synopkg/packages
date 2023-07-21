@@ -1,0 +1,22 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Wed, 25 May 2022 09:36:49 +0200
+Subject: Add missing __init__.py
+
+
+sudo python3 ble_read_state.py *
+Traceback (most recent call last): File "/usr/share/apple-bleee/ble_read_state.py", line 25, in from utils.bluetooth_utils import (toggle_device, enable_le_scan, parse_le_advertising_events, disable_le_scan,
+ModuleNotFoundError: No module named 'utils.bluetooth_utils'; 'utils' is not a package
+Add a __init__.py to fix the issue.
+---
+ utils/__init__.py | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 utils/__init__.py
+
+diff --git a/utils/__init__.py b/utils/__init__.py
+new file mode 100644
+index 0000000..139597f
+--- /dev/null
++++ b/utils/__init__.py
+@@ -0,0 +1,2 @@
++
++

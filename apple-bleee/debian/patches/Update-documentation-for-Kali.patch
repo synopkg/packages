@@ -1,0 +1,72 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 20 Oct 2020 15:28:56 +0200
+Subject: Update documentation for Kali
+
+---
+ README.md            | 19 +++----------------
+ hash2phone/README.md |  5 +----
+ 2 files changed, 4 insertions(+), 20 deletions(-)
+
+diff --git a/README.md b/README.md
+index 37d12cc..0f26f44 100644
+--- a/README.md
++++ b/README.md
+@@ -1,9 +1,5 @@
+ # Apple bleee
+ 
+-<p align="center">
+-  <img src="https://github.com/hexway/apple_bleee/blob/master/img/logo.jpg"  height="350">
+-</p>
+-
+ ## Disclaimer
+ These scripts are experimental PoCs that show what an attacker get from Apple devices if they sniff Bluetooth traffic.
+ 
+@@ -15,18 +11,6 @@ To use these scripts you will need a Bluetooth adapter for sending `BLE` message
+ We have tested these PoCs on **Kali Linux**
+ 
+ 
+-## Installation
+-
+-```
+-# clone main repo
+-git clone https://github.com/hexway/apple_bleee.git && cd ./apple_bleee
+-# install dependencies
+-sudo apt update && sudo apt install -y bluez libpcap-dev libev-dev libnl-3-dev libnl-genl-3-dev libnl-route-3-dev cmake libbluetooth-dev
+-sudo pip3 install -r requirements.txt
+-# clone and install owl for AWDL interface
+-git clone https://github.com/seemoo-lab/owl.git && cd ./owl && git submodule update --init && mkdir build && cd build && cmake .. && make && sudo make install && cd ../..
+-```
+-
+ ## How to use
+ 
+ Before using the tool, check that your Bluetooth adapter is connected
+@@ -37,6 +21,9 @@ Devices:
+     hci0    00:1A:7D:DA:71:13
+ ```
+ 
++## In KALI
++The scripts are in /usr/share/apple-bleee
++
+ 
+ ### Script: [ble_read_state.py](https://github.com/hexway/apple_bleee/blob/master/ble_read_state.py)
+ 
+diff --git a/hash2phone/README.md b/hash2phone/README.md
+index 5082158..f657e16 100644
+--- a/hash2phone/README.md
++++ b/hash2phone/README.md
+@@ -4,14 +4,11 @@ This tool allows to pre-compute a list of hashes for a range of telephone number
+ 
+ ## Installation
+ 
+-**Tested on: Ubuntu 18.04**
+-
+ Install dependencies
+ 
+ ```
+ sudo apt update
+-sudo apt install apache2 apache2-utils php php-pgsql libapache2-mod-php libpq5 postgresql postgresql-client postgresql-client-common postgresql-contrib python python-pip python-pip postgresql-server-dev-all
+-sudo pip install psycopg2
++sudo apt install apache2 apache2-utils php php-pgsql libapache2-mod-php libpq5 postgresql postgresql-client postgresql-client-common postgresql-contrib postgresql-server-dev-all
+ ```
+ 
+ Prepare database

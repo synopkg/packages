@@ -1,0 +1,26 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 20 Dec 2022 18:51:05 +0100
+Subject: Create builddir before copying the files
+
+If the directory @prefix@ does not exist, the first copied directory in
+@prefix@ is not correctly copied: only its content is copied, not the
+directory.
+---
+ Makefile.am | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 21dfaa2..4b297de 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,8 +1,9 @@
+ SUBDIRS = . capture db viewer parliament wiseService cont3xt release tests
+ install-exec-local:
+ 	npm ci
+-	cp -pr common @prefix@
++	mkdir @prefix@
+ 	cp -pr assets @prefix@
++	cp -pr common @prefix@
+ 	@INSTALL@ -D package.json @prefix@/package.json
+ 	@INSTALL@ -D package-lock.json @prefix@/package-lock.json
+ 	(cd @prefix@ ; npm ci --production)

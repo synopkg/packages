@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+systemctl start arkimecapture.service
+systemctl start arkimeviewer.service
+
+sleep 3s
+
+echo "Opening Web UI http://localhost:8005"
+xdg-open "http://localhost:8005" 2>/dev/null >/dev/null &
+

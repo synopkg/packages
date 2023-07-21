@@ -1,0 +1,53 @@
+Source: arkime
+Section: utils
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ ca-certificates,
+ git,
+ libmaxminddb-dev,
+ libcurl4-openssl-dev,
+ libyara-dev,
+ libglib2.0-dev,
+ libpcap-dev,
+ libnghttp2-dev,
+ liblua5.4-dev,
+ libpcre3-dev,
+ libzstd-dev,
+ libyaml-dev,
+ libdaq-dev,
+ wget
+Standards-Version: 4.6.2
+Homepage: https://arkime.com/
+Vcs-Browser: https://gitlab.com/kalilinux/packages/arkime
+Vcs-Git: https://gitlab.com/kalilinux/packages/arkime.git
+
+Package: arkime
+Architecture: amd64 arm64
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ libjson-perl,
+ ethtool,
+ net-tools,
+ ieee-data,
+ libwireshark-data,
+ openssl,
+ python3
+Recommends: default-jre-headless, geoipupdate
+Suggests: suricata
+Description: large-scale, open-source, indexed packet capture and search tool
+ This package contains Arkime (formerly Moloch), a large-scale, open-source,
+ indexed packet capture and search tool.
+ .
+ Arkime augments your current security infrastructure to store and index
+ network traffic in standard PCAP format, providing fast, indexed access. An
+ intuitive and simple web interface is provided for PCAP browsing, searching,
+ and exporting. Arkime exposes APIs which allow for PCAP data and JSON
+ formatted session data to be downloaded and consumed directly. Arkime stores
+ and exports all packets in standard PCAP format, allowing you to also use your
+ favorite PCAP ingesting tools, such as wireshark, during your analysis
+ workflow.

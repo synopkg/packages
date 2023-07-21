@@ -1,0 +1,5 @@
+debian/helper-script/* usr/bin/
+build/*.jar usr/share/armitage/
+dist/unix/armitage usr/share/armitage/
+dist/unix/armitage-logo.png usr/share/armitage/
+dist/unix/teamserver usr/share/armitage/

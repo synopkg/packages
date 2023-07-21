@@ -1,0 +1,69 @@
+asleap (2.3~git20201128.254acab-0kali1) kali-dev; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Update Maintainer field
+  * Update Vcs-* fields for the move to gitlab.com
+  * Add GitLab's CI configuration file
+  * Configure git-buildpackage for Kali
+  * Update URL in GitLab's CI configuration file
+
+  [ Sophie Brun ]
+  * Update debian/watch
+  * New upstream version 2.3~git20201128.254acab
+  * Use debhelper-compat 13
+  * Update debian/copyright
+  * Fix doc installation
+  * Import an upstream MR to fix the build
+  * Bump Standards-Version to 4.6.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 15 Sep 2021 16:23:25 +0200
+
+asleap (2.2-1kali7) kali-dev; urgency=medium
+
+  * Do not hardcode dependencies on C libraries.
+  * Update packaging to more modern standards.
+
+ -- Raphaël Hertzog <hertzog@debian.org>  Tue, 24 Nov 2015 18:15:26 +0100
+
+asleap (2.2-1kali6) kali-dev; urgency=medium
+
+  * Add a debian/watch
+  * Fix the VCS-git in debian/control
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 09 Jul 2015 12:01:13 +0200
+
+asleap (2.2-1kali5) kali; urgency=low
+
+  * Remove desktop file
+
+ -- Mati Aharoni <muts@kali.org>  Fri, 14 Dec 2012 19:17:47 -0500
+
+asleap (2.2-1kali4) kali; urgency=low
+
+  * Updating desktop file
+
+ -- Mati Aharoni <muts@kali.org>  Sun, 02 Dec 2012 08:07:43 -0500
+
+asleap (2.2-1kali3) kali; urgency=low
+
+  * Edited depends
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 08 Nov 2012 12:36:52 -0700
+
+asleap (2.2-1kali2) kali; urgency=low
+
+  * Edited build and install depends
+
+ -- Devon Kearns <dookie@kali.org>  Thu, 08 Nov 2012 12:23:04 -0700
+
+asleap (2.2-1kali1) kali; urgency=low
+
+  * Kali Version
+
+ -- Devon Kearns <dookie@kali.org>  Wed, 31 Oct 2012 14:31:54 -0600
+
+asleap (2.2-1) kali; urgency=low
+
+  * Initial release
+
+ -- Devon Kearns <dookie@kali.org>  Wed, 31 Oct 2012 14:13:42 -0600

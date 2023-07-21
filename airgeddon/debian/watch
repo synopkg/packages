@@ -1,0 +1,4 @@
+version=4
+opts="dversionmangle=s/\+ds//,repacksuffix=+ds, \
+ filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/airgeddon-$1\.tar\.gz/" \
+  https://github.com/v1s1t0r1sh3r3/airgeddon/tags .*/v?(\d\S*)\.tar\.gz

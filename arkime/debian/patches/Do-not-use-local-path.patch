@@ -1,0 +1,45 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Mon, 9 Jan 2023 13:57:56 +0100
+Subject: Do not use /usr/local/lib path for daq lib
+
+Remove useless custom path /usr/local/lib in plugin reader-daq
+Remove search path /usr/local/lib in plugin reader-daq
+---
+ capture/plugins/daq/Makefile.in  | 2 +-
+ capture/plugins/daq/reader-daq.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/capture/plugins/daq/Makefile.in b/capture/plugins/daq/Makefile.in
+index c54157e..e975365 100644
+--- a/capture/plugins/daq/Makefile.in
++++ b/capture/plugins/daq/Makefile.in
+@@ -13,7 +13,7 @@ SRCS=$(wildcard *.c)
+ SOS=$(patsubst %.c,../%.so,$(SRCS))
+ 
+ ../%.so : %.c ../../moloch.h ../../hash.h ../../dll.h
+-	$(CC) -pthread @SHARED_FLAGS@ -o $@ @CFLAGS@ -Wall -Wextra -D_GNU_SOURCE -fPIC $(INCLUDE_OTHER) $(INCLUDE_PCAP) $< -Wl,-rpath=/usr/local/lib -ldaq
++	$(CC) -pthread @SHARED_FLAGS@ -o $@ @CFLAGS@ -Wall -Wextra -D_GNU_SOURCE -fPIC $(INCLUDE_OTHER) $(INCLUDE_PCAP) $< -ldaq
+ 
+ all:$(SOS)
+ 
+diff --git a/capture/plugins/daq/reader-daq.c b/capture/plugins/daq/reader-daq.c
+index 7ff260b..94e32ca 100644
+--- a/capture/plugins/daq/reader-daq.c
++++ b/capture/plugins/daq/reader-daq.c
+@@ -139,13 +139,13 @@ void reader_daq_init(char *UNUSED(name))
+     DAQ_Config_t cfg;
+ 
+ 
+-    gchar **dirs = moloch_config_str_list(NULL, "daqModuleDirs", "/usr/local/lib/daq");
++/*    gchar **dirs = moloch_config_str_list(NULL, "daqModuleDirs", "/usr/local/lib/daq");*/
+     gchar *moduleName = moloch_config_str(NULL, "daqModule", "pcap");
+ 
+-    err = daq_load_modules((const char **)dirs);
++/*    err = daq_load_modules((const char **)dirs);
+     if (err) {
+         LOGEXIT("Can't load DAQ modules = %d\n", err);
+-    }
++    }*/
+ 
+     module = daq_find_module(moduleName);
+     if (!module) {

@@ -1,0 +1,133 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Tue, 20 Dec 2022 15:34:38 +0100
+Subject: Change install path
+
+Upstream installs everything /opt and set paths during the build.
+We want to install files in /usr/lib/arkime, not in /opt but not during
+the build: /usr/lib/arkime is not the correct folder; it's
+debian/arkime/usr/lib/arkime.
+We want to the paths in file to /usr/lib/arkime (not /opt nor
+debian/arkime/usr/lib/arkime)
+Create / install the directories log and raw in /var/lib/arkime not in
+/usr
+---
+ common/version.js.in       |  2 +-
+ configure.ac               |  2 +-
+ release/Configure          |  2 +-
+ release/Makefile.in        | 21 ++++++++++-----------
+ release/config.ini.sample  |  4 ++--
+ release/cont3xt.ini.sample |  2 +-
+ 6 files changed, 16 insertions(+), 17 deletions(-)
+
+diff --git a/common/version.js.in b/common/version.js.in
+index f217aaa..913aa1c 100644
+--- a/common/version.js.in
++++ b/common/version.js.in
+@@ -1,2 +1,2 @@
+ exports.version = "@PACKAGE_VERSION@";
+-exports.config_prefix = "@prefix@";
++exports.config_prefix = "/usr/lib/arkime";
+diff --git a/configure.ac b/configure.ac
+index fa24b39..2f65cc9 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -577,6 +577,6 @@ AC_SUBST(KAFKA_LIBS)
+ 
+ AS_IF([test "$prefix" == "NONE"],
+     [AC_DEFINE_UNQUOTED(CONFIG_PREFIX,"$ac_default_prefix", [config prefix directory])],
+-    [AC_DEFINE_UNQUOTED(CONFIG_PREFIX,"$prefix", [config prefix directory])])
++    [AC_DEFINE_UNQUOTED(CONFIG_PREFIX,"/usr/lib/arkime", [config prefix directory])])
+ 
+ AC_OUTPUT
+diff --git a/release/Configure b/release/Configure
+index fe1f8eb..ac6cda5 100755
+--- a/release/Configure
++++ b/release/Configure
+@@ -23,7 +23,7 @@ fi
+ 
+ ARKIME_INSTALL_DIR=BUILD_ARKIME_INSTALL_DIR
+ if [ "$ARKIME_INSTALL_DIR" == "BUILD_ARKIME_""INSTALL_DIR" ]; then
+-ARKIME_INSTALL_DIR=/opt/$ARKIME_NAME
++    ARKIME_INSTALL_DIR=/usr/lib/$ARKIME_NAME
+ fi
+ 
+ if [ "$1" == "--wise" ]; then
+diff --git a/release/Makefile.in b/release/Makefile.in
+index 8aef69f..2343c5f 100644
+--- a/release/Makefile.in
++++ b/release/Makefile.in
+@@ -8,23 +8,23 @@ check:
+ install:
+ 	$(INSTALL) README.txt @prefix@
+ 	$(INSTALL) ../LICENSE @prefix@
+-	@mkdir -p $(etcdir) @prefix@/logs
++	@mkdir -p $(etcdir)
+ 	$(INSTALL) config.ini.sample $(etcdir)/
+ 	$(INSTALL) wise.ini.sample $(etcdir)/
+ 	$(INSTALL) cont3xt.ini.sample $(etcdir)/
+ 	$(INSTALL) parliament.env.example $(etcdir)/
+ 	$(INSTALL) env.example $(etcdir)/
+ 
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkimecont3xt.systemd.service > @prefix@/etc/arkimecont3xt.systemd.service
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkimecapture.systemd.service > @prefix@/etc/arkimecapture.systemd.service
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkimeviewer.systemd.service > @prefix@/etc/arkimeviewer.systemd.service
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkimewise.systemd.service > @prefix@/etc/arkimewise.systemd.service
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkimeparliament.systemd.service > @prefix@/etc/arkimeparliament.systemd.service
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkimecont3xt.systemd.service > @prefix@/etc/arkimecont3xt.systemd.service
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkimecapture.systemd.service > @prefix@/etc/arkimecapture.systemd.service
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkimeviewer.systemd.service > @prefix@/etc/arkimeviewer.systemd.service
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkimewise.systemd.service > @prefix@/etc/arkimewise.systemd.service
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkimeparliament.systemd.service > @prefix@/etc/arkimeparliament.systemd.service
+ 
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkime_update_geo.sh > @prefix@/bin/arkime_update_geo.sh
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkime_add_user.sh > @prefix@/bin/arkime_add_user.sh
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkime_config_interfaces.sh > @prefix@/bin/arkime_config_interfaces.sh
+-	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < Configure > @prefix@/bin/Configure
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkime_update_geo.sh > @prefix@/bin/arkime_update_geo.sh
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkime_add_user.sh > @prefix@/bin/arkime_add_user.sh
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < arkime_config_interfaces.sh > @prefix@/bin/arkime_config_interfaces.sh
++	sed -e "s,BUILD_ARKIME_INSTALL_DIR,/usr/lib/arkime,g" < Configure > @prefix@/bin/Configure
+ 	chmod 0755 @prefix@/bin/arkime_update_geo.sh @prefix@/bin/arkime_add_user.sh @prefix@/bin/Configure @prefix@/bin/arkime_config_interfaces.sh
+ 	/bin/bash ./afterinstall.sh
+ 
+@@ -33,7 +33,6 @@ installmoloch:
+ 	rm -f @prefix@/bin/arkime*
+ 	$(INSTALL) README.txt @prefix@
+ 	$(INSTALL) ../LICENSE @prefix@
+-	@mkdir -p $(etcdir) @prefix@/logs
+ 	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkime_update_geo.sh > @prefix@/bin/moloch_update_geo.sh
+ 	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < arkime_add_user.sh > @prefix@/bin/moloch_add_user.sh
+ 	sed -e "s,BUILD_ARKIME_INSTALL_DIR,@prefix@,g" < Configure.moloch > @prefix@/bin/Configure
+diff --git a/release/config.ini.sample b/release/config.ini.sample
+index 69167e4..72d8f2a 100644
+--- a/release/config.ini.sample
++++ b/release/config.ini.sample
+@@ -65,13 +65,13 @@ interface=ARKIME_INTERFACE
+ #wiseHost=127.0.0.1
+ 
+ # Log viewer access requests to a different log file
+-#accessLogFile=ARKIME_INSTALL_DIR/logs/access.log
++#accessLogFile=/var/lib/arkime/logs/access.log
+ 
+ # Control the log format for access requests. This uses URI % encoding.
+ #accessLogFormat=:date :username %1b[1m:method%1b[0m %1b[33m:url%1b[0m :status :res[content-length] bytes :response-time ms
+ 
+ # The directory to save raw pcap files to
+-pcapDir=ARKIME_INSTALL_DIR/raw
++pcapDir=/var/lib/arkime/raw
+ 
+ # The max raw pcap file size in gigabytes, with a max value of 36G.
+ # The disk should have room for at least 10*maxFileSizeG
+diff --git a/release/cont3xt.ini.sample b/release/cont3xt.ini.sample
+index 6e876f7..3dcfcef 100644
+--- a/release/cont3xt.ini.sample
++++ b/release/cont3xt.ini.sample
+@@ -37,7 +37,7 @@ cacheTimeout=1d
+ # By default use a cache that will survive restarts but local to instance
+ [cache]
+ type=lmdb
+-lmdbDir=ARKIME_INSTALL_DIR/cont3xt-cache
++lmdbDir=/var/lib/arkime/cont3xt-cache
+ 
+ ##### INTEGRATION SETTINGS
+ 

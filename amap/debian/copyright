@@ -1,0 +1,55 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: amap
+Upstream-Contact: amap-dev@thc.org
+Source: http://www.thc.org/thc-amap/
+Disclaimer:
+ The license has multiple advertising clauses and forbids usages
+ for illegal activities.
+
+Files: *
+Copyright: 2003-2005 van Hauser and DJ RevMoon
+License: GPL-2 + restrictions
+ 1. This software comes with no warrenty or promised features. If it works
+ for you - fine. It just comes "AS-IS", which means as a bunch of bits and
+ bytes.
+ .
+ 2. Anyone may use this software and pass it on to other persons or
+ companies as long as it is not charged for! (except for a small
+ transfer/medium fee)
+ .
+ 3. This tool may *NOT* be used for illegal purpose. Please check the law
+ which affects your doing. I will have got no liability for any damage
+ etc. done with this tool legally or illegaly.
+ .
+ 4. If this tool is used while providing a commercial service (e.g. as
+ part of a penetration test) the report has to state the tools name and
+ version, and additionally the authors (van Hauser and Dj RevMoon) and the
+ distribution homepage (http://www.thc.org).
+ .
+ 5. If this tool is used within a commercial tool (being called out of
+ such a tool or being incorporated), the report generated has to state the
+ tools name and version, and additionally the authors (van Hauser and Dj
+ RevMoon) and the distribution homepage (http://www.thc.org). A tool is
+ "commercial" if it either costs money to purchase it, has a license fee,
+ and/or has costs for upgrades.  Additionally, a commercial version or
+ license etc. must be made available to the author free of charge.
+ .
+ 6. In all other respects the GPL 2.0 applies.
+
+Files: pcre-3.9/*
+Copyright: 1997-2001 University of Cambridge
+License: GPL-2+
+
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ version 2 can be found in /usr/share/common-licenses/GPL-2.

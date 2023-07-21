@@ -1,0 +1,20 @@
+From: v1s1t0r <v1s1t0r.1s.h3r3@gmail.com>
+Date: Wed, 16 Dec 2020 15:38:41 +0100
+Subject: Disable auto-update
+
+Forwarded: not-needed
+---
+ .airgeddonrc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/.airgeddonrc b/.airgeddonrc
+index e415a3f..8abefd5 100644
+--- a/.airgeddonrc
++++ b/.airgeddonrc
+@@ -1,5 +1,5 @@
+ #Enabled true / Disabled false - Auto update feature (it has no effect on development mode) - Default value true
+-AIRGEDDON_AUTO_UPDATE=true
++AIRGEDDON_AUTO_UPDATE=false
+ 
+ #Enabled true / Disabled false - Skip intro (it has no effect on development mode) - Default value false
+ AIRGEDDON_SKIP_INTRO=false

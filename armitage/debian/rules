@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-$(shell dpkg --print-architecture)
+export GRADLE_USER_HOME=$(CURDIR)/debian/fakehome
+
+%:
+	dh $@ --with javahelper
+
+override_dh_auto_build:
+	mkdir -p $(GRADLE_USER_HOME)
+	./gradlew assemble
+	dh_auto_build

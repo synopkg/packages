@@ -1,0 +1,8 @@
+Use-lua-5.4.patch
+Do-not-use-git.patch
+Remove-requirements-of-elasticsearch-and-opensearch.patch
+create-builddir-before-copy.patch
+Improve-arkime_update_geo-for-kali.patch
+Change-install-path.patch
+Adapt-Configure-for-kali.patch
+Do-not-use-local-path.patch
