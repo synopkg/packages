@@ -1,0 +1,24 @@
+Source: assetfinder
+Section: golang
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 13),
+               dh-golang,
+               golang-any
+Standards-Version: 4.6.2
+Homepage: https://github.com/tomnomnom/assetfinder
+Vcs-Browser: https://gitlab.com/kalilinux/packages/assetfinder
+Vcs-Git: https://gitlab.com/kalilinux/packages/assetfinder.git
+Rules-Requires-Root: no
+Testsuite: autopkgtest-pkg-go
+XS-Go-Import-Path: github.com/tomnomnom/assetfinder
+
+Package: assetfinder
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Built-Using: ${misc:Built-Using}
+Description: Find domains and subdomains related to a given domain
+ This package contains a tool to find domains and subdomains potentially
+ related to a given domain.

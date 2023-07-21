@@ -1,0 +1,38 @@
+From 02c4264e6d213845216ea3427a337492d915b541 Mon Sep 17 00:00:00 2001
+From: jeffmcjunkin <jeff.mcjunkin@gmail.com>
+Date: Wed, 5 Nov 2014 14:41:13 -0800
+Subject: [PATCH] Updated php usage instructions
+
+The "--" flag is necessary to prevent php from parsing the index.php build options as php's own command line options
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/README.md
++++ b/README.md
+@@ -22,9 +22,15 @@ Features :
+  * Responsibility of what you do with this shell
+  
+ ## Installation :
+-Download b374k.php (default password : b374k), edit and change password and upload b374k.php to your server, password is in sha1(md5()) format. Or create your own b374k.php, explained below
++In Kali:
++```
++apt install b374k
++```
++It's installed in /usr/share/b374k/
+ 
+ ## Customize :
++Create your own b374k.php, explained below
++
+ After finished doing editing with files, upload index.php, base, module, theme and all files inside it to a server
+ 
+ Using Web Browser :
+@@ -50,7 +56,7 @@ options :
+ ```
+ example :
+ ```
+-$ php -f index.php -o myShell.php -p myPassword -s -b -z gzcompress -c 9
++$ php -f index.php -- -o myShell.php -p myPassword -s -b -z gzcompress -c 9
+ ```
+ Don't forget to delete index.php, base, module, theme and all files inside it after you finished. Because it is not protected with password so it can be a security threat to your server
+ 

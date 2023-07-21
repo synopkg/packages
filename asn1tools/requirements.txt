@@ -1,0 +1,14 @@
+pyparsing>=3.0.6
+codespell
+pyasn1
+asn1crypto
+libsnmp
+pysnmp
+protobuf
+prompt_toolkit
+pycodestyle
+bitstruct
+diskcache
+humanfriendly
+mock ; python_version < '3.0'
+nala ; python_version >= '3.6'

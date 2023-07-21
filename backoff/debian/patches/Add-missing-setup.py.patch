@@ -1,0 +1,43 @@
+From: Sophie Brun <sophie@offensive-security.com>
+Date: Wed, 16 Dec 2020 16:16:09 +0100
+Subject: Add missing setup.py
+
+Forwarded: not-needed
+The package uses poetry to generate a setup.py
+Poetry is not yet in Debian. We copy the generated setup.py (from pypi
+tarball)
+---
+ setup.py | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 setup.py
+
+diff --git a/setup.py b/setup.py
+new file mode 100644
+index 0000000..6e4f961
+--- /dev/null
++++ b/setup.py
+@@ -0,0 +1,24 @@
++# -*- coding: utf-8 -*-
++from distutils.core import setup
++
++packages = \
++['backoff']
++
++package_data = \
++{'': ['*']}
++
++setup_kwargs = {
++    'name': 'backoff',
++    'version': '1.10.0',
++    'description': 'Function decoration for backoff and retry',
++    'long_description': 'Function decoration for backoff and retry. This module provides function decorators which can be used to wrap a\nfunction such that it will be retried until some condition is met.  It\nis meant to be of use when accessing unreliable resources with the\npotential for intermittent failures i.e. network resources and external\nAPIs. Somewhat more generally, it may also be of use for dynamically\npolling resources for externally generated content.\n\nDecorators support both regular functions for synchronous code and\n`asyncio\'s coroutines\nfor asynchronous code.',
++    'author': 'Bob Green',
++    'author_email': 'rgreen@goscoutgo.com',
++    'url': 'https://github.com/litl/backoff',
++    'packages': packages,
++    'package_data': package_data,
++    'python_requires': '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
++}
++
++
++setup(**setup_kwargs)

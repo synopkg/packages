@@ -1,0 +1,28 @@
+asysocks (0.2.2-0kali1) kali-dev; urgency=medium
+
+  * New upstream version 0.2.2
+  * Bump Standards-Version to 4.6.1
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 17 Oct 2022 15:52:54 +0200
+
+asysocks (0.1.2-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+  * Import upstream version 0.1.1, md5 98dab0df8d6dc3ca49e8fbcc4598601e
+
+  [ Ben Wilson ]
+  * Remove template comment and switch spaces to tabs
+
+  [ Sophie Brun ]
+  * New upstream version 0.1.2
+  * Bump Standards-Version to 4.6.0
+
+ -- Sophie Brun <sophie@offensive-security.com>  Tue, 18 Jan 2022 10:54:29 +0100
+
+asysocks (0.0.2-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Wed, 25 Mar 2020 16:46:34 +0100

@@ -1,0 +1,26 @@
+b374k (3.2.3-0kali3) kali-dev; urgency=medium
+
+  * Add helper-script
+
+ -- Ben Wilson <g0tmi1k@kali.org>  Fri, 05 Nov 2021 17:10:24 +0000
+
+b374k (3.2.3-0kali2) kali-dev; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Update Maintainer field
+  * Update Vcs-* fields for the move to gitlab.com
+  * Add GitLab's CI configuration file
+  * Configure git-buildpackage for Kali
+  * Update URL in GitLab's CI configuration file
+
+  [ Sophie Brun ]
+  * Bump Standards-Version to 4.5.0
+  * Use debhelper-compat 13
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 09 Oct 2020 15:13:33 +0200
+
+b374k (3.2.3-0kali1) kali-dev; urgency=medium
+
+  * Initial release (Closes: 1097)
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 01 Jun 2017 10:29:43 +0200

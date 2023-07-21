@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+set -e
+
+kali-treecd "/usr/share/b374k" "b374k" 1 false

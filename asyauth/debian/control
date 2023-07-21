@@ -1,0 +1,32 @@
+Source: asyauth
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-python3,
+ python3-setuptools,
+ python3-all,
+ python3-asysocks (>= 0.2.2),
+ python3-minikerberos,
+ python3-oscrypto
+Testsuite: autopkgtest-pkg-python
+Standards-Version: 4.6.1
+Homepage: https://github.com/skelsec/asyauth
+Vcs-Browser: https://gitlab.com/kalilinux/packages/asyauth
+Vcs-Git: https://gitlab.com/kalilinux/packages/asyauth.git
+
+Package: python3-asyauth
+Architecture: all
+Depends:
+ ${python3:Depends},
+ ${misc:Depends},
+ python3-asysocks (>= 0.2.2),
+ python3-minikerberos,
+ python3-oscrypto
+Description: Unified authentication library (Python 3)
+ This package contains an Unified Authentication library.
+ .
+ This package installs the library for Python 3.

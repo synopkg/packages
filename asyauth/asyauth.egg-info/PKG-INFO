@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: asyauth
+Version: 0.0.9
+Summary: Unified authentication library
+Home-page: https://github.com/skelsec/asyauth
+Author: Tamas Jos
+Author-email: info@skelsecprojects.com
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+License-File: LICENSE
+
+Unified authentication library

@@ -1,0 +1,18 @@
+asyauth (0.0.9-0kali2) kali-dev; urgency=medium
+
+  * Re-import upstream tarball
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 09 Dec 2022 16:05:11 +0100
+
+asyauth (0.0.9-0kali1) kali-dev; urgency=medium
+
+  [ Kali Janitor ]
+  * New upstream release.
+
+ -- Sophie Brun <sophie@offensive-security.com>  Fri, 09 Dec 2022 14:43:10 +0100
+
+asyauth (0.0.4-0kali1) kali-dev; urgency=medium
+
+  * Initial release
+
+ -- Sophie Brun <sophie@offensive-security.com>  Mon, 17 Oct 2022 15:30:46 +0200

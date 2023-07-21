@@ -1,0 +1,9 @@
+b374k for Debian
+---------------
+
+We don't provide the file b374k.php
+You have to create your own file with YOUR PASSWORD.
+(default password is b374k).
+Please read /usr/share/doc/b374k/README.md
+
+ -- Sophie Brun <sophie@offensive-security.com>  Thu, 01 Jun 2017 10:29:43 +0200

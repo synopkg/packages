@@ -1,0 +1,62 @@
+Source: asn1tools
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-sequence-python3,
+ python3-setuptools,
+ python3-all,
+ python3-bitstruct,
+ python3-diskcache,
+ python3-prompt-toolkit,
+ python3-pyparsing,
+ python3-sphinx
+Testsuite: autopkgtest-pkg-python
+Standards-Version: 4.6.2
+Homepage: https://github.com/eerimoq/asn1tools
+Vcs-Browser: https://gitlab.com/kalilinux/packages/asn1tools
+Vcs-Git: https://gitlab.com/kalilinux/packages/asn1tools.git
+
+Package: python3-asn1tools
+Architecture: all
+Depends:
+ ${python3:Depends},
+ ${misc:Depends},
+Suggests:
+ python-asn1tools-doc,
+Description: ASN.1 parsing, encoding and decoding (Python 3)
+ This package contains a Python package for ASN.1 parsing, encoding and
+ decoding. Supported codecs:
+    * Basic Encoding Rules (BER)
+    * Distinguished Encoding Rules (DER)
+    * Generic String Encoding Rules (GSER)
+    * JSON Encoding Rules (JER)
+    * Basic Octet Encoding Rules (OER)
+    * Aligned Packed Encoding Rules (PER)
+    * Unaligned Packed Encoding Rules (UPER)
+    * XML Encoding Rules (XER)
+ .
+ This package installs the library for Python 3.
+
+Package: python-asn1tools-doc
+Section: doc
+Architecture: all
+Depends:
+ ${sphinxdoc:Depends},
+ ${misc:Depends},
+Description: ASN.1 parsing, encoding and decoding (common documentation)
+ This package contains a Python package for ASN.1 parsing, encoding and
+ decoding. Supported codecs:
+    * Basic Encoding Rules (BER)
+    * Distinguished Encoding Rules (DER)
+    * Generic String Encoding Rules (GSER)
+    * JSON Encoding Rules (JER)
+    * Basic Octet Encoding Rules (OER)
+    * Aligned Packed Encoding Rules (PER)
+    * Unaligned Packed Encoding Rules (UPER)
+    * XML Encoding Rules (XER)
+ .
+ This is the common documentation package.

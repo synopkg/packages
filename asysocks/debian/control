@@ -1,0 +1,19 @@
+Source: asysocks
+Section: python
+Priority: optional
+Maintainer: Kali Developers <devel@kali.org>
+Uploaders: Sophie Brun <sophie@offensive-security.com>
+Build-Depends: debhelper-compat (= 12), dh-python, python3-setuptools, python3-all
+Standards-Version: 4.6.2
+Homepage: https://github.com/skelsec/asysocks
+Vcs-Browser: https://gitlab.com/kalilinux/packages/asysocks
+Vcs-Git: https://gitlab.com/kalilinux/packages/asysocks.git
+Testsuite: autopkgtest-pkg-python
+
+Package: python3-asysocks
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Socks5 / Socks4 client and server library (Python 3)
+ This package contains a Socks5 / Socks4 client and server Python library.
+ .
+ This package installs the library for Python 3.
